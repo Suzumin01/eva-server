@@ -33,15 +33,21 @@ data class RegisterResponse(
 )
 
 @Serializable
-data class UserProfileResponse(
+data class UserProfileDto(
     val userId: String,
     val fullName: String,
     val email: String,
-    val phone: String?,
+    val phone: String? = null,
     val role: String,
     val isActive: Boolean,
     val consentMedical: Boolean,
     val consentAi: Boolean
+)
+
+@Serializable
+data class UpdateProfileRequest(
+    val fullName: String? = null,
+    val phone: String? = null
 )
 
 @Serializable

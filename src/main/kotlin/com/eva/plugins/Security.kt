@@ -39,7 +39,6 @@ fun Application.configureSecurity() {
     }
 }
 
-// Хелпер для получения userId из токена в роутах
 fun ApplicationCall.getUserId(): String =
     principal<JWTPrincipal>()!!.payload.getClaim("userId").asString()
 

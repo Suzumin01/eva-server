@@ -20,7 +20,6 @@ fun Application.configureHTTP() {
         allowMethod(HttpMethod.Delete)
         allowHeader(HttpHeaders.Authorization)
         allowHeader(HttpHeaders.ContentType)
-        // В production заменить на конкретные домены
         anyHost()
     }
 

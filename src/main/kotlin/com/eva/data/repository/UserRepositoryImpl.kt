@@ -51,6 +51,14 @@ class UserRepositoryImpl {
         newId
     }
 
+    fun updateProfile(userId: UUID, fullName: String?, phone: String?): Boolean = transaction {
+        UsersTable.update({ UsersTable.userId eq userId }) { row ->
+            fullName?.let { row[UsersTable.fullName] = it.trim() }
+            phone?.let    { row[UsersTable.phone]    = it.trim().ifBlank { null } }
+            row[UsersTable.updatedAt] = OffsetDateTime.now()
+        } > 0
+    }
+
     fun updateLastLogin(userId: UUID) = transaction {
         UsersTable.update({ UsersTable.userId eq userId }) {
             it[lastLoginAt] = OffsetDateTime.now()

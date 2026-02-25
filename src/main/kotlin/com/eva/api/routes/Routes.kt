@@ -245,13 +245,10 @@ fun Route.symptomsRoutes(
                 require(req.symptomsText.length >= 20) { "Описание симптомов слишком короткое (минимум 20 символов)" }
                 require(req.symptomsText.length <= 5000) { "Описание симптомов слишком длинное (максимум 5000 символов)" }
 
-                // Сохранить запрос
                 val requestId = symptomsRepository.create(userId, req.symptomsText)
 
-                // Получить анализ от AI
                 val aiResult = aiService.analyze(req.symptomsText)
 
-                // Сохранить ответ
                 symptomsRepository.saveAiResponse(
                     requestId       = requestId,
                     diagnosis       = aiResult.diagnosis,
@@ -338,7 +335,6 @@ fun Route.notificationRoutes(notificationRepository: NotificationRepositoryImpl)
             post("/fcm-token") {
                 val userId = UUID.fromString(call.getUserId())
                 val req    = call.receive<RegisterFcmTokenRequest>()
-                // Сохранить токен в fcm_tokens (упрощённая реализация — INSERT OR UPDATE)
                 org.jetbrains.exposed.sql.transactions.transaction {
                     com.eva.data.tables.FcmTokensTable.upsert(
                         com.eva.data.tables.FcmTokensTable.token

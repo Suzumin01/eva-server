@@ -160,9 +160,7 @@ object LogsTable : Table("logs") {
     val action    = varchar("action", 255)
     val ipAddress = varchar("ip_address", 45).nullable()
     val userAgent = text("user_agent").nullable()
-    val meta      = text("meta").default("{}")   // JSONB как text
+    val meta      = text("meta").default("{}")
     val createdAt = timestampWithTimeZone("created_at")
-    // Примечание: таблица logs партиционирована в БД, PK составной (log_id, created_at)
-    // Exposed работает с ней как с обычной таблицей через партиционированный PK
     override val primaryKey = PrimaryKey(logId)
 }

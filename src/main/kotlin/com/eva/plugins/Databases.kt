@@ -18,7 +18,6 @@ fun Application.configureDatabases() {
         isAutoCommit         = false
         transactionIsolation = "TRANSACTION_REPEATABLE_READ"
         poolName             = "EVA-HikariPool"
-        // Явно устанавливаем search_path при каждом новом соединении из пула
         connectionInitSql    = "SET search_path TO public"
         validate()
     }
@@ -26,9 +25,6 @@ fun Application.configureDatabases() {
     val dataSource = HikariDataSource(hikariConfig)
     Database.connect(dataSource)
 
-    // Схема уже применена через eva_schema_v1.5.sql
-    // SchemaUtils здесь НЕ используется — он не поддерживает партиционированные таблицы (logs)
-    // Проверяем соединение простым запросом
     transaction {
         exec("SELECT 1") { it.next() }
     }

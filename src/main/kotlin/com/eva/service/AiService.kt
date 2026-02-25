@@ -42,14 +42,12 @@ class AiService(config: ApplicationConfig) {
         }
     }
 
-    // Основной метод — сейчас возвращает заглушку
+    // Основной метод
     suspend fun analyze(symptomsText: String): AiAnalysisResult {
         return try {
-            // Для реальной интеграции заменить на: analyzeReal(symptomsText)
             analyzeStub(symptomsText)
         } catch (e: Exception) {
             log.error("AI service error: ${e.message}", e)
-            // Fallback — всегда возвращаем безопасный ответ
             AiAnalysisResult(
                 diagnosis       = "AI-сервис временно недоступен.",
                 recommendations = "Пожалуйста, запишитесь к врачу для получения консультации.",
@@ -68,7 +66,6 @@ class AiService(config: ApplicationConfig) {
         log.info("[AI STUB] Analyzing: ${symptomsText.take(50)}...")
         val start = System.currentTimeMillis()
 
-        // Простая эвристика для демонстрации
         val lowerText = symptomsText.lowercase()
         val (diagnosis, recommendations, urgency, confidence) = when {
             "боль в груди" in lowerText || "сердце" in lowerText ->
@@ -130,7 +127,6 @@ class AiService(config: ApplicationConfig) {
     }
 
     // РЕАЛЬНАЯ интеграция с FastAPI AI-модулем
-    // Раскомментировать когда AI-сервис готов
     @Suppress("unused")
     private suspend fun analyzeReal(symptomsText: String): AiAnalysisResult {
         val start = System.currentTimeMillis()
@@ -180,7 +176,6 @@ data class AiApiResponse(
     val modelVersion: String
 )
 
-// Вспомогательный класс для деструктуризации четвёрки
 private data class Quadruple<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)
 
 private operator fun <A, B, C, D> Quadruple<A, B, C, D>.component1() = first

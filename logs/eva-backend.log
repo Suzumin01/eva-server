@@ -1,60 +1,668 @@
-2026-02-25 12:09:30.042 [main] INFO  com.zaxxer.hikari.HikariDataSource - EVA-HikariPool - Starting...
-2026-02-25 12:09:30.962 [main] INFO  com.zaxxer.hikari.pool.HikariPool - EVA-HikariPool - Added connection org.postgresql.jdbc.PgConnection@2eb79cbe
-2026-02-25 12:09:30.967 [main] INFO  com.zaxxer.hikari.HikariDataSource - EVA-HikariPool - Start completed.
-2026-02-25 12:09:31.242 [main] INFO  Application - Database connected: jdbc:postgresql://127.0.0.1:5433/eva_database
-2026-02-25 12:09:32.051 [main] WARN  com.eva.service.FcmService - FCM не инициализирован: src\main\resources\firebase-service-account.json (Не удается найти указанный файл). Push-уведомления будут логироваться, но не отправляться.
-2026-02-25 12:09:32.361 [main] INFO  Application - Application started in 3.408 seconds.
-2026-02-25 12:09:32.362 [main] INFO  Application - Application started: io.ktor.server.application.Application@75d4a80f
-2026-02-25 12:09:33.036 [main] INFO  Application - Responding at http://127.0.0.1:8081
-2026-02-25 12:11:50.349 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 401 Unauthorized
-2026-02-25 12:11:50.355 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 401 Unauthorized
-2026-02-25 12:12:30.790 [eventLoopGroupProxy-4-1] INFO  Application - POST /api/v1/auth/login → 200 OK
-2026-02-25 12:13:08.967 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
-2026-02-25 12:13:22.587 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/appointments → 200 OK
-2026-02-25 12:13:37.976 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
-2026-02-25 12:13:40.973 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/notifications → 200 OK
-2026-02-25 12:13:46.510 [eventLoopGroupProxy-4-1] INFO  Application - POST /api/v1/notifications/2d11ba35-80e1-4ddb-ba43-bbdd42601f73/read → 200 OK
-2026-02-25 12:14:01.770 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-02-25 12:14:03.190 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/5 → 200 OK
-2026-02-25 12:14:03.256 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/5/reviews → 200 OK
-2026-02-25 12:14:06.710 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/5 → 200 OK
-2026-02-25 12:14:06.750 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/schedules → 200 OK
-2026-02-25 12:14:09.101 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/5 → 200 OK
-2026-02-25 12:14:09.126 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/5/reviews → 200 OK
-2026-02-25 12:14:11.332 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-02-25 12:14:28.305 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/appointments → 200 OK
-2026-02-25 12:14:32.506 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-02-25 12:14:38.516 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/3 → 200 OK
-2026-02-25 12:14:38.560 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/3/reviews → 200 OK
-2026-02-25 12:14:40.860 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-02-25 12:14:43.765 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/3 → 200 OK
-2026-02-25 12:14:43.797 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/3/reviews → 200 OK
-2026-02-25 12:14:59.997 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/3 → 200 OK
-2026-02-25 12:15:00.030 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/schedules → 200 OK
-2026-02-25 12:15:01.497 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/3 → 200 OK
-2026-02-25 12:15:01.529 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/3/reviews → 200 OK
-2026-02-25 12:15:03.021 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-02-25 12:15:38.017 [eventLoopGroupProxy-4-1] INFO  com.eva.service.AiService - [AI STUB] Analyzing: сделали минет, болит голова, температура 38.9...
-2026-02-25 12:15:38.094 [eventLoopGroupProxy-4-1] INFO  Application - POST /api/v1/symptoms/analyze → 200 OK
-2026-02-25 12:15:38.279 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
-2026-02-25 12:16:26.103 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/notifications → 200 OK
-2026-02-25 12:16:27.494 [eventLoopGroupProxy-4-1] INFO  Application - POST /api/v1/notifications/7513d558-8f74-41ab-8709-801a9034ef43/read → 200 OK
-2026-02-25 12:16:32.481 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/appointments → 200 OK
-2026-02-25 12:16:49.369 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
-2026-02-25 12:18:48.602 [eventLoopGroupProxy-4-1] INFO  Application - POST /api/v1/auth/register → 201 Created
-2026-02-25 12:19:32.708 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 401 Unauthorized
-2026-02-25 12:19:32.709 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 401 Unauthorized
-2026-02-25 12:19:59.740 [eventLoopGroupProxy-4-1] INFO  Application - POST /api/v1/auth/login → 400 Bad Request
-2026-02-25 12:20:06.347 [eventLoopGroupProxy-4-1] INFO  Application - POST /api/v1/auth/login → 200 OK
-2026-02-25 12:20:15.150 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
-2026-02-25 12:20:21.062 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-02-25 12:20:21.975 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/1 → 200 OK
-2026-02-25 12:20:22.012 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/1/reviews → 200 OK
-2026-02-25 12:20:24.566 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/1 → 200 OK
-2026-02-25 12:20:24.604 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/schedules → 200 OK
-2026-02-25 12:20:26.161 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/1 → 200 OK
-2026-02-25 12:20:26.192 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/1/reviews → 200 OK
-2026-02-25 12:20:28.106 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-02-25 12:20:54.942 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/appointments → 200 OK
-2026-02-25 12:29:59.702 [KtorShutdownHook] INFO  Application - Application stopping: io.ktor.server.application.Application@75d4a80f
-2026-02-25 12:29:59.707 [KtorShutdownHook] INFO  Application - Application stopped: io.ktor.server.application.Application@75d4a80f
+2026-02-26 00:58:17.486 [main] INFO  com.zaxxer.hikari.HikariDataSource - EVA-HikariPool - Starting...
+2026-02-26 00:58:17.888 [main] INFO  com.zaxxer.hikari.pool.HikariPool - EVA-HikariPool - Added connection org.postgresql.jdbc.PgConnection@2ca6546f
+2026-02-26 00:58:17.890 [main] INFO  com.zaxxer.hikari.HikariDataSource - EVA-HikariPool - Start completed.
+2026-02-26 00:58:18.093 [main] INFO  Application - Database connected: jdbc:postgresql://127.0.0.1:5433/eva_database
+2026-02-26 00:58:18.628 [main] WARN  com.eva.service.FcmService - FCM не инициализирован: src\main\resources\firebase-service-account.json (Не удается найти указанный файл). Push-уведомления будут логироваться, но не отправляться.
+2026-02-26 00:58:18.822 [main] INFO  Application - Application started in 2.274 seconds.
+2026-02-26 00:58:18.823 [main] INFO  Application - Application started: io.ktor.server.application.Application@2370ac7a
+2026-02-26 00:58:19.214 [main] INFO  Application - Responding at http://127.0.0.1:8081
+2026-02-26 01:01:15.254 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:02:06.585 [eventLoopGroupProxy-4-1] INFO  Application - POST /api/v1/auth/login → 200 OK
+2026-02-26 01:02:14.657 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/appointments → 200 OK
+2026-02-26 01:02:22.687 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:02:22.744 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:02:24.320 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 400 Bad Request
+2026-02-26 01:02:37.253 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/notifications → 200 OK
+2026-02-26 01:02:40.719 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/appointments → 200 OK
+2026-02-26 01:02:40.812 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:03:03.123 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 400 Bad Request
+2026-02-26 01:03:18.938 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 400 Bad Request
+2026-02-26 01:05:43.882 [eventLoopGroupProxy-4-1] INFO  Application - PATCH /api/v1/auth/me → 400 Bad Request
+2026-02-26 01:06:02.552 [eventLoopGroupProxy-4-1] INFO  Application - PATCH /api/v1/auth/me → 400 Bad Request
+2026-02-26 01:06:27.344 [eventLoopGroupProxy-4-1] INFO  Application - PATCH /api/v1/auth/me → 400 Bad Request
+2026-02-26 01:06:29.196 [eventLoopGroupProxy-4-1] INFO  Application - PATCH /api/v1/auth/me → 400 Bad Request
+2026-02-26 01:06:35.615 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/appointments → 200 OK
+2026-02-26 01:06:35.658 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:06:41.878 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 400 Bad Request
+2026-02-26 01:07:24.036 [eventLoopGroupProxy-4-1] INFO  Application - PATCH /api/v1/auth/me → 400 Bad Request
+2026-02-26 01:08:18.603 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 400 Bad Request
+2026-02-26 01:08:23.549 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:08:23.587 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:08:24.263 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/appointments → 200 OK
+2026-02-26 01:08:27.115 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 400 Bad Request
+2026-02-26 01:09:00.418 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/appointments → 200 OK
+2026-02-26 01:09:02.141 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:09:02.227 [eventLoopGroupProxy-4-2] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:09:04.148 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 400 Bad Request
+2026-02-26 01:09:13.313 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors → 200 OK
+2026-02-26 01:09:51.595 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/appointments → 200 OK
+2026-02-26 01:09:51.632 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:10:28.384 [eventLoopGroupProxy-4-1] INFO  Application - POST /api/v1/auth/login → 200 OK
+2026-02-26 01:10:38.848 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 400 Bad Request
+2026-02-26 01:10:43.659 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/notifications → 200 OK
+2026-02-26 01:10:45.694 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/appointments → 200 OK
+2026-02-26 01:10:45.734 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:10:50.366 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 400 Bad Request
+2026-02-26 01:14:03.736 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 400 Bad Request
+2026-02-26 01:19:29.116 [eventLoopGroupProxy-4-3] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:19:29.202 [eventLoopGroupProxy-4-4] WARN  Exposed - Transaction attempt #0 failed: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.. Statement(s): SELECT symptoms_requests.request_id, symptoms_requests.user_id, symptoms_requests.symptoms_text, symptoms_requests.has_response, symptoms_requests.created_at FROM symptoms_requests WHERE symptoms_requests.user_id = ? ORDER BY symptoms_requests.created_at DESC
+org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:78)
+	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:209)
+	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:186)
+	at org.jetbrains.exposed.sql.AbstractQuery.iterator(AbstractQuery.kt:61)
+	at com.eva.data.repository.SymptomsRepositoryImpl$findByUser$1.invoke(Repositories.kt:344)
+	at com.eva.data.repository.SymptomsRepositoryImpl$findByUser$1.invoke(Repositories.kt:193)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:275)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.access$inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:1)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$inTopLevelTransaction$1.invoke(ThreadLocalTransactionManager.kt:322)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:330)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction(ThreadLocalTransactionManager.kt:321)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$transaction$1.invoke(ThreadLocalTransactionManager.kt:230)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:330)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:200)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:178)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction$default(ThreadLocalTransactionManager.kt:177)
+	at com.eva.data.repository.SymptomsRepositoryImpl.findByUser(Repositories.kt:193)
+	at com.eva.api.routes.RoutesKt$symptomsRoutes$1$1$2.invokeSuspend(Routes.kt:300)
+	at com.eva.api.routes.RoutesKt$symptomsRoutes$1$1$2.invoke(Routes.kt)
+	at com.eva.api.routes.RoutesKt$symptomsRoutes$1$1$2.invoke(Routes.kt)
+	at io.ktor.server.routing.Route$buildPipeline$1$1.invokeSuspend(Route.kt:116)
+	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
+	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
+	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
+	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
+	at io.ktor.server.routing.Routing.executeResult(Routing.kt:190)
+	at io.ktor.server.routing.Routing.interceptor(Routing.kt:64)
+	at io.ktor.server.routing.Routing$Plugin$install$1.invokeSuspend(Routing.kt:140)
+	at io.ktor.server.routing.Routing$Plugin$install$1.invoke(Routing.kt)
+	at io.ktor.server.routing.Routing$Plugin$install$1.invoke(Routing.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invokeSuspend(BaseApplicationEngine.kt:124)
+	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invoke(BaseApplicationEngine.kt)
+	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invoke(BaseApplicationEngine.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.server.application.hooks.CallFailed$install$1$1.invokeSuspend(CommonHooks.kt:45)
+	at io.ktor.server.application.hooks.CallFailed$install$1$1.invoke(CommonHooks.kt)
+	at io.ktor.server.application.hooks.CallFailed$install$1$1.invoke(CommonHooks.kt)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startUndispatchedOrReturn(Undispatched.kt:78)
+	at kotlinx.coroutines.CoroutineScopeKt.coroutineScope(CoroutineScope.kt:264)
+	at io.ktor.server.application.hooks.CallFailed$install$1.invokeSuspend(CommonHooks.kt:44)
+	at io.ktor.server.application.hooks.CallFailed$install$1.invoke(CommonHooks.kt)
+	at io.ktor.server.application.hooks.CallFailed$install$1.invoke(CommonHooks.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invokeSuspend(DefaultEnginePipeline.kt:123)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invoke(DefaultEnginePipeline.kt)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invoke(DefaultEnginePipeline.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invokeSuspend(NettyApplicationCallHandler.kt:119)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invoke(NettyApplicationCallHandler.kt)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invoke(NettyApplicationCallHandler.kt)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startCoroutineUndispatched(Undispatched.kt:44)
+	at kotlinx.coroutines.CoroutineStart.invoke(CoroutineStart.kt:112)
+	at kotlinx.coroutines.AbstractCoroutine.start(AbstractCoroutine.kt:126)
+	at kotlinx.coroutines.BuildersKt__Builders_commonKt.launch(Builders.common.kt:56)
+	at kotlinx.coroutines.BuildersKt.launch(Unknown Source)
+	at io.ktor.server.netty.NettyApplicationCallHandler.handleRequest(NettyApplicationCallHandler.kt:37)
+	at io.ktor.server.netty.NettyApplicationCallHandler.channelRead(NettyApplicationCallHandler.kt:29)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.access$600(AbstractChannelHandlerContext.java:61)
+	at io.netty.channel.AbstractChannelHandlerContext$7.run(AbstractChannelHandlerContext.java:425)
+	at io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java:173)
+	at io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java:166)
+	at io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:470)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:569)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.ktor.server.netty.EventLoopGroupProxy$Companion.create$lambda$1$lambda$0(NettyApplicationEngine.kt:296)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.
+	at org.postgresql.jdbc.PgConnection.setTransactionIsolation(PgConnection.java:1056)
+	at com.zaxxer.hikari.pool.ProxyConnection.setTransactionIsolation(ProxyConnection.java:421)
+	at com.zaxxer.hikari.pool.HikariProxyConnection.setTransactionIsolation(HikariProxyConnection.java)
+	at org.jetbrains.exposed.sql.statements.jdbc.JdbcConnectionImpl.setTransactionIsolation(JdbcConnectionImpl.kt:63)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager$ThreadLocalTransaction$connectionLazy$1.invoke(ThreadLocalTransactionManager.kt:107)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager$ThreadLocalTransaction$connectionLazy$1.invoke(ThreadLocalTransactionManager.kt:100)
+	at kotlin.UnsafeLazyImpl.getValue(Lazy.kt:81)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager$ThreadLocalTransaction.getConnection(ThreadLocalTransactionManager.kt:114)
+	at org.jetbrains.exposed.sql.Transaction.getConnection(Transaction.kt)
+	at org.jetbrains.exposed.sql.statements.Statement.prepared(Statement.kt:46)
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:74)
+	... 91 common frames omitted
+2026-02-26 01:19:29.219 [eventLoopGroupProxy-4-4] WARN  Exposed - Wait 0 milliseconds before retrying
+2026-02-26 01:19:29.235 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:19:29.832 [eventLoopGroupProxy-4-3] INFO  Application - GET /api/v1/appointments → 200 OK
+2026-02-26 01:19:31.333 [eventLoopGroupProxy-4-3] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:19:31.370 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:19:43.033 [eventLoopGroupProxy-4-3] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:19:43.051 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:19:43.724 [eventLoopGroupProxy-4-3] INFO  Application - GET /api/v1/auth/me → 400 Bad Request
+2026-02-26 01:20:45.925 [eventLoopGroupProxy-4-3] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:20:45.967 [eventLoopGroupProxy-4-3] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:20:46.792 [eventLoopGroupProxy-4-3] INFO  Application - GET /api/v1/appointments → 200 OK
+2026-02-26 01:20:47.738 [eventLoopGroupProxy-4-3] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:20:47.746 [eventLoopGroupProxy-4-4] WARN  Exposed - Transaction attempt #0 failed: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.. Statement(s): SELECT symptoms_requests.request_id, symptoms_requests.user_id, symptoms_requests.symptoms_text, symptoms_requests.has_response, symptoms_requests.created_at FROM symptoms_requests WHERE symptoms_requests.user_id = ? ORDER BY symptoms_requests.created_at DESC
+org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:78)
+	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:209)
+	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:186)
+	at org.jetbrains.exposed.sql.AbstractQuery.iterator(AbstractQuery.kt:61)
+	at com.eva.data.repository.SymptomsRepositoryImpl$findByUser$1.invoke(Repositories.kt:344)
+	at com.eva.data.repository.SymptomsRepositoryImpl$findByUser$1.invoke(Repositories.kt:193)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:275)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.access$inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:1)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$inTopLevelTransaction$1.invoke(ThreadLocalTransactionManager.kt:322)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:330)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction(ThreadLocalTransactionManager.kt:321)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$transaction$1.invoke(ThreadLocalTransactionManager.kt:230)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:330)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:200)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:178)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction$default(ThreadLocalTransactionManager.kt:177)
+	at com.eva.data.repository.SymptomsRepositoryImpl.findByUser(Repositories.kt:193)
+	at com.eva.api.routes.RoutesKt$symptomsRoutes$1$1$2.invokeSuspend(Routes.kt:300)
+	at com.eva.api.routes.RoutesKt$symptomsRoutes$1$1$2.invoke(Routes.kt)
+	at com.eva.api.routes.RoutesKt$symptomsRoutes$1$1$2.invoke(Routes.kt)
+	at io.ktor.server.routing.Route$buildPipeline$1$1.invokeSuspend(Route.kt:116)
+	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
+	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
+	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
+	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
+	at io.ktor.server.routing.Routing.executeResult(Routing.kt:190)
+	at io.ktor.server.routing.Routing.interceptor(Routing.kt:64)
+	at io.ktor.server.routing.Routing$Plugin$install$1.invokeSuspend(Routing.kt:140)
+	at io.ktor.server.routing.Routing$Plugin$install$1.invoke(Routing.kt)
+	at io.ktor.server.routing.Routing$Plugin$install$1.invoke(Routing.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invokeSuspend(BaseApplicationEngine.kt:124)
+	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invoke(BaseApplicationEngine.kt)
+	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invoke(BaseApplicationEngine.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.server.application.hooks.CallFailed$install$1$1.invokeSuspend(CommonHooks.kt:45)
+	at io.ktor.server.application.hooks.CallFailed$install$1$1.invoke(CommonHooks.kt)
+	at io.ktor.server.application.hooks.CallFailed$install$1$1.invoke(CommonHooks.kt)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startUndispatchedOrReturn(Undispatched.kt:78)
+	at kotlinx.coroutines.CoroutineScopeKt.coroutineScope(CoroutineScope.kt:264)
+	at io.ktor.server.application.hooks.CallFailed$install$1.invokeSuspend(CommonHooks.kt:44)
+	at io.ktor.server.application.hooks.CallFailed$install$1.invoke(CommonHooks.kt)
+	at io.ktor.server.application.hooks.CallFailed$install$1.invoke(CommonHooks.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invokeSuspend(DefaultEnginePipeline.kt:123)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invoke(DefaultEnginePipeline.kt)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invoke(DefaultEnginePipeline.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invokeSuspend(NettyApplicationCallHandler.kt:119)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invoke(NettyApplicationCallHandler.kt)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invoke(NettyApplicationCallHandler.kt)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startCoroutineUndispatched(Undispatched.kt:44)
+	at kotlinx.coroutines.CoroutineStart.invoke(CoroutineStart.kt:112)
+	at kotlinx.coroutines.AbstractCoroutine.start(AbstractCoroutine.kt:126)
+	at kotlinx.coroutines.BuildersKt__Builders_commonKt.launch(Builders.common.kt:56)
+	at kotlinx.coroutines.BuildersKt.launch(Unknown Source)
+	at io.ktor.server.netty.NettyApplicationCallHandler.handleRequest(NettyApplicationCallHandler.kt:37)
+	at io.ktor.server.netty.NettyApplicationCallHandler.channelRead(NettyApplicationCallHandler.kt:29)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.access$600(AbstractChannelHandlerContext.java:61)
+	at io.netty.channel.AbstractChannelHandlerContext$7.run(AbstractChannelHandlerContext.java:425)
+	at io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java:173)
+	at io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java:166)
+	at io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:470)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:569)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.ktor.server.netty.EventLoopGroupProxy$Companion.create$lambda$1$lambda$0(NettyApplicationEngine.kt:296)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.
+	at org.postgresql.jdbc.PgConnection.setTransactionIsolation(PgConnection.java:1056)
+	at com.zaxxer.hikari.pool.ProxyConnection.setTransactionIsolation(ProxyConnection.java:421)
+	at com.zaxxer.hikari.pool.HikariProxyConnection.setTransactionIsolation(HikariProxyConnection.java)
+	at org.jetbrains.exposed.sql.statements.jdbc.JdbcConnectionImpl.setTransactionIsolation(JdbcConnectionImpl.kt:63)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager$ThreadLocalTransaction$connectionLazy$1.invoke(ThreadLocalTransactionManager.kt:107)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager$ThreadLocalTransaction$connectionLazy$1.invoke(ThreadLocalTransactionManager.kt:100)
+	at kotlin.UnsafeLazyImpl.getValue(Lazy.kt:81)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager$ThreadLocalTransaction.getConnection(ThreadLocalTransactionManager.kt:114)
+	at org.jetbrains.exposed.sql.Transaction.getConnection(Transaction.kt)
+	at org.jetbrains.exposed.sql.statements.Statement.prepared(Statement.kt:46)
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:74)
+	... 91 common frames omitted
+2026-02-26 01:20:47.749 [eventLoopGroupProxy-4-4] WARN  Exposed - Wait 0 milliseconds before retrying
+2026-02-26 01:20:47.773 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:20:49.717 [eventLoopGroupProxy-4-3] INFO  Application - GET /api/v1/auth/me → 400 Bad Request
+2026-02-26 01:21:42.985 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:21:47.412 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/auth/me → 400 Bad Request
+2026-02-26 01:21:49.601 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:21:49.664 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:21:52.382 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/appointments → 200 OK
+2026-02-26 01:22:55.052 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/clinics → 200 OK
+2026-02-26 01:31:38.426 [main] INFO  Application - Application stopping: io.ktor.server.application.Application@2370ac7a
+2026-02-26 01:31:38.431 [main] INFO  Application - Application stopped: io.ktor.server.application.Application@2370ac7a
+2026-02-26 01:31:58.199 [main] INFO  com.zaxxer.hikari.HikariDataSource - EVA-HikariPool - Starting...
+2026-02-26 01:31:58.643 [main] INFO  com.zaxxer.hikari.pool.HikariPool - EVA-HikariPool - Added connection org.postgresql.jdbc.PgConnection@5972d253
+2026-02-26 01:31:58.645 [main] INFO  com.zaxxer.hikari.HikariDataSource - EVA-HikariPool - Start completed.
+2026-02-26 01:31:58.790 [main] INFO  Application - Database connected: jdbc:postgresql://127.0.0.1:5433/eva_database
+2026-02-26 01:31:59.332 [main] WARN  com.eva.service.FcmService - FCM не инициализирован: src\main\resources\firebase-service-account.json (Не удается найти указанный файл). Push-уведомления будут логироваться, но не отправляться.
+2026-02-26 01:31:59.526 [main] INFO  Application - Application started in 2.116 seconds.
+2026-02-26 01:31:59.527 [main] INFO  Application - Application started: io.ktor.server.application.Application@4f89331f
+2026-02-26 01:31:59.819 [main] INFO  Application - Responding at http://127.0.0.1:8081
+2026-02-26 01:33:32.549 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:33:35.950 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
+2026-02-26 01:33:42.240 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/appointments → 200 OK
+2026-02-26 01:33:42.369 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:33:55.624 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:33:55.660 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:33:57.759 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
+2026-02-26 01:34:03.590 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
+2026-02-26 01:35:24.730 [eventLoopGroupProxy-4-1] INFO  Application - PATCH /api/v1/auth/me → 200 OK
+2026-02-26 01:35:27.038 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
+2026-02-26 01:35:34.694 [eventLoopGroupProxy-4-1] INFO  Application - PATCH /api/v1/auth/me → 200 OK
+2026-02-26 01:35:43.692 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
+2026-02-26 01:35:45.648 [eventLoopGroupProxy-4-1] INFO  Application - PATCH /api/v1/auth/me → 200 OK
+2026-02-26 01:35:46.987 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
+2026-02-26 01:35:59.849 [eventLoopGroupProxy-4-1] INFO  Application - PATCH /api/v1/auth/me → 200 OK
+2026-02-26 01:36:23.602 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:36:23.645 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:36:24.345 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
+2026-02-26 01:36:26.472 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/appointments → 200 OK
+2026-02-26 01:36:27.295 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
+2026-02-26 01:36:45.472 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
+2026-02-26 01:37:00.394 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/appointments → 200 OK
+2026-02-26 01:37:21.859 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/notifications → 200 OK
+2026-02-26 01:37:24.543 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
+2026-02-26 01:38:03.072 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/appointments → 200 OK
+2026-02-26 01:38:03.101 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:38:08.485 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
+2026-02-26 01:38:26.483 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
+2026-02-26 01:39:18.090 [eventLoopGroupProxy-4-1] INFO  Application - PATCH /api/v1/auth/me → 200 OK
+2026-02-26 01:39:19.872 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
+2026-02-26 01:39:26.837 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
+2026-02-26 01:39:35.818 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
+2026-02-26 01:40:05.094 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/appointments → 200 OK
+2026-02-26 01:40:05.783 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:40:05.854 [eventLoopGroupProxy-4-2] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:40:06.736 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
+2026-02-26 01:40:16.721 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
+2026-02-26 01:40:55.115 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/appointments → 200 OK
+2026-02-26 01:40:55.758 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:40:55.812 [eventLoopGroupProxy-4-2] WARN  Exposed - Transaction attempt #0 failed: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.. Statement(s): SELECT symptoms_requests.request_id, symptoms_requests.user_id, symptoms_requests.symptoms_text, symptoms_requests.has_response, symptoms_requests.created_at FROM symptoms_requests WHERE symptoms_requests.user_id = ? ORDER BY symptoms_requests.created_at DESC
+org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:78)
+	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:209)
+	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:186)
+	at org.jetbrains.exposed.sql.AbstractQuery.iterator(AbstractQuery.kt:61)
+	at com.eva.data.repository.SymptomsRepositoryImpl$findByUser$1.invoke(Repositories.kt:344)
+	at com.eva.data.repository.SymptomsRepositoryImpl$findByUser$1.invoke(Repositories.kt:193)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:275)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.access$inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:1)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$inTopLevelTransaction$1.invoke(ThreadLocalTransactionManager.kt:322)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:330)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction(ThreadLocalTransactionManager.kt:321)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$transaction$1.invoke(ThreadLocalTransactionManager.kt:230)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:330)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:200)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:178)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction$default(ThreadLocalTransactionManager.kt:177)
+	at com.eva.data.repository.SymptomsRepositoryImpl.findByUser(Repositories.kt:193)
+	at com.eva.api.routes.RoutesKt$symptomsRoutes$1$1$2.invokeSuspend(Routes.kt:300)
+	at com.eva.api.routes.RoutesKt$symptomsRoutes$1$1$2.invoke(Routes.kt)
+	at com.eva.api.routes.RoutesKt$symptomsRoutes$1$1$2.invoke(Routes.kt)
+	at io.ktor.server.routing.Route$buildPipeline$1$1.invokeSuspend(Route.kt:116)
+	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
+	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
+	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
+	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
+	at io.ktor.server.routing.Routing.executeResult(Routing.kt:190)
+	at io.ktor.server.routing.Routing.interceptor(Routing.kt:64)
+	at io.ktor.server.routing.Routing$Plugin$install$1.invokeSuspend(Routing.kt:140)
+	at io.ktor.server.routing.Routing$Plugin$install$1.invoke(Routing.kt)
+	at io.ktor.server.routing.Routing$Plugin$install$1.invoke(Routing.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invokeSuspend(BaseApplicationEngine.kt:124)
+	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invoke(BaseApplicationEngine.kt)
+	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invoke(BaseApplicationEngine.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.server.application.hooks.CallFailed$install$1$1.invokeSuspend(CommonHooks.kt:45)
+	at io.ktor.server.application.hooks.CallFailed$install$1$1.invoke(CommonHooks.kt)
+	at io.ktor.server.application.hooks.CallFailed$install$1$1.invoke(CommonHooks.kt)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startUndispatchedOrReturn(Undispatched.kt:78)
+	at kotlinx.coroutines.CoroutineScopeKt.coroutineScope(CoroutineScope.kt:264)
+	at io.ktor.server.application.hooks.CallFailed$install$1.invokeSuspend(CommonHooks.kt:44)
+	at io.ktor.server.application.hooks.CallFailed$install$1.invoke(CommonHooks.kt)
+	at io.ktor.server.application.hooks.CallFailed$install$1.invoke(CommonHooks.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invokeSuspend(DefaultEnginePipeline.kt:123)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invoke(DefaultEnginePipeline.kt)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invoke(DefaultEnginePipeline.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invokeSuspend(NettyApplicationCallHandler.kt:119)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invoke(NettyApplicationCallHandler.kt)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invoke(NettyApplicationCallHandler.kt)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startCoroutineUndispatched(Undispatched.kt:44)
+	at kotlinx.coroutines.CoroutineStart.invoke(CoroutineStart.kt:112)
+	at kotlinx.coroutines.AbstractCoroutine.start(AbstractCoroutine.kt:126)
+	at kotlinx.coroutines.BuildersKt__Builders_commonKt.launch(Builders.common.kt:56)
+	at kotlinx.coroutines.BuildersKt.launch(Unknown Source)
+	at io.ktor.server.netty.NettyApplicationCallHandler.handleRequest(NettyApplicationCallHandler.kt:37)
+	at io.ktor.server.netty.NettyApplicationCallHandler.channelRead(NettyApplicationCallHandler.kt:29)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.access$600(AbstractChannelHandlerContext.java:61)
+	at io.netty.channel.AbstractChannelHandlerContext$7.run(AbstractChannelHandlerContext.java:425)
+	at io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java:173)
+	at io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java:166)
+	at io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:470)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:569)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.ktor.server.netty.EventLoopGroupProxy$Companion.create$lambda$1$lambda$0(NettyApplicationEngine.kt:296)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.
+	at org.postgresql.jdbc.PgConnection.setTransactionIsolation(PgConnection.java:1056)
+	at com.zaxxer.hikari.pool.ProxyConnection.setTransactionIsolation(ProxyConnection.java:421)
+	at com.zaxxer.hikari.pool.HikariProxyConnection.setTransactionIsolation(HikariProxyConnection.java)
+	at org.jetbrains.exposed.sql.statements.jdbc.JdbcConnectionImpl.setTransactionIsolation(JdbcConnectionImpl.kt:63)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager$ThreadLocalTransaction$connectionLazy$1.invoke(ThreadLocalTransactionManager.kt:107)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager$ThreadLocalTransaction$connectionLazy$1.invoke(ThreadLocalTransactionManager.kt:100)
+	at kotlin.UnsafeLazyImpl.getValue(Lazy.kt:81)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager$ThreadLocalTransaction.getConnection(ThreadLocalTransactionManager.kt:114)
+	at org.jetbrains.exposed.sql.Transaction.getConnection(Transaction.kt)
+	at org.jetbrains.exposed.sql.statements.Statement.prepared(Statement.kt:46)
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:74)
+	... 91 common frames omitted
+2026-02-26 01:40:55.822 [eventLoopGroupProxy-4-2] WARN  Exposed - Wait 0 milliseconds before retrying
+2026-02-26 01:40:55.838 [eventLoopGroupProxy-4-2] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:40:56.526 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
+2026-02-26 01:40:59.776 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/appointments → 200 OK
+2026-02-26 01:41:00.288 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:41:00.306 [eventLoopGroupProxy-4-2] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:41:00.719 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
+2026-02-26 01:41:16.231 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/appointments → 200 OK
+2026-02-26 01:41:18.219 [eventLoopGroupProxy-4-2] WARN  Exposed - Transaction attempt #0 failed: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.. Statement(s): SELECT symptoms_requests.request_id, symptoms_requests.user_id, symptoms_requests.symptoms_text, symptoms_requests.has_response, symptoms_requests.created_at FROM symptoms_requests WHERE symptoms_requests.user_id = ? ORDER BY symptoms_requests.created_at DESC
+org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:78)
+	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:209)
+	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:186)
+	at org.jetbrains.exposed.sql.AbstractQuery.iterator(AbstractQuery.kt:61)
+	at com.eva.data.repository.SymptomsRepositoryImpl$findByUser$1.invoke(Repositories.kt:344)
+	at com.eva.data.repository.SymptomsRepositoryImpl$findByUser$1.invoke(Repositories.kt:193)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:275)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.access$inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:1)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$inTopLevelTransaction$1.invoke(ThreadLocalTransactionManager.kt:322)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:330)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction(ThreadLocalTransactionManager.kt:321)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$transaction$1.invoke(ThreadLocalTransactionManager.kt:230)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:330)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:200)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:178)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction$default(ThreadLocalTransactionManager.kt:177)
+	at com.eva.data.repository.SymptomsRepositoryImpl.findByUser(Repositories.kt:193)
+	at com.eva.api.routes.RoutesKt$symptomsRoutes$1$1$2.invokeSuspend(Routes.kt:300)
+	at com.eva.api.routes.RoutesKt$symptomsRoutes$1$1$2.invoke(Routes.kt)
+	at com.eva.api.routes.RoutesKt$symptomsRoutes$1$1$2.invoke(Routes.kt)
+	at io.ktor.server.routing.Route$buildPipeline$1$1.invokeSuspend(Route.kt:116)
+	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
+	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
+	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
+	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
+	at io.ktor.server.routing.Routing.executeResult(Routing.kt:190)
+	at io.ktor.server.routing.Routing.interceptor(Routing.kt:64)
+	at io.ktor.server.routing.Routing$Plugin$install$1.invokeSuspend(Routing.kt:140)
+	at io.ktor.server.routing.Routing$Plugin$install$1.invoke(Routing.kt)
+	at io.ktor.server.routing.Routing$Plugin$install$1.invoke(Routing.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invokeSuspend(BaseApplicationEngine.kt:124)
+	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invoke(BaseApplicationEngine.kt)
+	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invoke(BaseApplicationEngine.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.server.application.hooks.CallFailed$install$1$1.invokeSuspend(CommonHooks.kt:45)
+	at io.ktor.server.application.hooks.CallFailed$install$1$1.invoke(CommonHooks.kt)
+	at io.ktor.server.application.hooks.CallFailed$install$1$1.invoke(CommonHooks.kt)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startUndispatchedOrReturn(Undispatched.kt:78)
+	at kotlinx.coroutines.CoroutineScopeKt.coroutineScope(CoroutineScope.kt:264)
+	at io.ktor.server.application.hooks.CallFailed$install$1.invokeSuspend(CommonHooks.kt:44)
+	at io.ktor.server.application.hooks.CallFailed$install$1.invoke(CommonHooks.kt)
+	at io.ktor.server.application.hooks.CallFailed$install$1.invoke(CommonHooks.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invokeSuspend(DefaultEnginePipeline.kt:123)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invoke(DefaultEnginePipeline.kt)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invoke(DefaultEnginePipeline.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invokeSuspend(NettyApplicationCallHandler.kt:119)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invoke(NettyApplicationCallHandler.kt)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invoke(NettyApplicationCallHandler.kt)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startCoroutineUndispatched(Undispatched.kt:44)
+	at kotlinx.coroutines.CoroutineStart.invoke(CoroutineStart.kt:112)
+	at kotlinx.coroutines.AbstractCoroutine.start(AbstractCoroutine.kt:126)
+	at kotlinx.coroutines.BuildersKt__Builders_commonKt.launch(Builders.common.kt:56)
+	at kotlinx.coroutines.BuildersKt.launch(Unknown Source)
+	at io.ktor.server.netty.NettyApplicationCallHandler.handleRequest(NettyApplicationCallHandler.kt:37)
+	at io.ktor.server.netty.NettyApplicationCallHandler.channelRead(NettyApplicationCallHandler.kt:29)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.access$600(AbstractChannelHandlerContext.java:61)
+	at io.netty.channel.AbstractChannelHandlerContext$7.run(AbstractChannelHandlerContext.java:425)
+	at io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java:173)
+	at io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java:166)
+	at io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:470)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:569)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.ktor.server.netty.EventLoopGroupProxy$Companion.create$lambda$1$lambda$0(NettyApplicationEngine.kt:296)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.
+	at org.postgresql.jdbc.PgConnection.setTransactionIsolation(PgConnection.java:1056)
+	at com.zaxxer.hikari.pool.ProxyConnection.setTransactionIsolation(ProxyConnection.java:421)
+	at com.zaxxer.hikari.pool.HikariProxyConnection.setTransactionIsolation(HikariProxyConnection.java)
+	at org.jetbrains.exposed.sql.statements.jdbc.JdbcConnectionImpl.setTransactionIsolation(JdbcConnectionImpl.kt:63)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager$ThreadLocalTransaction$connectionLazy$1.invoke(ThreadLocalTransactionManager.kt:107)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager$ThreadLocalTransaction$connectionLazy$1.invoke(ThreadLocalTransactionManager.kt:100)
+	at kotlin.UnsafeLazyImpl.getValue(Lazy.kt:81)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager$ThreadLocalTransaction.getConnection(ThreadLocalTransactionManager.kt:114)
+	at org.jetbrains.exposed.sql.Transaction.getConnection(Transaction.kt)
+	at org.jetbrains.exposed.sql.statements.Statement.prepared(Statement.kt:46)
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:74)
+	... 91 common frames omitted
+2026-02-26 01:41:18.222 [eventLoopGroupProxy-4-2] WARN  Exposed - Wait 0 milliseconds before retrying
+2026-02-26 01:41:18.225 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:41:18.225 [eventLoopGroupProxy-4-2] WARN  Exposed - Transaction attempt #1 failed: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.. Statement(s): SELECT symptoms_requests.request_id, symptoms_requests.user_id, symptoms_requests.symptoms_text, symptoms_requests.has_response, symptoms_requests.created_at FROM symptoms_requests WHERE symptoms_requests.user_id = ? ORDER BY symptoms_requests.created_at DESC
+org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:78)
+	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:209)
+	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:186)
+	at org.jetbrains.exposed.sql.AbstractQuery.iterator(AbstractQuery.kt:61)
+	at com.eva.data.repository.SymptomsRepositoryImpl$findByUser$1.invoke(Repositories.kt:344)
+	at com.eva.data.repository.SymptomsRepositoryImpl$findByUser$1.invoke(Repositories.kt:193)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:275)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.access$inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:1)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$inTopLevelTransaction$1.invoke(ThreadLocalTransactionManager.kt:322)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:330)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction(ThreadLocalTransactionManager.kt:321)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$transaction$1.invoke(ThreadLocalTransactionManager.kt:230)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:330)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:200)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:178)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction$default(ThreadLocalTransactionManager.kt:177)
+	at com.eva.data.repository.SymptomsRepositoryImpl.findByUser(Repositories.kt:193)
+	at com.eva.api.routes.RoutesKt$symptomsRoutes$1$1$2.invokeSuspend(Routes.kt:300)
+	at com.eva.api.routes.RoutesKt$symptomsRoutes$1$1$2.invoke(Routes.kt)
+	at com.eva.api.routes.RoutesKt$symptomsRoutes$1$1$2.invoke(Routes.kt)
+	at io.ktor.server.routing.Route$buildPipeline$1$1.invokeSuspend(Route.kt:116)
+	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
+	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
+	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
+	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
+	at io.ktor.server.routing.Routing.executeResult(Routing.kt:190)
+	at io.ktor.server.routing.Routing.interceptor(Routing.kt:64)
+	at io.ktor.server.routing.Routing$Plugin$install$1.invokeSuspend(Routing.kt:140)
+	at io.ktor.server.routing.Routing$Plugin$install$1.invoke(Routing.kt)
+	at io.ktor.server.routing.Routing$Plugin$install$1.invoke(Routing.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invokeSuspend(BaseApplicationEngine.kt:124)
+	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invoke(BaseApplicationEngine.kt)
+	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invoke(BaseApplicationEngine.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.server.application.hooks.CallFailed$install$1$1.invokeSuspend(CommonHooks.kt:45)
+	at io.ktor.server.application.hooks.CallFailed$install$1$1.invoke(CommonHooks.kt)
+	at io.ktor.server.application.hooks.CallFailed$install$1$1.invoke(CommonHooks.kt)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startUndispatchedOrReturn(Undispatched.kt:78)
+	at kotlinx.coroutines.CoroutineScopeKt.coroutineScope(CoroutineScope.kt:264)
+	at io.ktor.server.application.hooks.CallFailed$install$1.invokeSuspend(CommonHooks.kt:44)
+	at io.ktor.server.application.hooks.CallFailed$install$1.invoke(CommonHooks.kt)
+	at io.ktor.server.application.hooks.CallFailed$install$1.invoke(CommonHooks.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invokeSuspend(DefaultEnginePipeline.kt:123)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invoke(DefaultEnginePipeline.kt)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invoke(DefaultEnginePipeline.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invokeSuspend(NettyApplicationCallHandler.kt:119)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invoke(NettyApplicationCallHandler.kt)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invoke(NettyApplicationCallHandler.kt)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startCoroutineUndispatched(Undispatched.kt:44)
+	at kotlinx.coroutines.CoroutineStart.invoke(CoroutineStart.kt:112)
+	at kotlinx.coroutines.AbstractCoroutine.start(AbstractCoroutine.kt:126)
+	at kotlinx.coroutines.BuildersKt__Builders_commonKt.launch(Builders.common.kt:56)
+	at kotlinx.coroutines.BuildersKt.launch(Unknown Source)
+	at io.ktor.server.netty.NettyApplicationCallHandler.handleRequest(NettyApplicationCallHandler.kt:37)
+	at io.ktor.server.netty.NettyApplicationCallHandler.channelRead(NettyApplicationCallHandler.kt:29)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.access$600(AbstractChannelHandlerContext.java:61)
+	at io.netty.channel.AbstractChannelHandlerContext$7.run(AbstractChannelHandlerContext.java:425)
+	at io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java:173)
+	at io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java:166)
+	at io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:470)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:569)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.ktor.server.netty.EventLoopGroupProxy$Companion.create$lambda$1$lambda$0(NettyApplicationEngine.kt:296)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.
+	at org.postgresql.jdbc.PgConnection.setTransactionIsolation(PgConnection.java:1056)
+	at com.zaxxer.hikari.pool.ProxyConnection.setTransactionIsolation(ProxyConnection.java:421)
+	at com.zaxxer.hikari.pool.HikariProxyConnection.setTransactionIsolation(HikariProxyConnection.java)
+	at org.jetbrains.exposed.sql.statements.jdbc.JdbcConnectionImpl.setTransactionIsolation(JdbcConnectionImpl.kt:63)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager$ThreadLocalTransaction$connectionLazy$1.invoke(ThreadLocalTransactionManager.kt:107)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager$ThreadLocalTransaction$connectionLazy$1.invoke(ThreadLocalTransactionManager.kt:100)
+	at kotlin.UnsafeLazyImpl.getValue(Lazy.kt:81)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager$ThreadLocalTransaction.getConnection(ThreadLocalTransactionManager.kt:114)
+	at org.jetbrains.exposed.sql.Transaction.getConnection(Transaction.kt)
+	at org.jetbrains.exposed.sql.statements.Statement.prepared(Statement.kt:46)
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:74)
+	... 91 common frames omitted
+2026-02-26 01:41:18.226 [eventLoopGroupProxy-4-2] WARN  Exposed - Wait 0 milliseconds before retrying
+2026-02-26 01:41:18.243 [eventLoopGroupProxy-4-2] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-26 01:41:22.305 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/appointments → 200 OK
+2026-02-26 01:41:53.936 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
+2026-02-26 01:42:09.150 [KtorShutdownHook] INFO  Application - Application stopping: io.ktor.server.application.Application@4f89331f
+2026-02-26 01:42:09.151 [KtorShutdownHook] INFO  Application - Application stopped: io.ktor.server.application.Application@4f89331f

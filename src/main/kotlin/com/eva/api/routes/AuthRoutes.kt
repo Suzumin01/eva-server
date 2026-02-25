@@ -1,6 +1,7 @@
 package com.eva.api.routes
 
 import com.eva.api.dto.*
+import com.eva.api.dto.UpdateProfileRequest
 import com.eva.data.repository.LogRepositoryImpl
 import com.eva.data.repository.UserRepositoryImpl
 import com.eva.plugins.getUserId
@@ -8,7 +9,7 @@ import com.eva.service.AuthService
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
-import io.ktor.server.plugins.*
+import io.ktor.server.plugins.origin
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -78,7 +79,37 @@ fun Route.authRoutes(
                 val user   = userRepository.findById(userId)
                     ?: return@get call.respond(HttpStatusCode.NotFound)
 
-                call.respond(UserProfileResponse(
+                call.respond(UserProfileDto(
+                    userId         = user.userId.toString(),
+                    fullName       = user.fullName,
+                    email          = user.email,
+                    phone          = user.phone,
+                    role           = user.roleName,
+                    isActive       = user.isActive,
+                    consentMedical = user.consentMedical,
+                    consentAi      = user.consentAi
+                ))
+            }
+
+            // PATCH /api/v1/auth/me — обновить профиль
+            patch("/me") {
+                val userId = UUID.fromString(call.getUserId())
+                val req    = call.receive<UpdateProfileRequest>()
+
+                if (req.fullName != null) {
+                    require(req.fullName.trim().length >= 2) { "Имя должно содержать минимум 2 символа" }
+                }
+
+                val updated = userRepository.updateProfile(
+                    userId   = userId,
+                    fullName = req.fullName,
+                    phone    = req.phone
+                )
+
+                if (!updated) return@patch call.respond(HttpStatusCode.NotFound)
+
+                val user = userRepository.findById(userId)!!
+                call.respond(UserProfileDto(
                     userId         = user.userId.toString(),
                     fullName       = user.fullName,
                     email          = user.email,

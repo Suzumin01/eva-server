@@ -12,22 +12,6 @@ import java.io.FileInputStream
 
 /**
  * FcmService — отправка push-уведомлений через Firebase Cloud Messaging.
- *
- * ВАРИАНТЫ РЕАЛИЗАЦИИ FCM (описаны ниже):
- * ─────────────────────────────────────────
- * Вариант 1 (текущий): Firebase Admin SDK — рекомендуется для продакшена.
- *   + Официальный SDK от Google
- *   + Поддерживает отправку одному устройству, по топикам, группам
- *   + Встроенная работа с OAuth2 (не нужно вручную обновлять токены)
- *   - Нужен JSON-файл сервисного аккаунта из Firebase Console
- *
- * Вариант 2: FCM HTTP v1 API напрямую (через Ktor Client) — см. ниже.
- *   + Не нужен Firebase Admin SDK
- *   + Полный контроль над HTTP-запросом
- *   - Нужно самостоятельно реализовать OAuth2 refresh token
- *
- * Вариант 3: Legacy FCM API (устаревший, отключён Google с 20 июня 2024).
- *   - Использовать НЕЛЬЗЯ, оставлен только для справки.
  */
 class FcmService(config: ApplicationConfig) {
 
@@ -58,7 +42,7 @@ class FcmService(config: ApplicationConfig) {
         }
     }
 
-    // ВАРИАНТ 1 (основной): отправка через Admin SDK
+    // отправка через Admin SDK
 
     /**
      * Отправить уведомление на конкретный FCM-токен устройства.
@@ -135,8 +119,7 @@ class FcmService(config: ApplicationConfig) {
     }
 
     /**
-     * Отправить уведомление по топику (например, "appointments_reminder").
-     * Пользователи подписываются на топик в мобильном приложении через FCM SDK.
+     * Отправить уведомление по топику
      */
     suspend fun sendToTopic(
         topic: String,
@@ -162,60 +145,3 @@ class FcmService(config: ApplicationConfig) {
         }
     }
 }
-
-/*
-──────────────────────────────────────────────────────────────────────────────
-ВАРИАНТ 2: FCM HTTP v1 API напрямую через Ktor Client
-(Использовать если не хотите добавлять firebase-admin зависимость)
-──────────────────────────────────────────────────────────────────────────────
-
-import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
-
-class FcmHttpService(
-    private val projectId: String,        // из Firebase Console
-    private val accessToken: String       // OAuth2 Bearer token (нужно обновлять каждые ~60 мин)
-) {
-    private val client = HttpClient(CIO)
-    private val url = "https://fcm.googleapis.com/v1/projects/$projectId/messages:send"
-
-    suspend fun sendToToken(token: String, title: String, body: String): Boolean {
-        val payload = """
-        {
-          "message": {
-            "token": "$token",
-            "notification": {
-              "title": "$title",
-              "body":  "$body"
-            },
-            "android": {
-              "priority": "HIGH"
-            }
-          }
-        }
-        """.trimIndent()
-
-        val response: HttpResponse = client.post(url) {
-            header(HttpHeaders.Authorization, "Bearer $accessToken")
-            header(HttpHeaders.ContentType, ContentType.Application.Json)
-            setBody(payload)
-        }
-        return response.status.isSuccess()
-    }
-}
-
-Получение accessToken для HTTP v1 API:
-  1. Firebase Console → Project Settings → Service accounts → Сгенерировать ключ
-  2. Использовать google-auth-library для обмена ключа на OAuth2 токен
-  3. Токен живёт 3600 секунд — обновлять через ScheduledExecutorService
-
-──────────────────────────────────────────────────────────────────────────────
-ВАРИАНТ 3 (только справочно): Legacy FCM API — ОТКЛЮЧЁН GOOGLE с 20.06.2024
-──────────────────────────────────────────────────────────────────────────────
-URL: https://fcm.googleapis.com/fcm/send
-Header: Authorization: key=<Server Key>
-НЕ ИСПОЛЬЗОВАТЬ — API уже не работает.
-*/
