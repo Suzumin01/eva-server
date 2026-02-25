@@ -1,0 +1,60 @@
+2026-02-25 12:09:30.042 [main] INFO  com.zaxxer.hikari.HikariDataSource - EVA-HikariPool - Starting...
+2026-02-25 12:09:30.962 [main] INFO  com.zaxxer.hikari.pool.HikariPool - EVA-HikariPool - Added connection org.postgresql.jdbc.PgConnection@2eb79cbe
+2026-02-25 12:09:30.967 [main] INFO  com.zaxxer.hikari.HikariDataSource - EVA-HikariPool - Start completed.
+2026-02-25 12:09:31.242 [main] INFO  Application - Database connected: jdbc:postgresql://127.0.0.1:5433/eva_database
+2026-02-25 12:09:32.051 [main] WARN  com.eva.service.FcmService - FCM не инициализирован: src\main\resources\firebase-service-account.json (Не удается найти указанный файл). Push-уведомления будут логироваться, но не отправляться.
+2026-02-25 12:09:32.361 [main] INFO  Application - Application started in 3.408 seconds.
+2026-02-25 12:09:32.362 [main] INFO  Application - Application started: io.ktor.server.application.Application@75d4a80f
+2026-02-25 12:09:33.036 [main] INFO  Application - Responding at http://127.0.0.1:8081
+2026-02-25 12:11:50.349 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 401 Unauthorized
+2026-02-25 12:11:50.355 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 401 Unauthorized
+2026-02-25 12:12:30.790 [eventLoopGroupProxy-4-1] INFO  Application - POST /api/v1/auth/login → 200 OK
+2026-02-25 12:13:08.967 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
+2026-02-25 12:13:22.587 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/appointments → 200 OK
+2026-02-25 12:13:37.976 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
+2026-02-25 12:13:40.973 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/notifications → 200 OK
+2026-02-25 12:13:46.510 [eventLoopGroupProxy-4-1] INFO  Application - POST /api/v1/notifications/2d11ba35-80e1-4ddb-ba43-bbdd42601f73/read → 200 OK
+2026-02-25 12:14:01.770 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors → 200 OK
+2026-02-25 12:14:03.190 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/5 → 200 OK
+2026-02-25 12:14:03.256 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/5/reviews → 200 OK
+2026-02-25 12:14:06.710 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/5 → 200 OK
+2026-02-25 12:14:06.750 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/schedules → 200 OK
+2026-02-25 12:14:09.101 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/5 → 200 OK
+2026-02-25 12:14:09.126 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/5/reviews → 200 OK
+2026-02-25 12:14:11.332 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors → 200 OK
+2026-02-25 12:14:28.305 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/appointments → 200 OK
+2026-02-25 12:14:32.506 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors → 200 OK
+2026-02-25 12:14:38.516 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/3 → 200 OK
+2026-02-25 12:14:38.560 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/3/reviews → 200 OK
+2026-02-25 12:14:40.860 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors → 200 OK
+2026-02-25 12:14:43.765 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/3 → 200 OK
+2026-02-25 12:14:43.797 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/3/reviews → 200 OK
+2026-02-25 12:14:59.997 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/3 → 200 OK
+2026-02-25 12:15:00.030 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/schedules → 200 OK
+2026-02-25 12:15:01.497 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/3 → 200 OK
+2026-02-25 12:15:01.529 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/3/reviews → 200 OK
+2026-02-25 12:15:03.021 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors → 200 OK
+2026-02-25 12:15:38.017 [eventLoopGroupProxy-4-1] INFO  com.eva.service.AiService - [AI STUB] Analyzing: сделали минет, болит голова, температура 38.9...
+2026-02-25 12:15:38.094 [eventLoopGroupProxy-4-1] INFO  Application - POST /api/v1/symptoms/analyze → 200 OK
+2026-02-25 12:15:38.279 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-02-25 12:16:26.103 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/notifications → 200 OK
+2026-02-25 12:16:27.494 [eventLoopGroupProxy-4-1] INFO  Application - POST /api/v1/notifications/7513d558-8f74-41ab-8709-801a9034ef43/read → 200 OK
+2026-02-25 12:16:32.481 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/appointments → 200 OK
+2026-02-25 12:16:49.369 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
+2026-02-25 12:18:48.602 [eventLoopGroupProxy-4-1] INFO  Application - POST /api/v1/auth/register → 201 Created
+2026-02-25 12:19:32.708 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 401 Unauthorized
+2026-02-25 12:19:32.709 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 401 Unauthorized
+2026-02-25 12:19:59.740 [eventLoopGroupProxy-4-1] INFO  Application - POST /api/v1/auth/login → 400 Bad Request
+2026-02-25 12:20:06.347 [eventLoopGroupProxy-4-1] INFO  Application - POST /api/v1/auth/login → 200 OK
+2026-02-25 12:20:15.150 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
+2026-02-25 12:20:21.062 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors → 200 OK
+2026-02-25 12:20:21.975 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/1 → 200 OK
+2026-02-25 12:20:22.012 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/1/reviews → 200 OK
+2026-02-25 12:20:24.566 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/1 → 200 OK
+2026-02-25 12:20:24.604 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/schedules → 200 OK
+2026-02-25 12:20:26.161 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/1 → 200 OK
+2026-02-25 12:20:26.192 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/1/reviews → 200 OK
+2026-02-25 12:20:28.106 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors → 200 OK
+2026-02-25 12:20:54.942 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/appointments → 200 OK
+2026-02-25 12:29:59.702 [KtorShutdownHook] INFO  Application - Application stopping: io.ktor.server.application.Application@75d4a80f
+2026-02-25 12:29:59.707 [KtorShutdownHook] INFO  Application - Application stopped: io.ktor.server.application.Application@75d4a80f
