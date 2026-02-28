@@ -5,6 +5,7 @@ import com.eva.domain.models.Clinic
 import com.eva.domain.models.Doctor
 import com.eva.domain.models.DoctorReview
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.OffsetDateTime
 import java.util.UUID
@@ -19,8 +20,8 @@ class DoctorRepositoryImpl {
         offset: Long = 0
     ): List<Doctor> = transaction {
         val query = (DoctorsTable
-            innerJoin ClinicsTable
-            innerJoin SpecializationsTable)
+                innerJoin ClinicsTable
+                innerJoin SpecializationsTable)
             .select { DoctorsTable.isActive eq true }
 
         specializationId?.let { query.andWhere { DoctorsTable.specializationId eq it } }
@@ -60,6 +61,27 @@ class DoctorRepositoryImpl {
             }
     }
 
+    /** Проверяет, есть ли у пользователя завершённый приём с этим врачом */
+    fun hasCompletedAppointment(doctorId: Int, userId: UUID): Boolean = transaction {
+        AppointmentsTable
+            .select {
+                (AppointmentsTable.doctorId eq doctorId) and
+                        (AppointmentsTable.userId   eq userId)   and
+                        (AppointmentsTable.status   eq "completed")
+            }
+            .count() > 0
+    }
+
+    /** Проверяет, уже ли оставил пользователь отзыв этому врачу */
+    fun hasReviewed(doctorId: Int, userId: UUID): Boolean = transaction {
+        DoctorReviewsTable
+            .select {
+                (DoctorReviewsTable.doctorId eq doctorId) and
+                        (DoctorReviewsTable.userId   eq userId)
+            }
+            .count() > 0
+    }
+
     fun addReview(doctorId: Int, userId: UUID, rating: Short, comment: String?): UUID = transaction {
         val id = UUID.randomUUID()
         DoctorReviewsTable.insert {
@@ -72,6 +94,41 @@ class DoctorRepositoryImpl {
             it[DoctorReviewsTable.updatedAt] = OffsetDateTime.now()
         }
         id
+    }
+
+    fun updateReview(reviewId: UUID, userId: UUID, rating: Short, comment: String?): Boolean = transaction {
+        DoctorReviewsTable.update({
+            (DoctorReviewsTable.reviewId eq reviewId) and
+                    (DoctorReviewsTable.userId   eq userId)
+        }) {
+            it[DoctorReviewsTable.rating]  = rating
+            it[DoctorReviewsTable.comment] = comment
+        } > 0
+    }
+
+    fun deleteReview(reviewId: UUID, userId: UUID): Int? = transaction {
+        val row = DoctorReviewsTable
+            .select { (DoctorReviewsTable.reviewId eq reviewId) and (DoctorReviewsTable.userId eq userId) }
+            .singleOrNull() ?: return@transaction null
+        val doctorId = row[DoctorReviewsTable.doctorId]
+        DoctorReviewsTable.deleteWhere {
+            (DoctorReviewsTable.reviewId eq reviewId) and (DoctorReviewsTable.userId eq userId)
+        }
+        doctorId
+    }
+
+    fun recalculateRating(doctorId: Int) = transaction {
+        val reviews = DoctorReviewsTable
+            .select { DoctorReviewsTable.doctorId eq doctorId }
+            .toList()
+        val count = reviews.size
+        val avg   = if (count == 0) null
+        else reviews.sumOf { it[DoctorReviewsTable.rating].toDouble() } / count
+        DoctorsTable.update({ DoctorsTable.doctorId eq doctorId }) {
+            it[rating]       = avg?.let { v -> java.math.BigDecimal(v).setScale(2, java.math.RoundingMode.HALF_UP) }
+            it[reviewsCount] = count
+            it[updatedAt]    = java.time.OffsetDateTime.now()
+        }
     }
 
     private fun ResultRow.toDoctor() = Doctor(

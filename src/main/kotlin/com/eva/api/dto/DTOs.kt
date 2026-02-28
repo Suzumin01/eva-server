@@ -51,6 +51,18 @@ data class UpdateProfileRequest(
 )
 
 @Serializable
+data class DocumentResponse(
+    val documentId:  String,
+    val fileName:    String,
+    val fileType:    String,
+    val fileSize:    Long,
+    val category:    String,
+    val description: String? = null,
+    val createdAt:   String,
+    val downloadUrl: String
+)
+
+@Serializable
 data class DoctorResponse(
     val doctorId: Int,
     val fullName: String,
@@ -75,10 +87,17 @@ data class DoctorListResponse(
 @Serializable
 data class ReviewResponse(
     val reviewId: String,
+    val userId: String,
     val userFullName: String,
     val rating: Int,
     val comment: String?,
     val createdAt: String
+)
+
+@Serializable
+data class UpdateReviewRequest(
+    val rating: Int,
+    val comment: String? = null
 )
 
 @Serializable

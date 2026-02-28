@@ -48,6 +48,7 @@ fun Route.doctorRoutes(
             call.respond(reviews.map {
                 ReviewResponse(
                     reviewId     = it.reviewId.toString(),
+                    userId       = it.userId.toString(),
                     userFullName = it.userFullName,
                     rating       = it.rating.toInt(),
                     comment      = it.comment,
@@ -65,13 +66,57 @@ fun Route.doctorRoutes(
 
                 require(req.rating in 1..5) { "Оценка должна быть от 1 до 5" }
 
-                val reviewId = doctorRepository.addReview(
-                    doctorId = doctorId,
-                    userId   = userId,
-                    rating   = req.rating.toShort(),
-                    comment  = req.comment
-                )
-                call.respond(HttpStatusCode.Created, mapOf("reviewId" to reviewId.toString()))
+                if (!doctorRepository.hasCompletedAppointment(doctorId, userId)) {
+                    return@post call.respond(HttpStatusCode.Forbidden,
+                        mapOf("message" to "Отзыв можно оставить только после завершённого приёма"))
+                }
+                if (doctorRepository.hasReviewed(doctorId, userId)) {
+                    return@post call.respond(HttpStatusCode.Conflict,
+                        mapOf("message" to "Вы уже оставляли отзыв этому врачу"))
+                }
+
+                doctorRepository.addReview(doctorId, userId, req.rating.toShort(), req.comment)
+                doctorRepository.recalculateRating(doctorId)
+                call.respond(HttpStatusCode.Created, mapOf("message" to "Отзыв добавлен"))
+            }
+
+            patch("/reviews/{reviewId}") {
+                val reviewId = call.parameters["reviewId"]?.let {
+                    runCatching { UUID.fromString(it) }.getOrNull()
+                } ?: return@patch call.respond(HttpStatusCode.BadRequest)
+                val userId = UUID.fromString(call.getUserId())
+                val req    = call.receive<UpdateReviewRequest>()
+
+                require(req.rating in 1..5) { "Оценка должна быть от 1 до 5" }
+
+                val updated = doctorRepository.updateReview(reviewId, userId, req.rating.toShort(), req.comment)
+                if (!updated) return@patch call.respond(HttpStatusCode.NotFound,
+                    mapOf("message" to "Отзыв не найден или недоступен для редактирования"))
+
+                call.respond(mapOf("message" to "Отзыв обновлён"))
+            }
+
+            delete("/reviews/{reviewId}") {
+                val reviewId = call.parameters["reviewId"]?.let {
+                    runCatching { UUID.fromString(it) }.getOrNull()
+                } ?: return@delete call.respond(HttpStatusCode.BadRequest)
+                val userId = UUID.fromString(call.getUserId())
+
+                val doctorId = doctorRepository.deleteReview(reviewId, userId)
+                    ?: return@delete call.respond(HttpStatusCode.NotFound,
+                        mapOf("message" to "Отзыв не найден или недоступен для удаления"))
+
+                doctorRepository.recalculateRating(doctorId)
+                call.respond(mapOf("message" to "Отзыв удалён"))
+            }
+
+            get("/{id}/can-review") {
+                val doctorId = call.parameters["id"]?.toIntOrNull()
+                    ?: return@get call.respond(HttpStatusCode.BadRequest)
+                val userId = UUID.fromString(call.getUserId())
+                val canReview = doctorRepository.hasCompletedAppointment(doctorId, userId) &&
+                        !doctorRepository.hasReviewed(doctorId, userId)
+                call.respond(mapOf("canReview" to canReview))
             }
         }
     }
@@ -245,10 +290,13 @@ fun Route.symptomsRoutes(
                 require(req.symptomsText.length >= 20) { "Описание симптомов слишком короткое (минимум 20 символов)" }
                 require(req.symptomsText.length <= 5000) { "Описание симптомов слишком длинное (максимум 5000 символов)" }
 
+                // Сохранить запрос
                 val requestId = symptomsRepository.create(userId, req.symptomsText)
 
+                // Получить анализ от AI
                 val aiResult = aiService.analyze(req.symptomsText)
 
+                // Сохранить ответ
                 symptomsRepository.saveAiResponse(
                     requestId       = requestId,
                     diagnosis       = aiResult.diagnosis,
@@ -335,6 +383,7 @@ fun Route.notificationRoutes(notificationRepository: NotificationRepositoryImpl)
             post("/fcm-token") {
                 val userId = UUID.fromString(call.getUserId())
                 val req    = call.receive<RegisterFcmTokenRequest>()
+                // Сохранить токен в fcm_tokens (упрощённая реализация — INSERT OR UPDATE)
                 org.jetbrains.exposed.sql.transactions.transaction {
                     com.eva.data.tables.FcmTokensTable.upsert(
                         com.eva.data.tables.FcmTokensTable.token

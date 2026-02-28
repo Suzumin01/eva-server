@@ -7,6 +7,7 @@ import io.ktor.server.application.*
 import io.ktor.server.routing.*
 
 fun Application.configureRouting() {
+    // Инициализация репозиториев и сервисов
     val userRepository         = UserRepositoryImpl()
     val doctorRepository       = DoctorRepositoryImpl()
     val clinicRepository       = ClinicRepositoryImpl()
@@ -25,8 +26,9 @@ fun Application.configureRouting() {
         expirationMs   = jwtConfig.property("expirationMs").getString().toLong()
     )
 
+    val documentRepository     = DocumentRepositoryImpl()
     val fcmService = FcmService(environment.config)
-    val aiService  = AiService(environment.config)
+    val aiService  = AiService(environment.config)      // заглушка
 
     val notificationService = NotificationService(
         notificationRepository = notificationRepository,
@@ -42,6 +44,7 @@ fun Application.configureRouting() {
             appointmentRoutes(appointmentRepository, notificationService, logRepository)
             symptomsRoutes(symptomsRepository, aiService)
             notificationRoutes(notificationRepository)
+            documentRoutes(documentRepository)
             healthRoute()
         }
     }

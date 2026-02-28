@@ -154,13 +154,28 @@ object NotificationsTable : Table("notifications") {
     override val primaryKey = PrimaryKey(notificationId)
 }
 
+object UserDocumentsTable : Table("user_documents") {
+    val documentId  = uuid("document_id").clientDefault { java.util.UUID.randomUUID() }
+    val userId      = uuid("user_id").references(UsersTable.userId)
+    val fileName    = varchar("file_name", 255)
+    val fileType    = varchar("file_type", 50)
+    val filePath    = varchar("file_path", 500)
+    val fileSize    = long("file_size").default(0)
+    val category    = varchar("category", 50).default("other")
+    val description = varchar("description", 500).nullable()
+    val createdAt   = timestampWithTimeZone("created_at")
+    override val primaryKey = PrimaryKey(documentId)
+}
+
 object LogsTable : Table("logs") {
     val logId     = long("log_id").autoIncrement()
     val userId    = uuid("user_id").nullable()
     val action    = varchar("action", 255)
     val ipAddress = varchar("ip_address", 45).nullable()
     val userAgent = text("user_agent").nullable()
-    val meta      = text("meta").default("{}")
+    val meta      = text("meta").default("{}")   // JSONB как text
     val createdAt = timestampWithTimeZone("created_at")
+    // Примечание: таблица logs партиционирована в БД, PK составной (log_id, created_at)
+    // Exposed работает с ней как с обычной таблицей через партиционированный PK
     override val primaryKey = PrimaryKey(logId)
 }

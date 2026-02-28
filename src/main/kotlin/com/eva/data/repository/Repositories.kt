@@ -8,8 +8,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.OffsetDateTime
-import java.util.UUID
-import org.jetbrains.exposed.sql.JoinType
+import java.util.*
 
 class ScheduleRepositoryImpl {
 
@@ -17,8 +16,8 @@ class ScheduleRepositoryImpl {
         val query = (SchedulesTable innerJoin DoctorsTable)
             .select {
                 SchedulesTable.doctorId eq doctorId and
-                (SchedulesTable.isAvailable eq true) and
-                (SchedulesTable.slotDate greaterEq LocalDate.now())
+                        (SchedulesTable.isAvailable eq true) and
+                        (SchedulesTable.slotDate greaterEq LocalDate.now())
             }
         date?.let { query.andWhere { SchedulesTable.slotDate eq it } }
         query.orderBy(SchedulesTable.slotDate to SortOrder.ASC, SchedulesTable.slotTime to SortOrder.ASC)
@@ -60,14 +59,14 @@ class AppointmentRepositoryImpl {
 
         val id = UUID.randomUUID()
         AppointmentsTable.insert {
-            it[appointmentId]                = id
+            it[appointmentId] = id
             it[AppointmentsTable.userId]     = userId
             it[AppointmentsTable.doctorId]   = doctorId
             it[AppointmentsTable.scheduleId] = scheduleId
             it[AppointmentsTable.notes]      = notes
             it[AppointmentsTable.status]     = "scheduled"
-            it[createdAt]                    = OffsetDateTime.now()
-            it[updatedAt]                    = OffsetDateTime.now()
+            it[createdAt] = OffsetDateTime.now()
+            it[updatedAt] = OffsetDateTime.now()
         }
 
         SchedulesTable.update({ SchedulesTable.scheduleId eq scheduleId }) {
@@ -79,18 +78,10 @@ class AppointmentRepositoryImpl {
 
     fun findByUser(userId: UUID, status: String? = null): List<Appointment> = transaction {
         val query = AppointmentsTable
-            .join(SchedulesTable, JoinType.INNER,
-                onColumn = AppointmentsTable.scheduleId,
-                otherColumn = SchedulesTable.scheduleId)
-            .join(DoctorsTable, JoinType.INNER,
-                onColumn = AppointmentsTable.doctorId,
-                otherColumn = DoctorsTable.doctorId)
-            .join(ClinicsTable, JoinType.INNER,
-                onColumn = DoctorsTable.clinicId,
-                otherColumn = ClinicsTable.clinicId)
-            .join(SpecializationsTable, JoinType.INNER,
-                onColumn = DoctorsTable.specializationId,
-                otherColumn = SpecializationsTable.specializationId)
+            .innerJoin(DoctorsTable, { AppointmentsTable.doctorId }, { DoctorsTable.doctorId })
+            .innerJoin(ClinicsTable, { DoctorsTable.clinicId }, { ClinicsTable.clinicId })
+            .innerJoin(SpecializationsTable, { DoctorsTable.specializationId }, { SpecializationsTable.specializationId })
+            .innerJoin(SchedulesTable, { AppointmentsTable.scheduleId }, { SchedulesTable.scheduleId })
             .select { AppointmentsTable.userId eq userId }
 
         status?.let { query.andWhere { AppointmentsTable.status eq it } }
@@ -101,18 +92,10 @@ class AppointmentRepositoryImpl {
 
     fun findById(appointmentId: UUID): Appointment? = transaction {
         AppointmentsTable
-            .join(SchedulesTable, JoinType.INNER,
-                onColumn = AppointmentsTable.scheduleId,
-                otherColumn = SchedulesTable.scheduleId)
-            .join(DoctorsTable, JoinType.INNER,
-                onColumn = AppointmentsTable.doctorId,
-                otherColumn = DoctorsTable.doctorId)
-            .join(ClinicsTable, JoinType.INNER,
-                onColumn = DoctorsTable.clinicId,
-                otherColumn = ClinicsTable.clinicId)
-            .join(SpecializationsTable, JoinType.INNER,
-                onColumn = DoctorsTable.specializationId,
-                otherColumn = SpecializationsTable.specializationId)
+            .innerJoin(DoctorsTable, { AppointmentsTable.doctorId }, { DoctorsTable.doctorId })
+            .innerJoin(ClinicsTable, { DoctorsTable.clinicId }, { ClinicsTable.clinicId })
+            .innerJoin(SpecializationsTable, { DoctorsTable.specializationId }, { SpecializationsTable.specializationId })
+            .innerJoin(SchedulesTable, { AppointmentsTable.scheduleId }, { SchedulesTable.scheduleId })
             .select { AppointmentsTable.appointmentId eq appointmentId }
             .singleOrNull()?.toAppointment()
     }
@@ -120,8 +103,8 @@ class AppointmentRepositoryImpl {
     fun cancel(appointmentId: UUID, userId: UUID): Boolean = transaction {
         val rows = AppointmentsTable.update({
             AppointmentsTable.appointmentId eq appointmentId and
-            (AppointmentsTable.userId eq userId) and
-            (AppointmentsTable.status eq "scheduled")
+                    (AppointmentsTable.userId eq userId) and
+                    (AppointmentsTable.status eq "scheduled")
         }) {
             it[status]    = "cancelled"
             it[updatedAt] = OffsetDateTime.now()
@@ -144,7 +127,7 @@ class AppointmentRepositoryImpl {
     fun complete(appointmentId: UUID): Boolean = transaction {
         AppointmentsTable.update({
             AppointmentsTable.appointmentId eq appointmentId and
-            (AppointmentsTable.status eq "scheduled")
+                    (AppointmentsTable.status eq "scheduled")
         }) {
             it[status]    = "completed"
             it[updatedAt] = OffsetDateTime.now()
@@ -281,7 +264,7 @@ class NotificationRepositoryImpl {
     fun markRead(notificationId: UUID, userId: UUID): Boolean = transaction {
         NotificationsTable.update({
             NotificationsTable.notificationId eq notificationId and
-            (NotificationsTable.userId eq userId)
+                    (NotificationsTable.userId eq userId)
         }) { it[isRead] = true } > 0
     }
 
@@ -321,4 +304,72 @@ class LogRepositoryImpl {
             it[createdAt]          = OffsetDateTime.now()
         }
     }
+}
+
+class DocumentRepositoryImpl {
+
+    data class Document(
+        val documentId:  UUID,
+        val userId:      UUID,
+        val fileName:    String,
+        val fileType:    String,
+        val filePath:    String,
+        val fileSize:    Long,
+        val category:    String,
+        val description: String?,
+        val createdAt:   OffsetDateTime
+    )
+
+    fun findByUser(userId: UUID): List<Document> = transaction {
+        UserDocumentsTable
+            .select { UserDocumentsTable.userId eq userId }
+            .orderBy(UserDocumentsTable.createdAt to SortOrder.DESC)
+            .map { it.toDocument() }
+    }
+
+    fun create(
+        userId: UUID, fileName: String, fileType: String,
+        filePath: String, fileSize: Long, category: String, description: String?
+    ): UUID = transaction {
+        val id = UUID.randomUUID()
+        UserDocumentsTable.insert {
+            it[UserDocumentsTable.documentId]  = id
+            it[UserDocumentsTable.userId]      = userId
+            it[UserDocumentsTable.fileName]    = fileName
+            it[UserDocumentsTable.fileType]    = fileType
+            it[UserDocumentsTable.filePath]    = filePath
+            it[UserDocumentsTable.fileSize]    = fileSize
+            it[UserDocumentsTable.category]    = category
+            it[UserDocumentsTable.description] = description
+            it[UserDocumentsTable.createdAt]   = OffsetDateTime.now()
+        }
+        id
+    }
+
+    fun delete(documentId: UUID, userId: UUID): String? = transaction {
+        val row = UserDocumentsTable
+            .select {
+                (UserDocumentsTable.documentId eq documentId) and
+                        (UserDocumentsTable.userId eq userId)
+            }
+            .singleOrNull() ?: return@transaction null
+        val path = row[UserDocumentsTable.filePath]
+        UserDocumentsTable.deleteWhere {
+            (UserDocumentsTable.documentId eq documentId) and
+                    (UserDocumentsTable.userId eq userId)
+        }
+        path
+    }
+
+    private fun ResultRow.toDocument() = Document(
+        documentId  = this[UserDocumentsTable.documentId],
+        userId      = this[UserDocumentsTable.userId],
+        fileName    = this[UserDocumentsTable.fileName],
+        fileType    = this[UserDocumentsTable.fileType],
+        filePath    = this[UserDocumentsTable.filePath],
+        fileSize    = this[UserDocumentsTable.fileSize],
+        category    = this[UserDocumentsTable.category],
+        description = this[UserDocumentsTable.description],
+        createdAt   = this[UserDocumentsTable.createdAt]
+    )
 }
