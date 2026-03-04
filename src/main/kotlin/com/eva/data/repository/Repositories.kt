@@ -8,7 +8,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.OffsetDateTime
-import java.util.*
+import java.util.UUID
 
 class ScheduleRepositoryImpl {
 
@@ -63,8 +63,9 @@ class AppointmentRepositoryImpl {
             it[AppointmentsTable.userId]     = userId
             it[AppointmentsTable.doctorId]   = doctorId
             it[AppointmentsTable.scheduleId] = scheduleId
-            it[AppointmentsTable.notes]      = notes
-            it[AppointmentsTable.status]     = "scheduled"
+            it[AppointmentsTable.notes]           = notes
+            it[AppointmentsTable.doctorConclusion]  = null
+            it[AppointmentsTable.status]              = "scheduled"
             it[createdAt] = OffsetDateTime.now()
             it[updatedAt] = OffsetDateTime.now()
         }
@@ -124,6 +125,13 @@ class AppointmentRepositoryImpl {
         rows > 0
     }
 
+    fun setConclusion(appointmentId: UUID, conclusion: String): Boolean = transaction {
+        AppointmentsTable.update({ AppointmentsTable.appointmentId eq appointmentId }) {
+            it[doctorConclusion] = conclusion
+            it[updatedAt]        = OffsetDateTime.now()
+        } > 0
+    }
+
     fun complete(appointmentId: UUID): Boolean = transaction {
         AppointmentsTable.update({
             AppointmentsTable.appointmentId eq appointmentId and
@@ -147,6 +155,7 @@ class AppointmentRepositoryImpl {
         slotTime           = this[SchedulesTable.slotTime],
         status             = this[AppointmentsTable.status],
         notes              = this[AppointmentsTable.notes],
+        doctorConclusion   = this[AppointmentsTable.doctorConclusion],
         createdAt          = this[AppointmentsTable.createdAt]
     )
 }

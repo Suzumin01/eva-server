@@ -147,8 +147,12 @@ data class AppointmentResponse(
     val durationMinutes: Int,
     val status: String,
     val notes: String?,
+    val doctorConclusion: String? = null,
     val createdAt: String
 )
+
+@Serializable
+data class SetConclusionRequest(val conclusion: String)
 
 @Serializable
 data class AnalyzeSymptomsRequest(

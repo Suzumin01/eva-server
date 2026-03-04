@@ -241,6 +241,19 @@ fun Route.appointmentRoutes(
                 if (appointment == null || appointment.userId != userId)
                     return@delete call.respond(HttpStatusCode.NotFound)
 
+                val appt = appointmentRepository.findById(appointmentId)
+                if (appt != null) {
+                    val slotDateTime = java.time.OffsetDateTime.of(
+                        appt.slotDate, appt.slotTime,
+                        java.time.ZoneOffset.of("+03:00")
+                    )
+                    val hoursUntil = java.time.Duration.between(
+                        java.time.OffsetDateTime.now(), slotDateTime).toHours()
+                    if (hoursUntil < 24) {
+                        return@delete call.respond(HttpStatusCode.UnprocessableEntity,
+                            mapOf("message" to "Отмена невозможна менее чем за 24 часа до приёма"))
+                    }
+                }
                 val cancelled = appointmentRepository.cancel(appointmentId, userId)
                 if (!cancelled)
                     return@delete call.respond(HttpStatusCode.Conflict,
@@ -273,6 +286,7 @@ private fun com.eva.domain.models.Appointment.toDto() = AppointmentResponse(
     durationMinutes    = 30,
     status             = status,
     notes              = notes,
+    doctorConclusion   = doctorConclusion,
     createdAt          = createdAt.toString()
 )
 

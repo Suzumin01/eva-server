@@ -113,8 +113,9 @@ object AppointmentsTable : Table("appointments") {
     val doctorId      = integer("doctor_id").references(DoctorsTable.doctorId)
     val scheduleId    = long("schedule_id").references(SchedulesTable.scheduleId).uniqueIndex()
     val status        = varchar("status", 20).default("scheduled")
-    val notes         = text("notes").nullable()
-    val createdAt     = timestampWithTimeZone("created_at")
+    val notes              = text("notes").nullable()
+    val doctorConclusion   = text("doctor_conclusion").nullable()
+    val createdAt          = timestampWithTimeZone("created_at")
     val updatedAt     = timestampWithTimeZone("updated_at")
     override val primaryKey = PrimaryKey(appointmentId)
 }

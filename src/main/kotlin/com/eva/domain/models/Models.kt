@@ -70,6 +70,7 @@ data class Appointment(
     val slotTime: LocalTime,
     val status: String,
     val notes: String?,
+    val doctorConclusion: String?,
     val createdAt: OffsetDateTime
 )
 
