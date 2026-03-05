@@ -1,77 +1,93 @@
 package com.eva.service
 
+import com.eva.data.repository.FcmTokenRepositoryImpl
 import com.eva.data.repository.NotificationRepositoryImpl
-import com.eva.data.repository.UserRepositoryImpl
-import com.eva.data.tables.FcmTokensTable
-import org.jetbrains.exposed.sql.and
-import org.jetbrains.exposed.sql.select
-import org.jetbrains.exposed.sql.transactions.transaction
 import java.util.UUID
 
 class NotificationService(
     private val notificationRepository: NotificationRepositoryImpl,
     private val fcmService: FcmService,
-    private val userRepository: UserRepositoryImpl
+    private val fcmTokenRepository: FcmTokenRepositoryImpl
 ) {
-    suspend fun notifyAppointmentCreated(
+
+    fun notifyAppointmentCreated(
         userId: UUID,
         appointmentId: UUID,
         doctorName: String,
         date: String,
         time: String
     ) {
-        val title = "Запись подтверждена ✓"
-        val body  = "Вы записаны к врачу $doctorName на $date в $time"
+        val title   = "Запись подтверждена"
+        val body    = "К $doctorName на $date в $time"
 
-        // Сохранить в БД
-        notificationRepository.create(
+        // Сохраняем в БД — получаем notifId для диплинка
+        val notifId = notificationRepository.create(
             userId        = userId,
             title         = title,
             body          = body,
-            channel       = "push",
+            channel       = "appointments",
             appointmentId = appointmentId
         )
 
-        // Отправить push на все активные устройства пользователя
-        val tokens = getUserTokens(userId)
-        tokens.forEach { token ->
-            fcmService.sendToToken(
-                token = token,
-                title = title,
-                body  = body,
-                data  = mapOf(
-                    "type"           to "appointment_created",
-                    "appointmentId"  to appointmentId.toString()
-                )
-            )
-        }
+        sendPush(userId, title, body, mapOf(
+            "type"          to "appointment_created",
+            "appointmentId" to appointmentId.toString(),
+            "notifId"       to notifId.toString()
+        ))
     }
 
-    suspend fun notifyAppointmentCancelled(
+    fun notifyAppointmentCancelled(
         userId: UUID,
         appointmentId: UUID,
-        doctorName: String
+        doctorName: String,
+        date: String
     ) {
-        val title = "Запись отменена"
-        val body  = "Ваша запись к врачу $doctorName отменена"
+        val title   = "Запись отменена"
+        val body    = "Приём к $doctorName $date отменён"
 
-        notificationRepository.create(
+        val notifId = notificationRepository.create(
             userId        = userId,
             title         = title,
             body          = body,
-            channel       = "push",
+            channel       = "appointments",
             appointmentId = appointmentId
         )
 
-        getUserTokens(userId).forEach { token ->
-            fcmService.sendToToken(token, title, body,
-                mapOf("type" to "appointment_cancelled", "appointmentId" to appointmentId.toString()))
-        }
+        sendPush(userId, title, body, mapOf(
+            "type"          to "appointment_cancelled",
+            "appointmentId" to appointmentId.toString(),
+            "notifId"       to notifId.toString()
+        ))
     }
 
-    private fun getUserTokens(userId: UUID): List<String> = transaction {
-        FcmTokensTable
-            .select { FcmTokensTable.userId eq userId and (FcmTokensTable.isActive eq true) }
-            .map { it[FcmTokensTable.token] }
+    fun notifyAppointmentReminder(
+        userId: UUID,
+        appointmentId: UUID,
+        doctorName: String,
+        time: String
+    ) {
+        val title   = "Напоминание о приёме"
+        val body    = "Сегодня в $time к $doctorName"
+
+        val notifId = notificationRepository.create(
+            userId        = userId,
+            title         = title,
+            body          = body,
+            channel       = "reminders",
+            appointmentId = appointmentId
+        )
+
+        sendPush(userId, title, body, mapOf(
+            "type"          to "appointment_reminder",
+            "appointmentId" to appointmentId.toString(),
+            "notifId"       to notifId.toString()
+        ))
+    }
+
+    private fun sendPush(userId: UUID, title: String, body: String, data: Map<String, String>) {
+        val tokens = fcmTokenRepository.getActiveTokens(userId)
+        if (tokens.isNotEmpty()) {
+            fcmService.sendToTokens(tokens, title, body, data)
+        }
     }
 }

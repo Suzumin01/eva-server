@@ -262,7 +262,8 @@ fun Route.appointmentRoutes(
                 notificationService.notifyAppointmentCancelled(
                     userId        = userId,
                     appointmentId = appointmentId,
-                    doctorName    = appointment.doctorName
+                    doctorName    = appointment.doctorName,
+                    date          = appointment.slotDate.toString()
                 )
 
                 logRepository.log(userId, "APPOINTMENT_CANCEL",

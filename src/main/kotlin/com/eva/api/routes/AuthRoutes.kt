@@ -1,7 +1,7 @@
 package com.eva.api.routes
 
 import com.eva.api.dto.*
-import com.eva.api.dto.UpdateProfileRequest
+import com.eva.data.repository.FcmTokenRepositoryImpl
 import com.eva.data.repository.LogRepositoryImpl
 import com.eva.data.repository.UserRepositoryImpl
 import com.eva.plugins.getUserId
@@ -18,6 +18,7 @@ import java.util.UUID
 fun Route.authRoutes(
     authService: AuthService,
     userRepository: UserRepositoryImpl,
+    fcmTokenRepository: FcmTokenRepositoryImpl,
     logRepository: LogRepositoryImpl
 ) {
     route("/auth") {
@@ -51,10 +52,9 @@ fun Route.authRoutes(
 
         // POST /api/v1/auth/login
         post("/login") {
-            val req = call.receive<LoginRequest>()
+            val req   = call.receive<LoginRequest>()
             val token = authService.login(req.email.trim().lowercase(), req.password)
-
-            val user = userRepository.findByEmail(req.email)!!
+            val user  = userRepository.findByEmail(req.email)!!
 
             logRepository.log(
                 userId    = user.userId,
@@ -72,8 +72,9 @@ fun Route.authRoutes(
             ))
         }
 
-        // GET /api/v1/auth/me  — текущий пользователь
         authenticate("jwt-auth") {
+
+            // GET /api/v1/auth/me
             get("/me") {
                 val userId = UUID.fromString(call.getUserId())
                 val user   = userRepository.findById(userId)
@@ -91,7 +92,7 @@ fun Route.authRoutes(
                 ))
             }
 
-            // PATCH /api/v1/auth/me — обновить профиль
+            // PATCH /api/v1/auth/me
             patch("/me") {
                 val userId = UUID.fromString(call.getUserId())
                 val req    = call.receive<UpdateProfileRequest>()
@@ -119,6 +120,31 @@ fun Route.authRoutes(
                     consentMedical = user.consentMedical,
                     consentAi      = user.consentAi
                 ))
+            }
+
+            // POST /api/v1/auth/fcm-token — сохранить FCM-токен устройства
+            post("/fcm-token") {
+                val userId = UUID.fromString(call.getUserId())
+                val req    = call.receive<RegisterFcmTokenRequest>()
+
+                if (req.token.isBlank())
+                    return@post call.respond(HttpStatusCode.BadRequest,
+                        mapOf("message" to "Токен не может быть пустым"))
+
+                fcmTokenRepository.saveToken(
+                    userId   = userId,
+                    token    = req.token,
+                    deviceId = req.deviceId
+                )
+
+                call.respond(mapOf("message" to "Токен сохранён"))
+            }
+
+            // DELETE /api/v1/auth/fcm-token — разлогин, деактивировать токен
+            delete("/fcm-token") {
+                val req = call.receive<RegisterFcmTokenRequest>()
+                fcmTokenRepository.deactivateToken(req.token)
+                call.respond(mapOf("message" to "Токен деактивирован"))
             }
         }
     }
