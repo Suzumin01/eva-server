@@ -125,12 +125,14 @@ fun Route.doctorRoutes(
         get {
             call.respond(clinicRepository.findAll().map {
                 ClinicResponse(
-                    clinicId   = it.clinicId,
-                    clinicName = it.clinicName,
-                    address    = it.address,
-                    phone      = it.phone,
-                    latitude   = it.latitude?.toString(),
-                    longitude  = it.longitude?.toString()
+                    clinicId     = it.clinicId,
+                    clinicName   = it.clinicName,
+                    address      = it.address,
+                    phone        = it.phone,
+                    latitude     = it.latitude?.toString(),
+                    longitude    = it.longitude?.toString(),
+                    rating       = it.rating?.toString(),
+                    doctorsCount = it.doctorsCount
                 )
             })
         }
@@ -157,10 +159,12 @@ fun Route.scheduleRoutes(scheduleRepository: ScheduleRepositoryImpl) {
         get {
             val doctorId = call.request.queryParameters["doctorId"]?.toIntOrNull()
                 ?: return@get call.respond(HttpStatusCode.BadRequest, "Укажите doctorId")
-            val dateStr  = call.request.queryParameters["date"]
-            val date     = dateStr?.let { java.time.LocalDate.parse(it) }
+            val dateStr   = call.request.queryParameters["date"]
+            val dateToStr = call.request.queryParameters["dateTo"]
+            val date      = dateStr?.let { java.time.LocalDate.parse(it) }
+            val dateTo    = dateToStr?.let { java.time.LocalDate.parse(it) }
 
-            val slots = scheduleRepository.findByDoctor(doctorId, date)
+            val slots = scheduleRepository.findByDoctor(doctorId, date, dateTo)
             call.respond(slots.map {
                 ScheduleResponse(
                     scheduleId      = it.scheduleId,
@@ -324,14 +328,15 @@ fun Route.symptomsRoutes(
                 )
 
                 call.respond(AnalyzeSymptomsResponse(
-                    requestId       = requestId.toString(),
-                    diagnosis       = aiResult.diagnosis,
-                    recommendations = aiResult.recommendations,
-                    urgency         = aiResult.urgency,
-                    confidence      = aiResult.confidence.toPlainString(),
-                    modelVersion    = aiResult.modelVersion,
-                    processingMs    = aiResult.processingMs,
-                    isStub          = aiResult.isStub
+                    requestId          = requestId.toString(),
+                    diagnosis          = aiResult.diagnosis,
+                    recommendations    = aiResult.recommendations,
+                    urgency            = aiResult.urgency,
+                    confidence         = aiResult.confidence.toPlainString(),
+                    modelVersion       = aiResult.modelVersion,
+                    processingMs       = aiResult.processingMs,
+                    isStub             = aiResult.isStub,
+                    specializationName = aiResult.specializationName
                 ))
             }
 

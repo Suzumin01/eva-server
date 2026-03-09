@@ -12,16 +12,28 @@ import java.util.UUID
 
 class ScheduleRepositoryImpl {
 
-    fun findByDoctor(doctorId: Int, date: LocalDate? = null): List<Schedule> = transaction {
+    fun findByDoctor(
+        doctorId: Int,
+        date: LocalDate? = null,
+        dateTo: LocalDate? = null
+    ): List<Schedule> = transaction {
+        val today   = LocalDate.now()
+        val nowTime = java.time.LocalTime.now()
+
         val query = (SchedulesTable innerJoin DoctorsTable)
             .select {
                 SchedulesTable.doctorId eq doctorId and
                         (SchedulesTable.isAvailable eq true) and
-                        (SchedulesTable.slotDate greaterEq LocalDate.now())
+                        (SchedulesTable.slotDate greaterEq today)
             }
-        date?.let { query.andWhere { SchedulesTable.slotDate eq it } }
+        date?.let  { query.andWhere { SchedulesTable.slotDate eq it } }
+        dateTo?.let { query.andWhere { SchedulesTable.slotDate lessEq it } }
+
         query.orderBy(SchedulesTable.slotDate to SortOrder.ASC, SchedulesTable.slotTime to SortOrder.ASC)
             .map { it.toSchedule() }
+            .filter { slot ->
+                slot.slotDate > today || (slot.slotDate == today && slot.slotTime > nowTime)
+            }
     }
 
     fun findById(scheduleId: Long): Schedule? = transaction {

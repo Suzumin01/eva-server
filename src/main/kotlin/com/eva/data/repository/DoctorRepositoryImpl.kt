@@ -150,16 +150,35 @@ class DoctorRepositoryImpl {
 
 class ClinicRepositoryImpl {
     fun findAll(): List<Clinic> = transaction {
+        // Агрегируем рейтинг из отзывов врачей клиники
+        val clinicStats = DoctorsTable
+            .slice(
+                DoctorsTable.clinicId,
+                DoctorsTable.rating.avg(),
+                DoctorsTable.doctorId.count()
+            )
+            .select { DoctorsTable.isActive eq true }
+            .groupBy(DoctorsTable.clinicId)
+            .associate { row ->
+                row[DoctorsTable.clinicId] to Pair(
+                    row[DoctorsTable.rating.avg()],
+                    row[DoctorsTable.doctorId.count()].toInt()
+                )
+            }
+
         ClinicsTable.select { ClinicsTable.isActive eq true }
             .map {
+                val (avgRating, count) = clinicStats[it[ClinicsTable.clinicId]] ?: Pair(null, 0)
                 Clinic(
-                    clinicId   = it[ClinicsTable.clinicId],
-                    clinicName = it[ClinicsTable.clinicName],
-                    address    = it[ClinicsTable.address],
-                    phone      = it[ClinicsTable.phone],
-                    website    = it[ClinicsTable.website],
-                    latitude   = it[ClinicsTable.latitude],
-                    longitude  = it[ClinicsTable.longitude]
+                    clinicId     = it[ClinicsTable.clinicId],
+                    clinicName   = it[ClinicsTable.clinicName],
+                    address      = it[ClinicsTable.address],
+                    phone        = it[ClinicsTable.phone],
+                    website      = it[ClinicsTable.website],
+                    latitude     = it[ClinicsTable.latitude],
+                    longitude    = it[ClinicsTable.longitude],
+                    rating       = avgRating?.setScale(1, java.math.RoundingMode.HALF_UP),
+                    doctorsCount = count
                 )
             }
     }

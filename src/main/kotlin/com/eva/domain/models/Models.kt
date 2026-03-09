@@ -44,7 +44,9 @@ data class Clinic(
     val phone: String?,
     val website: String?,
     val latitude: BigDecimal?,
-    val longitude: BigDecimal?
+    val longitude: BigDecimal?,
+    val rating: BigDecimal? = null,
+    val doctorsCount: Int = 0
 )
 
 data class Schedule(

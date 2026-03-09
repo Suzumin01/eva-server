@@ -113,7 +113,9 @@ data class ClinicResponse(
     val address: String,
     val phone: String?,
     val latitude: String?,
-    val longitude: String?
+    val longitude: String?,
+    val rating: String? = null,
+    val doctorsCount: Int = 0
 )
 
 @Serializable
@@ -169,6 +171,7 @@ data class AnalyzeSymptomsResponse(
     val modelVersion: String,
     val processingMs: Int?,
     val isStub: Boolean,
+    val specializationName: String? = null,
     val disclaimer: String = "⚠️ Данный анализ является предварительным и не заменяет консультацию врача."
 )
 
