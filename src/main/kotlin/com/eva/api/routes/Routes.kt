@@ -11,7 +11,8 @@ import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.jetbrains.exposed.sql.upsert
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 fun Route.doctorRoutes(
@@ -64,7 +65,9 @@ fun Route.doctorRoutes(
                 val userId = UUID.fromString(call.getUserId())
                 val req    = call.receive<AddReviewRequest>()
 
-                require(req.rating in 1..5) { "Оценка должна быть от 1 до 5" }
+                if (req.rating !in 1..5)
+                    return@post call.respond(HttpStatusCode.BadRequest,
+                        mapOf("message" to "Оценка должна быть от 1 до 5"))
 
                 if (!doctorRepository.hasCompletedAppointment(doctorId, userId)) {
                     return@post call.respond(HttpStatusCode.Forbidden,
@@ -87,7 +90,9 @@ fun Route.doctorRoutes(
                 val userId = UUID.fromString(call.getUserId())
                 val req    = call.receive<UpdateReviewRequest>()
 
-                require(req.rating in 1..5) { "Оценка должна быть от 1 до 5" }
+                if (req.rating !in 1..5)
+                    return@patch call.respond(HttpStatusCode.BadRequest,
+                        mapOf("message" to "Оценка должна быть от 1 до 5"))
 
                 val updated = doctorRepository.updateReview(reviewId, userId, req.rating.toShort(), req.comment)
                 if (!updated) return@patch call.respond(HttpStatusCode.NotFound,
@@ -185,6 +190,12 @@ fun Route.appointmentRoutes(
     notificationService: NotificationService,
     logRepository: LogRepositoryImpl
 ) {
+    suspend fun ApplicationCall.parseAppointmentId(): UUID? {
+        val id = parameters["id"]?.let { runCatching { UUID.fromString(it) }.getOrNull() }
+        if (id == null) respond(HttpStatusCode.BadRequest, mapOf("message" to "Некорректный ID записи"))
+        return id
+    }
+
     authenticate("jwt-auth") {
         route("/appointments") {
 
@@ -199,15 +210,19 @@ fun Route.appointmentRoutes(
                     notes      = req.notes
                 )
 
-                val appointment = appointmentRepository.findById(appointmentId)!!
+                val appointment = appointmentRepository.findById(appointmentId)
+                    ?: return@post call.respond(HttpStatusCode.InternalServerError,
+                        mapOf("message" to "Ошибка при создании записи"))
 
-                notificationService.notifyAppointmentCreated(
-                    userId        = userId,
-                    appointmentId = appointmentId,
-                    doctorName    = appointment.doctorName,
-                    date          = appointment.slotDate.toString(),
-                    time          = appointment.slotTime.toString()
-                )
+                call.application.launch(Dispatchers.IO) {
+                    notificationService.notifyAppointmentCreated(
+                        userId        = userId,
+                        appointmentId = appointmentId,
+                        doctorName    = appointment.doctorName,
+                        date          = appointment.slotDate.toString(),
+                        time          = appointment.slotTime.toString()
+                    )
+                }
 
                 logRepository.log(
                     userId = userId,
@@ -227,7 +242,7 @@ fun Route.appointmentRoutes(
 
             get("/{id}") {
                 val userId        = UUID.fromString(call.getUserId())
-                val appointmentId = UUID.fromString(call.parameters["id"]!!)
+                val appointmentId = call.parseAppointmentId() ?: return@get
                 val appointment   = appointmentRepository.findById(appointmentId)
                     ?: return@get call.respond(HttpStatusCode.NotFound)
 
@@ -239,36 +254,35 @@ fun Route.appointmentRoutes(
 
             delete("/{id}") {
                 val userId        = UUID.fromString(call.getUserId())
-                val appointmentId = UUID.fromString(call.parameters["id"]!!)
+                val appointmentId = call.parseAppointmentId() ?: return@delete
                 val appointment   = appointmentRepository.findById(appointmentId)
 
                 if (appointment == null || appointment.userId != userId)
                     return@delete call.respond(HttpStatusCode.NotFound)
 
-                val appt = appointmentRepository.findById(appointmentId)
-                if (appt != null) {
-                    val slotDateTime = java.time.OffsetDateTime.of(
-                        appt.slotDate, appt.slotTime,
-                        java.time.ZoneOffset.of("+03:00")
-                    )
-                    val hoursUntil = java.time.Duration.between(
-                        java.time.OffsetDateTime.now(), slotDateTime).toHours()
-                    if (hoursUntil < 24) {
-                        return@delete call.respond(HttpStatusCode.UnprocessableEntity,
-                            mapOf("message" to "Отмена невозможна менее чем за 24 часа до приёма"))
-                    }
+                val slotDateTime = java.time.OffsetDateTime.of(
+                    appointment.slotDate, appointment.slotTime,
+                    java.time.ZoneOffset.of("+03:00")
+                )
+                val hoursUntil = java.time.Duration.between(
+                    java.time.OffsetDateTime.now(), slotDateTime).toHours()
+                if (hoursUntil < 24) {
+                    return@delete call.respond(HttpStatusCode.UnprocessableEntity,
+                        mapOf("message" to "Отмена невозможна менее чем за 24 часа до приёма"))
                 }
                 val cancelled = appointmentRepository.cancel(appointmentId, userId)
                 if (!cancelled)
                     return@delete call.respond(HttpStatusCode.Conflict,
                         MessageResponse("Запись уже отменена или завершена"))
 
-                notificationService.notifyAppointmentCancelled(
-                    userId        = userId,
-                    appointmentId = appointmentId,
-                    doctorName    = appointment.doctorName,
-                    date          = appointment.slotDate.toString()
-                )
+                call.application.launch(Dispatchers.IO) {
+                    notificationService.notifyAppointmentCancelled(
+                        userId        = userId,
+                        appointmentId = appointmentId,
+                        doctorName    = appointment.doctorName,
+                        date          = appointment.slotDate.toString()
+                    )
+                }
 
                 logRepository.log(userId, "APPOINTMENT_CANCEL",
                     meta = """{"appointmentId":"$appointmentId"}""")
@@ -306,14 +320,18 @@ fun Route.symptomsRoutes(
                 val userId = UUID.fromString(call.getUserId())
                 val req    = call.receive<AnalyzeSymptomsRequest>()
 
-                require(req.symptomsText.length >= 20) { "Описание симптомов слишком короткое (минимум 20 символов)" }
-                require(req.symptomsText.length <= 5000) { "Описание симптомов слишком длинное (максимум 5000 символов)" }
+                if (req.symptomsText.length < 20)
+                    return@post call.respond(HttpStatusCode.BadRequest,
+                        mapOf("message" to "Описание симптомов слишком короткое (минимум 20 символов)"))
+                if (req.symptomsText.length > 5000)
+                    return@post call.respond(HttpStatusCode.BadRequest,
+                        mapOf("message" to "Описание симптомов слишком длинное (максимум 5000 символов)"))
 
-                // Сохранить запрос
-                val requestId = symptomsRepository.create(userId, req.symptomsText)
-
-                // Получить анализ от AI
+                // Сначала получаем ответ от AI
                 val aiResult = aiService.analyze(req.symptomsText)
+
+                // Сохраняем запрос и ответ только после успешного анализа
+                val requestId = symptomsRepository.create(userId, req.symptomsText)
 
                 // Сохранить ответ
                 symptomsRepository.saveAiResponse(
@@ -366,7 +384,10 @@ fun Route.symptomsRoutes(
     }
 }
 
-fun Route.notificationRoutes(notificationRepository: NotificationRepositoryImpl) {
+fun Route.notificationRoutes(
+    notificationRepository: NotificationRepositoryImpl,
+    fcmTokenRepository: com.eva.data.repository.FcmTokenRepositoryImpl
+) {
     authenticate("jwt-auth") {
         route("/notifications") {
 
@@ -389,7 +410,8 @@ fun Route.notificationRoutes(notificationRepository: NotificationRepositoryImpl)
 
             post("/{id}/read") {
                 val userId         = UUID.fromString(call.getUserId())
-                val notificationId = UUID.fromString(call.parameters["id"]!!)
+                val notificationId = call.parameters["id"]?.let { runCatching { UUID.fromString(it) }.getOrNull() }
+                    ?: return@post call.respond(HttpStatusCode.BadRequest, mapOf("message" to "Некорректный ID уведомления"))
                 notificationRepository.markRead(notificationId, userId)
                 call.respond(MessageResponse("Уведомление отмечено прочитанным"))
             }
@@ -403,19 +425,11 @@ fun Route.notificationRoutes(notificationRepository: NotificationRepositoryImpl)
             post("/fcm-token") {
                 val userId = UUID.fromString(call.getUserId())
                 val req    = call.receive<RegisterFcmTokenRequest>()
-                // Сохранить токен в fcm_tokens (упрощённая реализация — INSERT OR UPDATE)
-                org.jetbrains.exposed.sql.transactions.transaction {
-                    com.eva.data.tables.FcmTokensTable.upsert(
-                        com.eva.data.tables.FcmTokensTable.token
-                    ) {
-                        it[com.eva.data.tables.FcmTokensTable.userId]   = userId
-                        it[com.eva.data.tables.FcmTokensTable.token]    = req.token
-                        it[com.eva.data.tables.FcmTokensTable.deviceId] = req.deviceId
-                        it[com.eva.data.tables.FcmTokensTable.platform] = req.platform
-                        it[com.eva.data.tables.FcmTokensTable.isActive] = true
-                        it[com.eva.data.tables.FcmTokensTable.updatedAt] = java.time.OffsetDateTime.now()
-                    }
-                }
+                fcmTokenRepository.saveToken(
+                    userId   = userId,
+                    token    = req.token,
+                    deviceId = req.deviceId
+                )
                 call.respond(MessageResponse("FCM токен зарегистрирован"))
             }
         }

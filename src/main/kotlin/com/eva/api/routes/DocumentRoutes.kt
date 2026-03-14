@@ -55,6 +55,7 @@ fun Route.documentRoutes(documentRepository: DocumentRepositoryImpl) {
                             val dir  = File("$UPLOAD_DIR/$userId").also { it.mkdirs() }
                             val file = File(dir, "${UUID.randomUUID()}_$fileName")
                             var written = 0L
+                            var overLimit = false
                             part.streamProvider().use { input ->
                                 file.outputStream().use { output ->
                                     val buf = ByteArray(8192)
@@ -62,25 +63,30 @@ fun Route.documentRoutes(documentRepository: DocumentRepositoryImpl) {
                                     while (input.read(buf).also { read = it } != -1) {
                                         written += read
                                         if (written > MAX_FILE_SIZE) {
-                                            file.delete()
-                                            return@use
+                                            overLimit = true
+                                            break
                                         }
                                         output.write(buf, 0, read)
                                     }
                                 }
                             }
-                            if (written > MAX_FILE_SIZE) {
-                                return@forEachPart call.respond(
-                                    HttpStatusCode.PayloadTooLarge,
-                                    mapOf("message" to "Файл слишком большой (макс. 20 МБ)")
-                                ).let { }
+                            if (overLimit) {
+                                file.delete()
+                                // savedPath остаётся "" — после цикла вернём 413
+                                fileSize = written
+                            } else {
+                                savedPath = file.absolutePath
+                                fileSize  = written
                             }
-                            savedPath = file.absolutePath
-                            fileSize  = written
                         }
                         else -> {}
                     }
                     part.dispose()
+                }
+
+                if (fileSize > MAX_FILE_SIZE) {
+                    return@post call.respond(HttpStatusCode.PayloadTooLarge,
+                        mapOf("message" to "Файл слишком большой (макс. 20 МБ)"))
                 }
 
                 if (savedPath.isEmpty()) {

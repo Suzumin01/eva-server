@@ -27,7 +27,7 @@ fun Application.configureRouting() {
         expirationMs   = jwtConfig.property("expirationMs").getString().toLong()
     )
 
-    val fcmService = FcmService()
+    val fcmService = FcmService(fcmTokenRepository)
     val aiService  = AiService(environment.config)
 
     val notificationService = NotificationService(
@@ -43,7 +43,7 @@ fun Application.configureRouting() {
             scheduleRoutes(scheduleRepository)
             appointmentRoutes(appointmentRepository, notificationService, logRepository)
             symptomsRoutes(symptomsRepository, aiService)
-            notificationRoutes(notificationRepository)
+            notificationRoutes(notificationRepository, fcmTokenRepository)
             documentRoutes(documentRepository)
             healthRoute()
         }

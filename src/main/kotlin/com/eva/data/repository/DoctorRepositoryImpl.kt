@@ -101,8 +101,9 @@ class DoctorRepositoryImpl {
             (DoctorReviewsTable.reviewId eq reviewId) and
                     (DoctorReviewsTable.userId   eq userId)
         }) {
-            it[DoctorReviewsTable.rating]  = rating
-            it[DoctorReviewsTable.comment] = comment
+            it[DoctorReviewsTable.rating]     = rating
+            it[DoctorReviewsTable.comment]    = comment
+            it[DoctorReviewsTable.updatedAt]  = OffsetDateTime.now()
         } > 0
     }
 
@@ -118,14 +119,16 @@ class DoctorRepositoryImpl {
     }
 
     fun recalculateRating(doctorId: Int) = transaction {
-        val reviews = DoctorReviewsTable
+        val row = DoctorReviewsTable
+            .slice(DoctorReviewsTable.rating.avg(), DoctorReviewsTable.reviewId.count())
             .select { DoctorReviewsTable.doctorId eq doctorId }
-            .toList()
-        val count = reviews.size
-        val avg   = if (count == 0) null
-        else reviews.sumOf { it[DoctorReviewsTable.rating].toDouble() } / count
+            .single()
+
+        val count = row[DoctorReviewsTable.reviewId.count()].toInt()
+        val avg   = row[DoctorReviewsTable.rating.avg()]
+
         DoctorsTable.update({ DoctorsTable.doctorId eq doctorId }) {
-            it[rating]       = avg?.let { v -> java.math.BigDecimal(v).setScale(2, java.math.RoundingMode.HALF_UP) }
+            it[rating]       = avg?.setScale(2, java.math.RoundingMode.HALF_UP)
             it[reviewsCount] = count
             it[updatedAt]    = java.time.OffsetDateTime.now()
         }

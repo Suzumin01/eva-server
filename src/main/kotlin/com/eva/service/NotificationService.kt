@@ -10,7 +10,7 @@ class NotificationService(
     private val fcmTokenRepository: FcmTokenRepositoryImpl
 ) {
 
-    fun notifyAppointmentCreated(
+    suspend fun notifyAppointmentCreated(
         userId: UUID,
         appointmentId: UUID,
         doctorName: String,
@@ -36,7 +36,7 @@ class NotificationService(
         ))
     }
 
-    fun notifyAppointmentCancelled(
+    suspend fun notifyAppointmentCancelled(
         userId: UUID,
         appointmentId: UUID,
         doctorName: String,
@@ -60,7 +60,7 @@ class NotificationService(
         ))
     }
 
-    fun notifyAppointmentReminder(
+    suspend fun notifyAppointmentReminder(
         userId: UUID,
         appointmentId: UUID,
         doctorName: String,
@@ -84,7 +84,7 @@ class NotificationService(
         ))
     }
 
-    private fun sendPush(userId: UUID, title: String, body: String, data: Map<String, String>) {
+    private suspend fun sendPush(userId: UUID, title: String, body: String, data: Map<String, String>) {
         val tokens = fcmTokenRepository.getActiveTokens(userId)
         if (tokens.isNotEmpty()) {
             fcmService.sendToTokens(tokens, title, body, data)

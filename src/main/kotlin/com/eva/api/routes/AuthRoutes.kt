@@ -52,12 +52,11 @@ fun Route.authRoutes(
 
         // POST /api/v1/auth/login
         post("/login") {
-            val req   = call.receive<LoginRequest>()
-            val token = authService.login(req.email.trim().lowercase(), req.password)
-            val user  = userRepository.findByEmail(req.email)!!
+            val req    = call.receive<LoginRequest>()
+            val result = authService.login(req.email.trim().lowercase(), req.password)
 
             logRepository.log(
-                userId    = user.userId,
+                userId    = result.userId,
                 action    = "USER_LOGIN",
                 ipAddress = call.request.origin.remoteHost,
                 userAgent = call.request.headers["User-Agent"],
@@ -65,10 +64,10 @@ fun Route.authRoutes(
             )
 
             call.respond(AuthResponse(
-                token    = token,
-                userId   = user.userId.toString(),
-                fullName = user.fullName,
-                role     = user.roleName
+                token    = result.token,
+                userId   = result.userId.toString(),
+                fullName = result.fullName,
+                role     = result.roleName
             ))
         }
 
@@ -109,7 +108,8 @@ fun Route.authRoutes(
 
                 if (!updated) return@patch call.respond(HttpStatusCode.NotFound)
 
-                val user = userRepository.findById(userId)!!
+                val user = userRepository.findById(userId)
+                    ?: return@patch call.respond(HttpStatusCode.InternalServerError)
                 call.respond(UserProfileDto(
                     userId         = user.userId.toString(),
                     fullName       = user.fullName,

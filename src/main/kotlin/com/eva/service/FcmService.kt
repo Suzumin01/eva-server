@@ -6,9 +6,15 @@ import com.google.firebase.FirebaseOptions
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.Message
 import com.google.firebase.messaging.Notification
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import org.slf4j.LoggerFactory
 
-class FcmService {
+class FcmService(
+    private val fcmTokenRepository: com.eva.data.repository.FcmTokenRepositoryImpl
+) {
 
     private val logger = LoggerFactory.getLogger(FcmService::class.java)
     private val enabled: Boolean
@@ -64,18 +70,29 @@ class FcmService {
             val response = FirebaseMessaging.getInstance().send(message)
             logger.info("FCM отправлено: $response")
             true
+        } catch (e: com.google.firebase.messaging.FirebaseMessagingException) {
+            if (e.messagingErrorCode == com.google.firebase.messaging.MessagingErrorCode.UNREGISTERED ||
+                e.messagingErrorCode == com.google.firebase.messaging.MessagingErrorCode.INVALID_ARGUMENT) {
+                logger.warn("Деактивирую устаревший FCM-токен: ${fcmToken.take(20)}...")
+                fcmTokenRepository.deactivateToken(fcmToken)
+            } else {
+                logger.error("Ошибка отправки FCM на токен ${fcmToken.take(20)}...: ${e.message}")
+            }
+            false
         } catch (e: Exception) {
-            logger.error("Ошибка отправки FCM на токен $fcmToken: ${e.message}")
+            logger.error("Ошибка отправки FCM: ${e.message}")
             false
         }
     }
 
-    fun sendToTokens(
+    suspend fun sendToTokens(
         fcmTokens: List<String>,
         title: String,
         body: String,
         data: Map<String, String> = emptyMap()
-    ) {
-        fcmTokens.forEach { token -> sendToToken(token, title, body, data) }
+    ) = coroutineScope {
+        fcmTokens.map { token ->
+            async(Dispatchers.IO) { sendToToken(token, title, body, data) }
+        }.awaitAll()
     }
 }

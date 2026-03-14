@@ -1,65 +1,24 @@
-2026-03-09 05:34:09.289 [main] INFO  com.zaxxer.hikari.HikariDataSource - EVA-HikariPool - Starting...
-2026-03-09 05:34:09.672 [main] INFO  com.zaxxer.hikari.pool.HikariPool - EVA-HikariPool - Added connection org.postgresql.jdbc.PgConnection@21719a0
-2026-03-09 05:34:09.674 [main] INFO  com.zaxxer.hikari.HikariDataSource - EVA-HikariPool - Start completed.
-2026-03-09 05:34:09.794 [main] INFO  Application - Database connected: jdbc:postgresql://127.0.0.1:5433/eva_database
-2026-03-09 05:34:10.347 [main] INFO  com.eva.service.FcmService - Firebase Admin SDK инициализирован
-2026-03-09 05:34:10.537 [main] INFO  Application - Application started in 1.945 seconds.
-2026-03-09 05:34:10.539 [main] INFO  Application - Application started: io.ktor.server.application.Application@661d88a
-2026-03-09 05:34:10.851 [main] INFO  Application - Responding at http://127.0.0.1:8081
-2026-03-09 05:36:26.810 [eventLoopGroupProxy-4-2] INFO  Application - GET /api/v1/symptoms/history → 401 Unauthorized
-2026-03-09 05:36:26.810 [eventLoopGroupProxy-4-1] INFO  Application - POST /api/v1/auth/fcm-token → 401 Unauthorized
-2026-03-09 05:36:26.816 [eventLoopGroupProxy-4-1] INFO  Application - POST /api/v1/auth/fcm-token → 401 Unauthorized
-2026-03-09 05:36:26.816 [eventLoopGroupProxy-4-2] INFO  Application - GET /api/v1/symptoms/history → 401 Unauthorized
-2026-03-09 05:36:27.190 [eventLoopGroupProxy-4-3] INFO  Application - GET /api/v1/doctors/1 → 200 OK
-2026-03-09 05:36:28.341 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/2 → 200 OK
-2026-03-09 05:36:28.529 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/5 → 200 OK
-2026-03-09 05:36:32.158 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 401 Unauthorized
-2026-03-09 05:36:32.158 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 401 Unauthorized
-2026-03-09 05:36:57.227 [eventLoopGroupProxy-4-1] INFO  Application - POST /api/v1/auth/login → 200 OK
-2026-03-09 05:37:00.783 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/1 → 200 OK
-2026-03-09 05:37:00.949 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/2 → 200 OK
-2026-03-09 05:37:00.981 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/5 → 200 OK
-2026-03-09 05:37:02.615 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
-2026-03-09 05:37:03.694 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/1 → 200 OK
-2026-03-09 05:37:03.797 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/2 → 200 OK
-2026-03-09 05:37:03.829 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/5 → 200 OK
-2026-03-09 05:37:08.699 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:37:09.907 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/1 → 200 OK
-2026-03-09 05:37:09.976 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/1/reviews → 200 OK
-2026-03-09 05:37:10.034 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/1/can-review → 200 OK
-2026-03-09 05:37:13.064 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:37:13.091 [eventLoopGroupProxy-4-2] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:37:16.699 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/appointments → 200 OK
-2026-03-09 05:37:22.388 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/appointments → 200 OK
-2026-03-09 05:37:25.235 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/1 → 200 OK
-2026-03-09 05:37:25.294 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/2 → 200 OK
-2026-03-09 05:37:25.317 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/5 → 200 OK
-2026-03-09 05:37:31.195 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/clinics → 200 OK
-2026-03-09 05:38:14.331 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:38:15.001 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors/1 → 200 OK
-2026-03-09 05:38:15.025 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors/1/reviews → 200 OK
-2026-03-09 05:38:15.056 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors/1/can-review → 200 OK
-2026-03-09 05:38:19.774 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:38:19.793 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:38:22.314 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/auth/me → 200 OK
-2026-03-09 05:38:28.841 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors/1 → 200 OK
-2026-03-09 05:38:28.893 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors/2 → 200 OK
-2026-03-09 05:38:28.922 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors/5 → 200 OK
-2026-03-09 05:38:30.170 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/clinics → 200 OK
-2026-03-09 05:40:31.469 [eventLoopGroupProxy-4-4] INFO  com.eva.service.AiService - [AI STUB] Analyzing: болит голова, 37.7 боль в висках и все такое...
-2026-03-09 05:40:31.531 [eventLoopGroupProxy-4-4] INFO  Application - POST /api/v1/symptoms/analyze → 200 OK
-2026-03-09 05:40:31.614 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/symptoms/history → 200 OK
-2026-03-09 05:40:49.812 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:40:59.508 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:41:00.820 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:41:00.845 [eventLoopGroupProxy-4-5] WARN  Exposed - Transaction attempt #0 failed: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.. Statement(s): SELECT doctors.doctor_id, doctors.full_name, doctors.clinic_id, doctors.specialization_id, doctors.bio, doctors.photo_url, doctors.experience_years, doctors.rating, doctors.reviews_count, doctors.is_active, doctors.created_at, doctors.updated_at, clinics.clinic_id, clinics.clinic_name, clinics.address, clinics.phone, clinics.website, clinics.latitude, clinics.longitude, clinics.is_active, clinics.created_at, clinics.updated_at, specializations.specialization_id, specializations."name", specializations.description, specializations.icon_url, specializations.created_at, specializations.updated_at FROM doctors INNER JOIN clinics ON clinics.clinic_id = doctors.clinic_id INNER JOIN specializations ON specializations.specialization_id = doctors.specialization_id WHERE (doctors.is_active = ?) AND (doctors.specialization_id = ?) ORDER BY doctors.rating DESC NULLS LAST LIMIT 20
+2026-03-14 14:15:44.337 [main] INFO  com.zaxxer.hikari.HikariDataSource - EVA-HikariPool - Starting...
+2026-03-14 14:15:44.940 [main] INFO  com.zaxxer.hikari.pool.HikariPool - EVA-HikariPool - Added connection org.postgresql.jdbc.PgConnection@aa10649
+2026-03-14 14:15:44.948 [main] INFO  com.zaxxer.hikari.HikariDataSource - EVA-HikariPool - Start completed.
+2026-03-14 14:15:45.403 [main] INFO  Application - Database connected: jdbc:postgresql://127.0.0.1:5433/eva_database
+2026-03-14 14:15:47.440 [main] INFO  com.eva.service.FcmService - Firebase Admin SDK инициализирован
+2026-03-14 14:15:48.068 [main] INFO  Application - Application started in 4.738 seconds.
+2026-03-14 14:15:48.069 [main] INFO  Application - Application started: io.ktor.server.application.Application@43fda8d9
+2026-03-14 14:15:48.849 [main] INFO  Application - Responding at http://127.0.0.1:8081
+2026-03-14 14:16:32.932 [eventLoopGroupProxy-4-1] INFO  Application - POST /api/v1/auth/fcm-token → 401 Unauthorized
+2026-03-14 14:16:32.932 [eventLoopGroupProxy-4-1] INFO  Application - POST /api/v1/auth/fcm-token → 401 Unauthorized
+2026-03-14 14:16:33.120 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 401 Unauthorized
+2026-03-14 14:16:33.121 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 401 Unauthorized
+2026-03-14 14:16:33.765 [eventLoopGroupProxy-4-1] WARN  Exposed - Transaction attempt #0 failed: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.. Statement(s): SELECT doctors.doctor_id, doctors.full_name, doctors.clinic_id, doctors.specialization_id, doctors.bio, doctors.photo_url, doctors.experience_years, doctors.rating, doctors.reviews_count, doctors.is_active, doctors.created_at, doctors.updated_at, clinics.clinic_id, clinics.clinic_name, clinics.address, clinics.phone, clinics.website, clinics.latitude, clinics.longitude, clinics.is_active, clinics.created_at, clinics.updated_at, specializations.specialization_id, specializations."name", specializations.description, specializations.icon_url, specializations.created_at, specializations.updated_at FROM doctors INNER JOIN clinics ON clinics.clinic_id = doctors.clinic_id INNER JOIN specializations ON specializations.specialization_id = doctors.specialization_id WHERE (doctors.doctor_id = ?) AND (doctors.is_active = ?)
 org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.
 	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:78)
 	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:209)
 	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:186)
 	at org.jetbrains.exposed.sql.AbstractQuery.iterator(AbstractQuery.kt:61)
-	at com.eva.data.repository.DoctorRepositoryImpl$findAll$1.invoke(DoctorRepositoryImpl.kt:189)
-	at com.eva.data.repository.DoctorRepositoryImpl$findAll$1.invoke(DoctorRepositoryImpl.kt:21)
+	at kotlin.collections.CollectionsKt___CollectionsKt.singleOrNull(_Collections.kt:639)
+	at com.eva.data.repository.DoctorRepositoryImpl$findById$1.invoke(DoctorRepositoryImpl.kt:43)
+	at com.eva.data.repository.DoctorRepositoryImpl$findById$1.invoke(DoctorRepositoryImpl.kt:40)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:275)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.access$inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:1)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$inTopLevelTransaction$1.invoke(ThreadLocalTransactionManager.kt:322)
@@ -70,10 +29,10 @@ org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLEx
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:200)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:178)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction$default(ThreadLocalTransactionManager.kt:177)
-	at com.eva.data.repository.DoctorRepositoryImpl.findAll(DoctorRepositoryImpl.kt:21)
-	at com.eva.api.routes.RoutesKt$doctorRoutes$1$1.invokeSuspend(Routes.kt:36)
-	at com.eva.api.routes.RoutesKt$doctorRoutes$1$1.invoke(Routes.kt)
-	at com.eva.api.routes.RoutesKt$doctorRoutes$1$1.invoke(Routes.kt)
+	at com.eva.data.repository.DoctorRepositoryImpl.findById(DoctorRepositoryImpl.kt:40)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invokeSuspend(Routes.kt:47)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invoke(Routes.kt)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invoke(Routes.kt)
 	at io.ktor.server.routing.Route$buildPipeline$1$1.invokeSuspend(Route.kt:116)
 	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
 	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
@@ -158,17 +117,17 @@ Caused by: org.postgresql.util.PSQLException: Cannot change transaction isolatio
 	at org.jetbrains.exposed.sql.Transaction.getConnection(Transaction.kt)
 	at org.jetbrains.exposed.sql.statements.Statement.prepared(Statement.kt:46)
 	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:74)
-	... 91 common frames omitted
-2026-03-09 05:41:00.853 [eventLoopGroupProxy-4-5] WARN  Exposed - Wait 0 milliseconds before retrying
-2026-03-09 05:41:00.866 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:41:00.866 [eventLoopGroupProxy-4-5] WARN  Exposed - Transaction attempt #1 failed: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.. Statement(s): SELECT doctors.doctor_id, doctors.full_name, doctors.clinic_id, doctors.specialization_id, doctors.bio, doctors.photo_url, doctors.experience_years, doctors.rating, doctors.reviews_count, doctors.is_active, doctors.created_at, doctors.updated_at, clinics.clinic_id, clinics.clinic_name, clinics.address, clinics.phone, clinics.website, clinics.latitude, clinics.longitude, clinics.is_active, clinics.created_at, clinics.updated_at, specializations.specialization_id, specializations."name", specializations.description, specializations.icon_url, specializations.created_at, specializations.updated_at FROM doctors INNER JOIN clinics ON clinics.clinic_id = doctors.clinic_id INNER JOIN specializations ON specializations.specialization_id = doctors.specialization_id WHERE (doctors.is_active = ?) AND (doctors.specialization_id = ?) ORDER BY doctors.rating DESC NULLS LAST LIMIT 20
+	... 92 common frames omitted
+2026-03-14 14:16:33.778 [eventLoopGroupProxy-4-1] WARN  Exposed - Wait 0 milliseconds before retrying
+2026-03-14 14:16:33.783 [eventLoopGroupProxy-4-1] WARN  Exposed - Transaction attempt #1 failed: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.. Statement(s): SELECT doctors.doctor_id, doctors.full_name, doctors.clinic_id, doctors.specialization_id, doctors.bio, doctors.photo_url, doctors.experience_years, doctors.rating, doctors.reviews_count, doctors.is_active, doctors.created_at, doctors.updated_at, clinics.clinic_id, clinics.clinic_name, clinics.address, clinics.phone, clinics.website, clinics.latitude, clinics.longitude, clinics.is_active, clinics.created_at, clinics.updated_at, specializations.specialization_id, specializations."name", specializations.description, specializations.icon_url, specializations.created_at, specializations.updated_at FROM doctors INNER JOIN clinics ON clinics.clinic_id = doctors.clinic_id INNER JOIN specializations ON specializations.specialization_id = doctors.specialization_id WHERE (doctors.doctor_id = ?) AND (doctors.is_active = ?)
 org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.
 	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:78)
 	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:209)
 	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:186)
 	at org.jetbrains.exposed.sql.AbstractQuery.iterator(AbstractQuery.kt:61)
-	at com.eva.data.repository.DoctorRepositoryImpl$findAll$1.invoke(DoctorRepositoryImpl.kt:189)
-	at com.eva.data.repository.DoctorRepositoryImpl$findAll$1.invoke(DoctorRepositoryImpl.kt:21)
+	at kotlin.collections.CollectionsKt___CollectionsKt.singleOrNull(_Collections.kt:639)
+	at com.eva.data.repository.DoctorRepositoryImpl$findById$1.invoke(DoctorRepositoryImpl.kt:43)
+	at com.eva.data.repository.DoctorRepositoryImpl$findById$1.invoke(DoctorRepositoryImpl.kt:40)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:275)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.access$inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:1)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$inTopLevelTransaction$1.invoke(ThreadLocalTransactionManager.kt:322)
@@ -179,10 +138,10 @@ org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLEx
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:200)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:178)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction$default(ThreadLocalTransactionManager.kt:177)
-	at com.eva.data.repository.DoctorRepositoryImpl.findAll(DoctorRepositoryImpl.kt:21)
-	at com.eva.api.routes.RoutesKt$doctorRoutes$1$1.invokeSuspend(Routes.kt:36)
-	at com.eva.api.routes.RoutesKt$doctorRoutes$1$1.invoke(Routes.kt)
-	at com.eva.api.routes.RoutesKt$doctorRoutes$1$1.invoke(Routes.kt)
+	at com.eva.data.repository.DoctorRepositoryImpl.findById(DoctorRepositoryImpl.kt:40)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invokeSuspend(Routes.kt:47)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invoke(Routes.kt)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invoke(Routes.kt)
 	at io.ktor.server.routing.Route$buildPipeline$1$1.invokeSuspend(Route.kt:116)
 	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
 	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
@@ -267,17 +226,17 @@ Caused by: org.postgresql.util.PSQLException: Cannot change transaction isolatio
 	at org.jetbrains.exposed.sql.Transaction.getConnection(Transaction.kt)
 	at org.jetbrains.exposed.sql.statements.Statement.prepared(Statement.kt:46)
 	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:74)
-	... 91 common frames omitted
-2026-03-09 05:41:00.867 [eventLoopGroupProxy-4-5] WARN  Exposed - Wait 0 milliseconds before retrying
-2026-03-09 05:41:00.879 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:41:03.862 [eventLoopGroupProxy-4-5] WARN  Exposed - Transaction attempt #0 failed: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.. Statement(s): SELECT doctors.doctor_id, doctors.full_name, doctors.clinic_id, doctors.specialization_id, doctors.bio, doctors.photo_url, doctors.experience_years, doctors.rating, doctors.reviews_count, doctors.is_active, doctors.created_at, doctors.updated_at, clinics.clinic_id, clinics.clinic_name, clinics.address, clinics.phone, clinics.website, clinics.latitude, clinics.longitude, clinics.is_active, clinics.created_at, clinics.updated_at, specializations.specialization_id, specializations."name", specializations.description, specializations.icon_url, specializations.created_at, specializations.updated_at FROM doctors INNER JOIN clinics ON clinics.clinic_id = doctors.clinic_id INNER JOIN specializations ON specializations.specialization_id = doctors.specialization_id WHERE (doctors.is_active = ?) AND (doctors.specialization_id = ?) ORDER BY doctors.rating DESC NULLS LAST LIMIT 20
+	... 92 common frames omitted
+2026-03-14 14:16:33.787 [eventLoopGroupProxy-4-1] WARN  Exposed - Wait 0 milliseconds before retrying
+2026-03-14 14:16:33.794 [eventLoopGroupProxy-4-1] WARN  Exposed - Transaction attempt #2 failed: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.. Statement(s): SELECT doctors.doctor_id, doctors.full_name, doctors.clinic_id, doctors.specialization_id, doctors.bio, doctors.photo_url, doctors.experience_years, doctors.rating, doctors.reviews_count, doctors.is_active, doctors.created_at, doctors.updated_at, clinics.clinic_id, clinics.clinic_name, clinics.address, clinics.phone, clinics.website, clinics.latitude, clinics.longitude, clinics.is_active, clinics.created_at, clinics.updated_at, specializations.specialization_id, specializations."name", specializations.description, specializations.icon_url, specializations.created_at, specializations.updated_at FROM doctors INNER JOIN clinics ON clinics.clinic_id = doctors.clinic_id INNER JOIN specializations ON specializations.specialization_id = doctors.specialization_id WHERE (doctors.doctor_id = ?) AND (doctors.is_active = ?)
 org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.
 	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:78)
 	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:209)
 	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:186)
 	at org.jetbrains.exposed.sql.AbstractQuery.iterator(AbstractQuery.kt:61)
-	at com.eva.data.repository.DoctorRepositoryImpl$findAll$1.invoke(DoctorRepositoryImpl.kt:189)
-	at com.eva.data.repository.DoctorRepositoryImpl$findAll$1.invoke(DoctorRepositoryImpl.kt:21)
+	at kotlin.collections.CollectionsKt___CollectionsKt.singleOrNull(_Collections.kt:639)
+	at com.eva.data.repository.DoctorRepositoryImpl$findById$1.invoke(DoctorRepositoryImpl.kt:43)
+	at com.eva.data.repository.DoctorRepositoryImpl$findById$1.invoke(DoctorRepositoryImpl.kt:40)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:275)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.access$inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:1)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$inTopLevelTransaction$1.invoke(ThreadLocalTransactionManager.kt:322)
@@ -288,10 +247,10 @@ org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLEx
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:200)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:178)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction$default(ThreadLocalTransactionManager.kt:177)
-	at com.eva.data.repository.DoctorRepositoryImpl.findAll(DoctorRepositoryImpl.kt:21)
-	at com.eva.api.routes.RoutesKt$doctorRoutes$1$1.invokeSuspend(Routes.kt:36)
-	at com.eva.api.routes.RoutesKt$doctorRoutes$1$1.invoke(Routes.kt)
-	at com.eva.api.routes.RoutesKt$doctorRoutes$1$1.invoke(Routes.kt)
+	at com.eva.data.repository.DoctorRepositoryImpl.findById(DoctorRepositoryImpl.kt:40)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invokeSuspend(Routes.kt:47)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invoke(Routes.kt)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invoke(Routes.kt)
 	at io.ktor.server.routing.Route$buildPipeline$1$1.invokeSuspend(Route.kt:116)
 	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
 	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
@@ -376,17 +335,16 @@ Caused by: org.postgresql.util.PSQLException: Cannot change transaction isolatio
 	at org.jetbrains.exposed.sql.Transaction.getConnection(Transaction.kt)
 	at org.jetbrains.exposed.sql.statements.Statement.prepared(Statement.kt:46)
 	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:74)
-	... 91 common frames omitted
-2026-03-09 05:41:03.864 [eventLoopGroupProxy-4-5] WARN  Exposed - Wait 0 milliseconds before retrying
-2026-03-09 05:41:03.867 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:41:03.878 [eventLoopGroupProxy-4-5] WARN  Exposed - Transaction attempt #1 failed: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.. Statement(s): SELECT doctors.doctor_id, doctors.full_name, doctors.clinic_id, doctors.specialization_id, doctors.bio, doctors.photo_url, doctors.experience_years, doctors.rating, doctors.reviews_count, doctors.is_active, doctors.created_at, doctors.updated_at, clinics.clinic_id, clinics.clinic_name, clinics.address, clinics.phone, clinics.website, clinics.latitude, clinics.longitude, clinics.is_active, clinics.created_at, clinics.updated_at, specializations.specialization_id, specializations."name", specializations.description, specializations.icon_url, specializations.created_at, specializations.updated_at FROM doctors INNER JOIN clinics ON clinics.clinic_id = doctors.clinic_id INNER JOIN specializations ON specializations.specialization_id = doctors.specialization_id WHERE (doctors.is_active = ?) AND (doctors.specialization_id = ?) ORDER BY doctors.rating DESC NULLS LAST LIMIT 20
+	... 92 common frames omitted
+2026-03-14 14:16:33.835 [eventLoopGroupProxy-4-1] ERROR Application - Unhandled exception
 org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.
 	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:78)
 	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:209)
 	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:186)
 	at org.jetbrains.exposed.sql.AbstractQuery.iterator(AbstractQuery.kt:61)
-	at com.eva.data.repository.DoctorRepositoryImpl$findAll$1.invoke(DoctorRepositoryImpl.kt:189)
-	at com.eva.data.repository.DoctorRepositoryImpl$findAll$1.invoke(DoctorRepositoryImpl.kt:21)
+	at kotlin.collections.CollectionsKt___CollectionsKt.singleOrNull(_Collections.kt:639)
+	at com.eva.data.repository.DoctorRepositoryImpl$findById$1.invoke(DoctorRepositoryImpl.kt:43)
+	at com.eva.data.repository.DoctorRepositoryImpl$findById$1.invoke(DoctorRepositoryImpl.kt:40)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:275)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.access$inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:1)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$inTopLevelTransaction$1.invoke(ThreadLocalTransactionManager.kt:322)
@@ -397,10 +355,10 @@ org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLEx
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:200)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:178)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction$default(ThreadLocalTransactionManager.kt:177)
-	at com.eva.data.repository.DoctorRepositoryImpl.findAll(DoctorRepositoryImpl.kt:21)
-	at com.eva.api.routes.RoutesKt$doctorRoutes$1$1.invokeSuspend(Routes.kt:36)
-	at com.eva.api.routes.RoutesKt$doctorRoutes$1$1.invoke(Routes.kt)
-	at com.eva.api.routes.RoutesKt$doctorRoutes$1$1.invoke(Routes.kt)
+	at com.eva.data.repository.DoctorRepositoryImpl.findById(DoctorRepositoryImpl.kt:40)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invokeSuspend(Routes.kt:47)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invoke(Routes.kt)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invoke(Routes.kt)
 	at io.ktor.server.routing.Route$buildPipeline$1$1.invokeSuspend(Route.kt:116)
 	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
 	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
@@ -485,17 +443,21 @@ Caused by: org.postgresql.util.PSQLException: Cannot change transaction isolatio
 	at org.jetbrains.exposed.sql.Transaction.getConnection(Transaction.kt)
 	at org.jetbrains.exposed.sql.statements.Statement.prepared(Statement.kt:46)
 	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:74)
-	... 91 common frames omitted
-2026-03-09 05:41:03.878 [eventLoopGroupProxy-4-5] WARN  Exposed - Wait 0 milliseconds before retrying
-2026-03-09 05:41:03.889 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:41:09.151 [eventLoopGroupProxy-4-5] WARN  Exposed - Transaction attempt #0 failed: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.. Statement(s): SELECT doctors.doctor_id, doctors.full_name, doctors.clinic_id, doctors.specialization_id, doctors.bio, doctors.photo_url, doctors.experience_years, doctors.rating, doctors.reviews_count, doctors.is_active, doctors.created_at, doctors.updated_at, clinics.clinic_id, clinics.clinic_name, clinics.address, clinics.phone, clinics.website, clinics.latitude, clinics.longitude, clinics.is_active, clinics.created_at, clinics.updated_at, specializations.specialization_id, specializations."name", specializations.description, specializations.icon_url, specializations.created_at, specializations.updated_at FROM doctors INNER JOIN clinics ON clinics.clinic_id = doctors.clinic_id INNER JOIN specializations ON specializations.specialization_id = doctors.specialization_id WHERE doctors.is_active = ? ORDER BY doctors.rating DESC NULLS LAST LIMIT 20
+	... 92 common frames omitted
+2026-03-14 14:16:33.839 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/2 → 500 Internal Server Error
+2026-03-14 14:16:33.858 [eventLoopGroupProxy-4-2] INFO  Application - GET /api/v1/doctors/5 → 200 OK
+2026-03-14 14:16:36.760 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 401 Unauthorized
+2026-03-14 14:16:36.762 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 401 Unauthorized
+2026-03-14 14:17:27.478 [eventLoopGroupProxy-4-1] INFO  Application - POST /api/v1/auth/login → 200 OK
+2026-03-14 14:17:33.794 [eventLoopGroupProxy-4-2] WARN  Exposed - Transaction attempt #0 failed: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.. Statement(s): SELECT doctors.doctor_id, doctors.full_name, doctors.clinic_id, doctors.specialization_id, doctors.bio, doctors.photo_url, doctors.experience_years, doctors.rating, doctors.reviews_count, doctors.is_active, doctors.created_at, doctors.updated_at, clinics.clinic_id, clinics.clinic_name, clinics.address, clinics.phone, clinics.website, clinics.latitude, clinics.longitude, clinics.is_active, clinics.created_at, clinics.updated_at, specializations.specialization_id, specializations."name", specializations.description, specializations.icon_url, specializations.created_at, specializations.updated_at FROM doctors INNER JOIN clinics ON clinics.clinic_id = doctors.clinic_id INNER JOIN specializations ON specializations.specialization_id = doctors.specialization_id WHERE (doctors.doctor_id = ?) AND (doctors.is_active = ?)
 org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.
 	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:78)
 	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:209)
 	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:186)
 	at org.jetbrains.exposed.sql.AbstractQuery.iterator(AbstractQuery.kt:61)
-	at com.eva.data.repository.DoctorRepositoryImpl$findAll$1.invoke(DoctorRepositoryImpl.kt:189)
-	at com.eva.data.repository.DoctorRepositoryImpl$findAll$1.invoke(DoctorRepositoryImpl.kt:21)
+	at kotlin.collections.CollectionsKt___CollectionsKt.singleOrNull(_Collections.kt:639)
+	at com.eva.data.repository.DoctorRepositoryImpl$findById$1.invoke(DoctorRepositoryImpl.kt:43)
+	at com.eva.data.repository.DoctorRepositoryImpl$findById$1.invoke(DoctorRepositoryImpl.kt:40)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:275)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.access$inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:1)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$inTopLevelTransaction$1.invoke(ThreadLocalTransactionManager.kt:322)
@@ -506,10 +468,10 @@ org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLEx
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:200)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:178)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction$default(ThreadLocalTransactionManager.kt:177)
-	at com.eva.data.repository.DoctorRepositoryImpl.findAll(DoctorRepositoryImpl.kt:21)
-	at com.eva.api.routes.RoutesKt$doctorRoutes$1$1.invokeSuspend(Routes.kt:36)
-	at com.eva.api.routes.RoutesKt$doctorRoutes$1$1.invoke(Routes.kt)
-	at com.eva.api.routes.RoutesKt$doctorRoutes$1$1.invoke(Routes.kt)
+	at com.eva.data.repository.DoctorRepositoryImpl.findById(DoctorRepositoryImpl.kt:40)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invokeSuspend(Routes.kt:47)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invoke(Routes.kt)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invoke(Routes.kt)
 	at io.ktor.server.routing.Route$buildPipeline$1$1.invokeSuspend(Route.kt:116)
 	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
 	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
@@ -594,25 +556,17 @@ Caused by: org.postgresql.util.PSQLException: Cannot change transaction isolatio
 	at org.jetbrains.exposed.sql.Transaction.getConnection(Transaction.kt)
 	at org.jetbrains.exposed.sql.statements.Statement.prepared(Statement.kt:46)
 	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:74)
-	... 91 common frames omitted
-2026-03-09 05:41:09.152 [eventLoopGroupProxy-4-5] WARN  Exposed - Wait 0 milliseconds before retrying
-2026-03-09 05:41:09.153 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:41:09.163 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:41:09.210 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:41:11.378 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:41:11.396 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:41:12.876 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:41:14.668 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:41:15.345 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:41:29.698 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:41:34.280 [eventLoopGroupProxy-4-4] WARN  Exposed - Transaction attempt #0 failed: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.. Statement(s): SELECT doctors.doctor_id, doctors.full_name, doctors.clinic_id, doctors.specialization_id, doctors.bio, doctors.photo_url, doctors.experience_years, doctors.rating, doctors.reviews_count, doctors.is_active, doctors.created_at, doctors.updated_at, clinics.clinic_id, clinics.clinic_name, clinics.address, clinics.phone, clinics.website, clinics.latitude, clinics.longitude, clinics.is_active, clinics.created_at, clinics.updated_at, specializations.specialization_id, specializations."name", specializations.description, specializations.icon_url, specializations.created_at, specializations.updated_at FROM doctors INNER JOIN clinics ON clinics.clinic_id = doctors.clinic_id INNER JOIN specializations ON specializations.specialization_id = doctors.specialization_id WHERE (doctors.is_active = ?) AND (doctors.specialization_id = ?) AND (LOWER(doctors.full_name) LIKE ?) ORDER BY doctors.rating DESC NULLS LAST LIMIT 20
+	... 92 common frames omitted
+2026-03-14 14:17:33.795 [eventLoopGroupProxy-4-2] WARN  Exposed - Wait 0 milliseconds before retrying
+2026-03-14 14:17:33.798 [eventLoopGroupProxy-4-2] WARN  Exposed - Transaction attempt #1 failed: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.. Statement(s): SELECT doctors.doctor_id, doctors.full_name, doctors.clinic_id, doctors.specialization_id, doctors.bio, doctors.photo_url, doctors.experience_years, doctors.rating, doctors.reviews_count, doctors.is_active, doctors.created_at, doctors.updated_at, clinics.clinic_id, clinics.clinic_name, clinics.address, clinics.phone, clinics.website, clinics.latitude, clinics.longitude, clinics.is_active, clinics.created_at, clinics.updated_at, specializations.specialization_id, specializations."name", specializations.description, specializations.icon_url, specializations.created_at, specializations.updated_at FROM doctors INNER JOIN clinics ON clinics.clinic_id = doctors.clinic_id INNER JOIN specializations ON specializations.specialization_id = doctors.specialization_id WHERE (doctors.doctor_id = ?) AND (doctors.is_active = ?)
 org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.
 	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:78)
 	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:209)
 	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:186)
 	at org.jetbrains.exposed.sql.AbstractQuery.iterator(AbstractQuery.kt:61)
-	at com.eva.data.repository.DoctorRepositoryImpl$findAll$1.invoke(DoctorRepositoryImpl.kt:189)
-	at com.eva.data.repository.DoctorRepositoryImpl$findAll$1.invoke(DoctorRepositoryImpl.kt:21)
+	at kotlin.collections.CollectionsKt___CollectionsKt.singleOrNull(_Collections.kt:639)
+	at com.eva.data.repository.DoctorRepositoryImpl$findById$1.invoke(DoctorRepositoryImpl.kt:43)
+	at com.eva.data.repository.DoctorRepositoryImpl$findById$1.invoke(DoctorRepositoryImpl.kt:40)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:275)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.access$inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:1)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$inTopLevelTransaction$1.invoke(ThreadLocalTransactionManager.kt:322)
@@ -623,10 +577,10 @@ org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLEx
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:200)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:178)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction$default(ThreadLocalTransactionManager.kt:177)
-	at com.eva.data.repository.DoctorRepositoryImpl.findAll(DoctorRepositoryImpl.kt:21)
-	at com.eva.api.routes.RoutesKt$doctorRoutes$1$1.invokeSuspend(Routes.kt:36)
-	at com.eva.api.routes.RoutesKt$doctorRoutes$1$1.invoke(Routes.kt)
-	at com.eva.api.routes.RoutesKt$doctorRoutes$1$1.invoke(Routes.kt)
+	at com.eva.data.repository.DoctorRepositoryImpl.findById(DoctorRepositoryImpl.kt:40)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invokeSuspend(Routes.kt:47)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invoke(Routes.kt)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invoke(Routes.kt)
 	at io.ktor.server.routing.Route$buildPipeline$1$1.invokeSuspend(Route.kt:116)
 	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
 	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
@@ -711,17 +665,17 @@ Caused by: org.postgresql.util.PSQLException: Cannot change transaction isolatio
 	at org.jetbrains.exposed.sql.Transaction.getConnection(Transaction.kt)
 	at org.jetbrains.exposed.sql.statements.Statement.prepared(Statement.kt:46)
 	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:74)
-	... 91 common frames omitted
-2026-03-09 05:41:34.281 [eventLoopGroupProxy-4-4] WARN  Exposed - Wait 0 milliseconds before retrying
-2026-03-09 05:41:34.282 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:41:34.290 [eventLoopGroupProxy-4-4] WARN  Exposed - Transaction attempt #1 failed: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.. Statement(s): SELECT doctors.doctor_id, doctors.full_name, doctors.clinic_id, doctors.specialization_id, doctors.bio, doctors.photo_url, doctors.experience_years, doctors.rating, doctors.reviews_count, doctors.is_active, doctors.created_at, doctors.updated_at, clinics.clinic_id, clinics.clinic_name, clinics.address, clinics.phone, clinics.website, clinics.latitude, clinics.longitude, clinics.is_active, clinics.created_at, clinics.updated_at, specializations.specialization_id, specializations."name", specializations.description, specializations.icon_url, specializations.created_at, specializations.updated_at FROM doctors INNER JOIN clinics ON clinics.clinic_id = doctors.clinic_id INNER JOIN specializations ON specializations.specialization_id = doctors.specialization_id WHERE (doctors.is_active = ?) AND (doctors.specialization_id = ?) AND (LOWER(doctors.full_name) LIKE ?) ORDER BY doctors.rating DESC NULLS LAST LIMIT 20
+	... 92 common frames omitted
+2026-03-14 14:17:33.799 [eventLoopGroupProxy-4-2] WARN  Exposed - Wait 0 milliseconds before retrying
+2026-03-14 14:17:33.801 [eventLoopGroupProxy-4-2] WARN  Exposed - Transaction attempt #2 failed: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.. Statement(s): SELECT doctors.doctor_id, doctors.full_name, doctors.clinic_id, doctors.specialization_id, doctors.bio, doctors.photo_url, doctors.experience_years, doctors.rating, doctors.reviews_count, doctors.is_active, doctors.created_at, doctors.updated_at, clinics.clinic_id, clinics.clinic_name, clinics.address, clinics.phone, clinics.website, clinics.latitude, clinics.longitude, clinics.is_active, clinics.created_at, clinics.updated_at, specializations.specialization_id, specializations."name", specializations.description, specializations.icon_url, specializations.created_at, specializations.updated_at FROM doctors INNER JOIN clinics ON clinics.clinic_id = doctors.clinic_id INNER JOIN specializations ON specializations.specialization_id = doctors.specialization_id WHERE (doctors.doctor_id = ?) AND (doctors.is_active = ?)
 org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.
 	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:78)
 	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:209)
 	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:186)
 	at org.jetbrains.exposed.sql.AbstractQuery.iterator(AbstractQuery.kt:61)
-	at com.eva.data.repository.DoctorRepositoryImpl$findAll$1.invoke(DoctorRepositoryImpl.kt:189)
-	at com.eva.data.repository.DoctorRepositoryImpl$findAll$1.invoke(DoctorRepositoryImpl.kt:21)
+	at kotlin.collections.CollectionsKt___CollectionsKt.singleOrNull(_Collections.kt:639)
+	at com.eva.data.repository.DoctorRepositoryImpl$findById$1.invoke(DoctorRepositoryImpl.kt:43)
+	at com.eva.data.repository.DoctorRepositoryImpl$findById$1.invoke(DoctorRepositoryImpl.kt:40)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:275)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.access$inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:1)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$inTopLevelTransaction$1.invoke(ThreadLocalTransactionManager.kt:322)
@@ -732,10 +686,10 @@ org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLEx
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:200)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:178)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction$default(ThreadLocalTransactionManager.kt:177)
-	at com.eva.data.repository.DoctorRepositoryImpl.findAll(DoctorRepositoryImpl.kt:21)
-	at com.eva.api.routes.RoutesKt$doctorRoutes$1$1.invokeSuspend(Routes.kt:36)
-	at com.eva.api.routes.RoutesKt$doctorRoutes$1$1.invoke(Routes.kt)
-	at com.eva.api.routes.RoutesKt$doctorRoutes$1$1.invoke(Routes.kt)
+	at com.eva.data.repository.DoctorRepositoryImpl.findById(DoctorRepositoryImpl.kt:40)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invokeSuspend(Routes.kt:47)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invoke(Routes.kt)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invoke(Routes.kt)
 	at io.ktor.server.routing.Route$buildPipeline$1$1.invokeSuspend(Route.kt:116)
 	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
 	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
@@ -820,35 +774,17 @@ Caused by: org.postgresql.util.PSQLException: Cannot change transaction isolatio
 	at org.jetbrains.exposed.sql.Transaction.getConnection(Transaction.kt)
 	at org.jetbrains.exposed.sql.statements.Statement.prepared(Statement.kt:46)
 	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:74)
-	... 91 common frames omitted
-2026-03-09 05:41:34.290 [eventLoopGroupProxy-4-4] WARN  Exposed - Wait 0 milliseconds before retrying
-2026-03-09 05:41:34.297 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:41:35.753 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:44:51.735 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:44:52.527 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors/2 → 200 OK
-2026-03-09 05:44:52.550 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors/2/reviews → 200 OK
-2026-03-09 05:44:52.578 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors/2/can-review → 200 OK
-2026-03-09 05:44:53.896 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors/2 → 200 OK
-2026-03-09 05:44:54.000 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/schedules → 200 OK
-2026-03-09 05:46:21.279 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/schedules → 200 OK
-2026-03-09 05:46:40.354 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/schedules → 200 OK
-2026-03-09 05:47:17.850 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors/2 → 200 OK
-2026-03-09 05:47:17.872 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors/2/reviews → 200 OK
-2026-03-09 05:47:17.897 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors/2/can-review → 200 OK
-2026-03-09 05:47:19.364 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:47:19.392 [eventLoopGroupProxy-4-6] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:47:23.787 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors/1 → 200 OK
-2026-03-09 05:47:23.837 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors/2 → 200 OK
-2026-03-09 05:47:23.862 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors/5 → 200 OK
-2026-03-09 05:47:25.167 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/appointments → 200 OK
-2026-03-09 05:47:26.076 [eventLoopGroupProxy-4-6] WARN  Exposed - Transaction attempt #0 failed: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.. Statement(s): SELECT symptoms_requests.request_id, symptoms_requests.user_id, symptoms_requests.symptoms_text, symptoms_requests.has_response, symptoms_requests.created_at FROM symptoms_requests WHERE symptoms_requests.user_id = ? ORDER BY symptoms_requests.created_at DESC
+	... 92 common frames omitted
+2026-03-14 14:17:33.804 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/2 → 200 OK
+2026-03-14 14:17:33.805 [eventLoopGroupProxy-4-2] ERROR Application - Unhandled exception
 org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.
 	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:78)
 	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:209)
 	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:186)
 	at org.jetbrains.exposed.sql.AbstractQuery.iterator(AbstractQuery.kt:61)
-	at com.eva.data.repository.SymptomsRepositoryImpl$findByUser$1.invoke(Repositories.kt:418)
-	at com.eva.data.repository.SymptomsRepositoryImpl$findByUser$1.invoke(Repositories.kt:200)
+	at kotlin.collections.CollectionsKt___CollectionsKt.singleOrNull(_Collections.kt:639)
+	at com.eva.data.repository.DoctorRepositoryImpl$findById$1.invoke(DoctorRepositoryImpl.kt:43)
+	at com.eva.data.repository.DoctorRepositoryImpl$findById$1.invoke(DoctorRepositoryImpl.kt:40)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:275)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.access$inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:1)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$inTopLevelTransaction$1.invoke(ThreadLocalTransactionManager.kt:322)
@@ -859,8 +795,348 @@ org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLEx
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:200)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:178)
 	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction$default(ThreadLocalTransactionManager.kt:177)
-	at com.eva.data.repository.SymptomsRepositoryImpl.findByUser(Repositories.kt:200)
-	at com.eva.api.routes.RoutesKt$symptomsRoutes$1$1$2.invokeSuspend(Routes.kt:369)
+	at com.eva.data.repository.DoctorRepositoryImpl.findById(DoctorRepositoryImpl.kt:40)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invokeSuspend(Routes.kt:47)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invoke(Routes.kt)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invoke(Routes.kt)
+	at io.ktor.server.routing.Route$buildPipeline$1$1.invokeSuspend(Route.kt:116)
+	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
+	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
+	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
+	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
+	at io.ktor.server.routing.Routing.executeResult(Routing.kt:190)
+	at io.ktor.server.routing.Routing.interceptor(Routing.kt:64)
+	at io.ktor.server.routing.Routing$Plugin$install$1.invokeSuspend(Routing.kt:140)
+	at io.ktor.server.routing.Routing$Plugin$install$1.invoke(Routing.kt)
+	at io.ktor.server.routing.Routing$Plugin$install$1.invoke(Routing.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invokeSuspend(BaseApplicationEngine.kt:124)
+	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invoke(BaseApplicationEngine.kt)
+	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invoke(BaseApplicationEngine.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.server.application.hooks.CallFailed$install$1$1.invokeSuspend(CommonHooks.kt:45)
+	at io.ktor.server.application.hooks.CallFailed$install$1$1.invoke(CommonHooks.kt)
+	at io.ktor.server.application.hooks.CallFailed$install$1$1.invoke(CommonHooks.kt)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startUndispatchedOrReturn(Undispatched.kt:78)
+	at kotlinx.coroutines.CoroutineScopeKt.coroutineScope(CoroutineScope.kt:264)
+	at io.ktor.server.application.hooks.CallFailed$install$1.invokeSuspend(CommonHooks.kt:44)
+	at io.ktor.server.application.hooks.CallFailed$install$1.invoke(CommonHooks.kt)
+	at io.ktor.server.application.hooks.CallFailed$install$1.invoke(CommonHooks.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invokeSuspend(DefaultEnginePipeline.kt:123)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invoke(DefaultEnginePipeline.kt)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invoke(DefaultEnginePipeline.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invokeSuspend(NettyApplicationCallHandler.kt:119)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invoke(NettyApplicationCallHandler.kt)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invoke(NettyApplicationCallHandler.kt)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startCoroutineUndispatched(Undispatched.kt:44)
+	at kotlinx.coroutines.CoroutineStart.invoke(CoroutineStart.kt:112)
+	at kotlinx.coroutines.AbstractCoroutine.start(AbstractCoroutine.kt:126)
+	at kotlinx.coroutines.BuildersKt__Builders_commonKt.launch(Builders.common.kt:56)
+	at kotlinx.coroutines.BuildersKt.launch(Unknown Source)
+	at io.ktor.server.netty.NettyApplicationCallHandler.handleRequest(NettyApplicationCallHandler.kt:37)
+	at io.ktor.server.netty.NettyApplicationCallHandler.channelRead(NettyApplicationCallHandler.kt:29)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.access$600(AbstractChannelHandlerContext.java:61)
+	at io.netty.channel.AbstractChannelHandlerContext$7.run(AbstractChannelHandlerContext.java:425)
+	at io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java:173)
+	at io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java:166)
+	at io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:470)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:569)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.ktor.server.netty.EventLoopGroupProxy$Companion.create$lambda$1$lambda$0(NettyApplicationEngine.kt:296)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.
+	at org.postgresql.jdbc.PgConnection.setTransactionIsolation(PgConnection.java:1056)
+	at com.zaxxer.hikari.pool.ProxyConnection.setTransactionIsolation(ProxyConnection.java:421)
+	at com.zaxxer.hikari.pool.HikariProxyConnection.setTransactionIsolation(HikariProxyConnection.java)
+	at org.jetbrains.exposed.sql.statements.jdbc.JdbcConnectionImpl.setTransactionIsolation(JdbcConnectionImpl.kt:63)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager$ThreadLocalTransaction$connectionLazy$1.invoke(ThreadLocalTransactionManager.kt:107)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager$ThreadLocalTransaction$connectionLazy$1.invoke(ThreadLocalTransactionManager.kt:100)
+	at kotlin.UnsafeLazyImpl.getValue(Lazy.kt:81)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager$ThreadLocalTransaction.getConnection(ThreadLocalTransactionManager.kt:114)
+	at org.jetbrains.exposed.sql.Transaction.getConnection(Transaction.kt)
+	at org.jetbrains.exposed.sql.statements.Statement.prepared(Statement.kt:46)
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:74)
+	... 92 common frames omitted
+2026-03-14 14:17:33.807 [eventLoopGroupProxy-4-2] INFO  Application - GET /api/v1/doctors/5 → 500 Internal Server Error
+2026-03-14 14:17:37.554 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/auth/me → 200 OK
+2026-03-14 14:17:38.910 [eventLoopGroupProxy-4-1] WARN  Exposed - Transaction attempt #0 failed: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.. Statement(s): SELECT doctors.doctor_id, doctors.full_name, doctors.clinic_id, doctors.specialization_id, doctors.bio, doctors.photo_url, doctors.experience_years, doctors.rating, doctors.reviews_count, doctors.is_active, doctors.created_at, doctors.updated_at, clinics.clinic_id, clinics.clinic_name, clinics.address, clinics.phone, clinics.website, clinics.latitude, clinics.longitude, clinics.is_active, clinics.created_at, clinics.updated_at, specializations.specialization_id, specializations."name", specializations.description, specializations.icon_url, specializations.created_at, specializations.updated_at FROM doctors INNER JOIN clinics ON clinics.clinic_id = doctors.clinic_id INNER JOIN specializations ON specializations.specialization_id = doctors.specialization_id WHERE (doctors.doctor_id = ?) AND (doctors.is_active = ?)
+org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:78)
+	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:209)
+	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:186)
+	at org.jetbrains.exposed.sql.AbstractQuery.iterator(AbstractQuery.kt:61)
+	at kotlin.collections.CollectionsKt___CollectionsKt.singleOrNull(_Collections.kt:639)
+	at com.eva.data.repository.DoctorRepositoryImpl$findById$1.invoke(DoctorRepositoryImpl.kt:43)
+	at com.eva.data.repository.DoctorRepositoryImpl$findById$1.invoke(DoctorRepositoryImpl.kt:40)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:275)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.access$inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:1)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$inTopLevelTransaction$1.invoke(ThreadLocalTransactionManager.kt:322)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:330)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction(ThreadLocalTransactionManager.kt:321)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$transaction$1.invoke(ThreadLocalTransactionManager.kt:230)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:330)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:200)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:178)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction$default(ThreadLocalTransactionManager.kt:177)
+	at com.eva.data.repository.DoctorRepositoryImpl.findById(DoctorRepositoryImpl.kt:40)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invokeSuspend(Routes.kt:47)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invoke(Routes.kt)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invoke(Routes.kt)
+	at io.ktor.server.routing.Route$buildPipeline$1$1.invokeSuspend(Route.kt:116)
+	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
+	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
+	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
+	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
+	at io.ktor.server.routing.Routing.executeResult(Routing.kt:190)
+	at io.ktor.server.routing.Routing.interceptor(Routing.kt:64)
+	at io.ktor.server.routing.Routing$Plugin$install$1.invokeSuspend(Routing.kt:140)
+	at io.ktor.server.routing.Routing$Plugin$install$1.invoke(Routing.kt)
+	at io.ktor.server.routing.Routing$Plugin$install$1.invoke(Routing.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invokeSuspend(BaseApplicationEngine.kt:124)
+	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invoke(BaseApplicationEngine.kt)
+	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invoke(BaseApplicationEngine.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.server.application.hooks.CallFailed$install$1$1.invokeSuspend(CommonHooks.kt:45)
+	at io.ktor.server.application.hooks.CallFailed$install$1$1.invoke(CommonHooks.kt)
+	at io.ktor.server.application.hooks.CallFailed$install$1$1.invoke(CommonHooks.kt)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startUndispatchedOrReturn(Undispatched.kt:78)
+	at kotlinx.coroutines.CoroutineScopeKt.coroutineScope(CoroutineScope.kt:264)
+	at io.ktor.server.application.hooks.CallFailed$install$1.invokeSuspend(CommonHooks.kt:44)
+	at io.ktor.server.application.hooks.CallFailed$install$1.invoke(CommonHooks.kt)
+	at io.ktor.server.application.hooks.CallFailed$install$1.invoke(CommonHooks.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invokeSuspend(DefaultEnginePipeline.kt:123)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invoke(DefaultEnginePipeline.kt)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invoke(DefaultEnginePipeline.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invokeSuspend(NettyApplicationCallHandler.kt:119)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invoke(NettyApplicationCallHandler.kt)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invoke(NettyApplicationCallHandler.kt)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startCoroutineUndispatched(Undispatched.kt:44)
+	at kotlinx.coroutines.CoroutineStart.invoke(CoroutineStart.kt:112)
+	at kotlinx.coroutines.AbstractCoroutine.start(AbstractCoroutine.kt:126)
+	at kotlinx.coroutines.BuildersKt__Builders_commonKt.launch(Builders.common.kt:56)
+	at kotlinx.coroutines.BuildersKt.launch(Unknown Source)
+	at io.ktor.server.netty.NettyApplicationCallHandler.handleRequest(NettyApplicationCallHandler.kt:37)
+	at io.ktor.server.netty.NettyApplicationCallHandler.channelRead(NettyApplicationCallHandler.kt:29)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.access$600(AbstractChannelHandlerContext.java:61)
+	at io.netty.channel.AbstractChannelHandlerContext$7.run(AbstractChannelHandlerContext.java:425)
+	at io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java:173)
+	at io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java:166)
+	at io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:470)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:569)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.ktor.server.netty.EventLoopGroupProxy$Companion.create$lambda$1$lambda$0(NettyApplicationEngine.kt:296)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.
+	at org.postgresql.jdbc.PgConnection.setTransactionIsolation(PgConnection.java:1056)
+	at com.zaxxer.hikari.pool.ProxyConnection.setTransactionIsolation(ProxyConnection.java:421)
+	at com.zaxxer.hikari.pool.HikariProxyConnection.setTransactionIsolation(HikariProxyConnection.java)
+	at org.jetbrains.exposed.sql.statements.jdbc.JdbcConnectionImpl.setTransactionIsolation(JdbcConnectionImpl.kt:63)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager$ThreadLocalTransaction$connectionLazy$1.invoke(ThreadLocalTransactionManager.kt:107)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager$ThreadLocalTransaction$connectionLazy$1.invoke(ThreadLocalTransactionManager.kt:100)
+	at kotlin.UnsafeLazyImpl.getValue(Lazy.kt:81)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager$ThreadLocalTransaction.getConnection(ThreadLocalTransactionManager.kt:114)
+	at org.jetbrains.exposed.sql.Transaction.getConnection(Transaction.kt)
+	at org.jetbrains.exposed.sql.statements.Statement.prepared(Statement.kt:46)
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:74)
+	... 92 common frames omitted
+2026-03-14 14:17:38.910 [eventLoopGroupProxy-4-1] WARN  Exposed - Wait 0 milliseconds before retrying
+2026-03-14 14:17:38.914 [eventLoopGroupProxy-4-1] WARN  Exposed - Transaction attempt #1 failed: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.. Statement(s): SELECT doctors.doctor_id, doctors.full_name, doctors.clinic_id, doctors.specialization_id, doctors.bio, doctors.photo_url, doctors.experience_years, doctors.rating, doctors.reviews_count, doctors.is_active, doctors.created_at, doctors.updated_at, clinics.clinic_id, clinics.clinic_name, clinics.address, clinics.phone, clinics.website, clinics.latitude, clinics.longitude, clinics.is_active, clinics.created_at, clinics.updated_at, specializations.specialization_id, specializations."name", specializations.description, specializations.icon_url, specializations.created_at, specializations.updated_at FROM doctors INNER JOIN clinics ON clinics.clinic_id = doctors.clinic_id INNER JOIN specializations ON specializations.specialization_id = doctors.specialization_id WHERE (doctors.doctor_id = ?) AND (doctors.is_active = ?)
+org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:78)
+	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:209)
+	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:186)
+	at org.jetbrains.exposed.sql.AbstractQuery.iterator(AbstractQuery.kt:61)
+	at kotlin.collections.CollectionsKt___CollectionsKt.singleOrNull(_Collections.kt:639)
+	at com.eva.data.repository.DoctorRepositoryImpl$findById$1.invoke(DoctorRepositoryImpl.kt:43)
+	at com.eva.data.repository.DoctorRepositoryImpl$findById$1.invoke(DoctorRepositoryImpl.kt:40)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:275)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.access$inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:1)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$inTopLevelTransaction$1.invoke(ThreadLocalTransactionManager.kt:322)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:330)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction(ThreadLocalTransactionManager.kt:321)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$transaction$1.invoke(ThreadLocalTransactionManager.kt:230)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:330)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:200)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:178)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction$default(ThreadLocalTransactionManager.kt:177)
+	at com.eva.data.repository.DoctorRepositoryImpl.findById(DoctorRepositoryImpl.kt:40)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invokeSuspend(Routes.kt:47)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invoke(Routes.kt)
+	at com.eva.api.routes.RoutesKt$doctorRoutes$1$2.invoke(Routes.kt)
+	at io.ktor.server.routing.Route$buildPipeline$1$1.invokeSuspend(Route.kt:116)
+	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
+	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
+	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
+	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
+	at io.ktor.server.routing.Routing.executeResult(Routing.kt:190)
+	at io.ktor.server.routing.Routing.interceptor(Routing.kt:64)
+	at io.ktor.server.routing.Routing$Plugin$install$1.invokeSuspend(Routing.kt:140)
+	at io.ktor.server.routing.Routing$Plugin$install$1.invoke(Routing.kt)
+	at io.ktor.server.routing.Routing$Plugin$install$1.invoke(Routing.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invokeSuspend(BaseApplicationEngine.kt:124)
+	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invoke(BaseApplicationEngine.kt)
+	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invoke(BaseApplicationEngine.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.server.application.hooks.CallFailed$install$1$1.invokeSuspend(CommonHooks.kt:45)
+	at io.ktor.server.application.hooks.CallFailed$install$1$1.invoke(CommonHooks.kt)
+	at io.ktor.server.application.hooks.CallFailed$install$1$1.invoke(CommonHooks.kt)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startUndispatchedOrReturn(Undispatched.kt:78)
+	at kotlinx.coroutines.CoroutineScopeKt.coroutineScope(CoroutineScope.kt:264)
+	at io.ktor.server.application.hooks.CallFailed$install$1.invokeSuspend(CommonHooks.kt:44)
+	at io.ktor.server.application.hooks.CallFailed$install$1.invoke(CommonHooks.kt)
+	at io.ktor.server.application.hooks.CallFailed$install$1.invoke(CommonHooks.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invokeSuspend(DefaultEnginePipeline.kt:123)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invoke(DefaultEnginePipeline.kt)
+	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invoke(DefaultEnginePipeline.kt)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
+	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
+	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
+	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
+	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invokeSuspend(NettyApplicationCallHandler.kt:119)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invoke(NettyApplicationCallHandler.kt)
+	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invoke(NettyApplicationCallHandler.kt)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startCoroutineUndispatched(Undispatched.kt:44)
+	at kotlinx.coroutines.CoroutineStart.invoke(CoroutineStart.kt:112)
+	at kotlinx.coroutines.AbstractCoroutine.start(AbstractCoroutine.kt:126)
+	at kotlinx.coroutines.BuildersKt__Builders_commonKt.launch(Builders.common.kt:56)
+	at kotlinx.coroutines.BuildersKt.launch(Unknown Source)
+	at io.ktor.server.netty.NettyApplicationCallHandler.handleRequest(NettyApplicationCallHandler.kt:37)
+	at io.ktor.server.netty.NettyApplicationCallHandler.channelRead(NettyApplicationCallHandler.kt:29)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
+	at io.netty.channel.AbstractChannelHandlerContext.access$600(AbstractChannelHandlerContext.java:61)
+	at io.netty.channel.AbstractChannelHandlerContext$7.run(AbstractChannelHandlerContext.java:425)
+	at io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java:173)
+	at io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java:166)
+	at io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:470)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:569)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.ktor.server.netty.EventLoopGroupProxy$Companion.create$lambda$1$lambda$0(NettyApplicationEngine.kt:296)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.
+	at org.postgresql.jdbc.PgConnection.setTransactionIsolation(PgConnection.java:1056)
+	at com.zaxxer.hikari.pool.ProxyConnection.setTransactionIsolation(ProxyConnection.java:421)
+	at com.zaxxer.hikari.pool.HikariProxyConnection.setTransactionIsolation(HikariProxyConnection.java)
+	at org.jetbrains.exposed.sql.statements.jdbc.JdbcConnectionImpl.setTransactionIsolation(JdbcConnectionImpl.kt:63)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager$ThreadLocalTransaction$connectionLazy$1.invoke(ThreadLocalTransactionManager.kt:107)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager$ThreadLocalTransaction$connectionLazy$1.invoke(ThreadLocalTransactionManager.kt:100)
+	at kotlin.UnsafeLazyImpl.getValue(Lazy.kt:81)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager$ThreadLocalTransaction.getConnection(ThreadLocalTransactionManager.kt:114)
+	at org.jetbrains.exposed.sql.Transaction.getConnection(Transaction.kt)
+	at org.jetbrains.exposed.sql.statements.Statement.prepared(Statement.kt:46)
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:74)
+	... 92 common frames omitted
+2026-03-14 14:17:38.916 [eventLoopGroupProxy-4-1] WARN  Exposed - Wait 0 milliseconds before retrying
+2026-03-14 14:17:38.918 [eventLoopGroupProxy-4-2] INFO  Application - GET /api/v1/doctors/5 → 200 OK
+2026-03-14 14:17:38.928 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/2 → 200 OK
+2026-03-14 14:17:42.703 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors → 200 OK
+2026-03-14 14:17:43.670 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/1 → 200 OK
+2026-03-14 14:17:43.759 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/1/reviews → 200 OK
+2026-03-14 14:17:43.828 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/1/can-review → 200 OK
+2026-03-14 14:17:44.962 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/1 → 200 OK
+2026-03-14 14:17:45.048 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/schedules → 200 OK
+2026-03-14 14:18:01.562 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/1 → 200 OK
+2026-03-14 14:18:01.593 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/1/reviews → 200 OK
+2026-03-14 14:18:01.628 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors/1/can-review → 200 OK
+2026-03-14 14:18:03.527 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors → 200 OK
+2026-03-14 14:18:03.546 [eventLoopGroupProxy-4-2] INFO  Application - GET /api/v1/doctors → 200 OK
+2026-03-14 14:18:05.910 [eventLoopGroupProxy-4-2] WARN  Exposed - Transaction attempt #0 failed: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.. Statement(s): SELECT symptoms_requests.request_id, symptoms_requests.user_id, symptoms_requests.symptoms_text, symptoms_requests.has_response, symptoms_requests.created_at FROM symptoms_requests WHERE symptoms_requests.user_id = ? ORDER BY symptoms_requests.created_at DESC
+org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.
+	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:78)
+	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:209)
+	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:186)
+	at org.jetbrains.exposed.sql.AbstractQuery.iterator(AbstractQuery.kt:61)
+	at com.eva.data.repository.SymptomsRepositoryImpl$findByUser$1.invoke(Repositories.kt:426)
+	at com.eva.data.repository.SymptomsRepositoryImpl$findByUser$1.invoke(Repositories.kt:208)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:275)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.access$inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:1)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$inTopLevelTransaction$1.invoke(ThreadLocalTransactionManager.kt:322)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:330)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction(ThreadLocalTransactionManager.kt:321)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$transaction$1.invoke(ThreadLocalTransactionManager.kt:230)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:330)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:200)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:178)
+	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction$default(ThreadLocalTransactionManager.kt:177)
+	at com.eva.data.repository.SymptomsRepositoryImpl.findByUser(Repositories.kt:208)
+	at com.eva.api.routes.RoutesKt$symptomsRoutes$1$1$2.invokeSuspend(Routes.kt:387)
 	at com.eva.api.routes.RoutesKt$symptomsRoutes$1$1$2.invoke(Routes.kt)
 	at com.eva.api.routes.RoutesKt$symptomsRoutes$1$1$2.invoke(Routes.kt)
 	at io.ktor.server.routing.Route$buildPipeline$1$1.invokeSuspend(Route.kt:116)
@@ -948,158 +1224,62 @@ Caused by: org.postgresql.util.PSQLException: Cannot change transaction isolatio
 	at org.jetbrains.exposed.sql.statements.Statement.prepared(Statement.kt:46)
 	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:74)
 	... 91 common frames omitted
-2026-03-09 05:47:26.078 [eventLoopGroupProxy-4-6] WARN  Exposed - Wait 0 milliseconds before retrying
-2026-03-09 05:47:26.083 [eventLoopGroupProxy-4-6] WARN  Exposed - Transaction attempt #1 failed: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.. Statement(s): SELECT symptoms_requests.request_id, symptoms_requests.user_id, symptoms_requests.symptoms_text, symptoms_requests.has_response, symptoms_requests.created_at FROM symptoms_requests WHERE symptoms_requests.user_id = ? ORDER BY symptoms_requests.created_at DESC
-org.jetbrains.exposed.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.
-	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:78)
-	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:209)
-	at org.jetbrains.exposed.sql.Transaction.exec(Transaction.kt:186)
-	at org.jetbrains.exposed.sql.AbstractQuery.iterator(AbstractQuery.kt:61)
-	at com.eva.data.repository.SymptomsRepositoryImpl$findByUser$1.invoke(Repositories.kt:418)
-	at com.eva.data.repository.SymptomsRepositoryImpl$findByUser$1.invoke(Repositories.kt:200)
-	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:275)
-	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.access$inTopLevelTransaction$run(ThreadLocalTransactionManager.kt:1)
-	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$inTopLevelTransaction$1.invoke(ThreadLocalTransactionManager.kt:322)
-	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:330)
-	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.inTopLevelTransaction(ThreadLocalTransactionManager.kt:321)
-	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt$transaction$1.invoke(ThreadLocalTransactionManager.kt:230)
-	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.keepAndRestoreTransactionRefAfterRun(ThreadLocalTransactionManager.kt:330)
-	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:200)
-	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction(ThreadLocalTransactionManager.kt:178)
-	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManagerKt.transaction$default(ThreadLocalTransactionManager.kt:177)
-	at com.eva.data.repository.SymptomsRepositoryImpl.findByUser(Repositories.kt:200)
-	at com.eva.api.routes.RoutesKt$symptomsRoutes$1$1$2.invokeSuspend(Routes.kt:369)
-	at com.eva.api.routes.RoutesKt$symptomsRoutes$1$1$2.invoke(Routes.kt)
-	at com.eva.api.routes.RoutesKt$symptomsRoutes$1$1$2.invoke(Routes.kt)
-	at io.ktor.server.routing.Route$buildPipeline$1$1.invokeSuspend(Route.kt:116)
-	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
-	at io.ktor.server.routing.Route$buildPipeline$1$1.invoke(Route.kt)
-	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
-	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
-	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
-	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
-	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
-	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invoke(Pipeline.kt)
-	at io.ktor.server.routing.Routing$executeResult$$inlined$execute$1.invoke(Pipeline.kt)
-	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
-	at io.ktor.server.routing.Routing.executeResult(Routing.kt:190)
-	at io.ktor.server.routing.Routing.interceptor(Routing.kt:64)
-	at io.ktor.server.routing.Routing$Plugin$install$1.invokeSuspend(Routing.kt:140)
-	at io.ktor.server.routing.Routing$Plugin$install$1.invoke(Routing.kt)
-	at io.ktor.server.routing.Routing$Plugin$install$1.invoke(Routing.kt)
-	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
-	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
-	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invokeSuspend(BaseApplicationEngine.kt:124)
-	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invoke(BaseApplicationEngine.kt)
-	at io.ktor.server.engine.BaseApplicationEngineKt$installDefaultTransformationChecker$1.invoke(BaseApplicationEngine.kt)
-	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
-	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
-	at io.ktor.server.application.hooks.CallFailed$install$1$1.invokeSuspend(CommonHooks.kt:45)
-	at io.ktor.server.application.hooks.CallFailed$install$1$1.invoke(CommonHooks.kt)
-	at io.ktor.server.application.hooks.CallFailed$install$1$1.invoke(CommonHooks.kt)
-	at kotlinx.coroutines.intrinsics.UndispatchedKt.startUndispatchedOrReturn(Undispatched.kt:78)
-	at kotlinx.coroutines.CoroutineScopeKt.coroutineScope(CoroutineScope.kt:264)
-	at io.ktor.server.application.hooks.CallFailed$install$1.invokeSuspend(CommonHooks.kt:44)
-	at io.ktor.server.application.hooks.CallFailed$install$1.invoke(CommonHooks.kt)
-	at io.ktor.server.application.hooks.CallFailed$install$1.invoke(CommonHooks.kt)
-	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
-	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
-	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
-	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
-	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
-	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
-	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
-	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
-	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invokeSuspend(DefaultEnginePipeline.kt:123)
-	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invoke(DefaultEnginePipeline.kt)
-	at io.ktor.server.engine.DefaultEnginePipelineKt$defaultEnginePipeline$1.invoke(DefaultEnginePipeline.kt)
-	at io.ktor.util.pipeline.DebugPipelineContext.proceedLoop(DebugPipelineContext.kt:80)
-	at io.ktor.util.pipeline.DebugPipelineContext.proceed(DebugPipelineContext.kt:57)
-	at io.ktor.util.pipeline.DebugPipelineContext.execute$ktor_utils(DebugPipelineContext.kt:63)
-	at io.ktor.util.pipeline.Pipeline.execute(Pipeline.kt:77)
-	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invokeSuspend(Pipeline.kt:478)
-	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
-	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1$invokeSuspend$$inlined$execute$1.invoke(Pipeline.kt)
-	at io.ktor.util.debug.ContextUtilsKt.initContextInDebugMode(ContextUtils.kt:17)
-	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invokeSuspend(NettyApplicationCallHandler.kt:119)
-	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invoke(NettyApplicationCallHandler.kt)
-	at io.ktor.server.netty.NettyApplicationCallHandler$handleRequest$1.invoke(NettyApplicationCallHandler.kt)
-	at kotlinx.coroutines.intrinsics.UndispatchedKt.startCoroutineUndispatched(Undispatched.kt:44)
-	at kotlinx.coroutines.CoroutineStart.invoke(CoroutineStart.kt:112)
-	at kotlinx.coroutines.AbstractCoroutine.start(AbstractCoroutine.kt:126)
-	at kotlinx.coroutines.BuildersKt__Builders_commonKt.launch(Builders.common.kt:56)
-	at kotlinx.coroutines.BuildersKt.launch(Unknown Source)
-	at io.ktor.server.netty.NettyApplicationCallHandler.handleRequest(NettyApplicationCallHandler.kt:37)
-	at io.ktor.server.netty.NettyApplicationCallHandler.channelRead(NettyApplicationCallHandler.kt:29)
-	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444)
-	at io.netty.channel.AbstractChannelHandlerContext.access$600(AbstractChannelHandlerContext.java:61)
-	at io.netty.channel.AbstractChannelHandlerContext$7.run(AbstractChannelHandlerContext.java:425)
-	at io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java:173)
-	at io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java:166)
-	at io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:470)
-	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:569)
-	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
-	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
-	at io.ktor.server.netty.EventLoopGroupProxy$Companion.create$lambda$1$lambda$0(NettyApplicationEngine.kt:296)
-	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
-	at java.base/java.lang.Thread.run(Thread.java:1583)
-Caused by: org.postgresql.util.PSQLException: Cannot change transaction isolation level in the middle of a transaction.
-	at org.postgresql.jdbc.PgConnection.setTransactionIsolation(PgConnection.java:1056)
-	at com.zaxxer.hikari.pool.ProxyConnection.setTransactionIsolation(ProxyConnection.java:421)
-	at com.zaxxer.hikari.pool.HikariProxyConnection.setTransactionIsolation(HikariProxyConnection.java)
-	at org.jetbrains.exposed.sql.statements.jdbc.JdbcConnectionImpl.setTransactionIsolation(JdbcConnectionImpl.kt:63)
-	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager$ThreadLocalTransaction$connectionLazy$1.invoke(ThreadLocalTransactionManager.kt:107)
-	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager$ThreadLocalTransaction$connectionLazy$1.invoke(ThreadLocalTransactionManager.kt:100)
-	at kotlin.UnsafeLazyImpl.getValue(Lazy.kt:81)
-	at org.jetbrains.exposed.sql.transactions.ThreadLocalTransactionManager$ThreadLocalTransaction.getConnection(ThreadLocalTransactionManager.kt:114)
-	at org.jetbrains.exposed.sql.Transaction.getConnection(Transaction.kt)
-	at org.jetbrains.exposed.sql.statements.Statement.prepared(Statement.kt:46)
-	at org.jetbrains.exposed.sql.statements.Statement.executeIn$exposed_core(Statement.kt:74)
-	... 91 common frames omitted
-2026-03-09 05:47:26.085 [eventLoopGroupProxy-4-6] WARN  Exposed - Wait 0 milliseconds before retrying
-2026-03-09 05:47:26.118 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/symptoms/history → 200 OK
-2026-03-09 05:47:26.146 [eventLoopGroupProxy-4-6] INFO  Application - GET /api/v1/symptoms/history → 200 OK
-2026-03-09 05:47:26.871 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/auth/me → 200 OK
-2026-03-09 05:47:28.419 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors/1 → 200 OK
-2026-03-09 05:47:28.458 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors/2 → 200 OK
-2026-03-09 05:47:28.484 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors/5 → 200 OK
-2026-03-09 05:53:55.775 [eventLoopGroupProxy-4-7] INFO  Application - POST /api/v1/auth/fcm-token → 200 OK
-2026-03-09 05:53:56.111 [eventLoopGroupProxy-4-7] INFO  Application - GET /api/v1/symptoms/history → 200 OK
-2026-03-09 05:53:56.396 [eventLoopGroupProxy-4-7] INFO  Application - GET /api/v1/doctors/1 → 200 OK
-2026-03-09 05:53:57.793 [eventLoopGroupProxy-4-7] INFO  Application - GET /api/v1/doctors/2 → 200 OK
-2026-03-09 05:53:57.859 [eventLoopGroupProxy-4-7] INFO  Application - GET /api/v1/doctors/5 → 200 OK
-2026-03-09 05:54:16.126 [eventLoopGroupProxy-4-7] INFO  Application - GET /api/v1/clinics → 200 OK
-2026-03-09 05:54:51.165 [eventLoopGroupProxy-4-7] INFO  Application - GET /api/v1/auth/me → 200 OK
-2026-03-09 05:55:17.392 [eventLoopGroupProxy-4-7] INFO  Application - GET /api/v1/symptoms/history → 200 OK
-2026-03-09 05:55:17.439 [eventLoopGroupProxy-4-8] INFO  Application - GET /api/v1/symptoms/history → 200 OK
-2026-03-09 05:55:41.717 [eventLoopGroupProxy-4-7] INFO  com.eva.service.AiService - [AI STUB] Analyzing: болит голова 37.7 в висках тошнит...
-2026-03-09 05:55:41.742 [eventLoopGroupProxy-4-7] INFO  Application - POST /api/v1/symptoms/analyze → 200 OK
-2026-03-09 05:55:41.791 [eventLoopGroupProxy-4-7] INFO  Application - GET /api/v1/symptoms/history → 200 OK
-2026-03-09 05:55:49.899 [eventLoopGroupProxy-4-7] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:55:52.960 [eventLoopGroupProxy-4-7] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:55:54.650 [eventLoopGroupProxy-4-7] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:55:54.656 [eventLoopGroupProxy-4-8] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:55:56.656 [eventLoopGroupProxy-4-7] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:55:56.662 [eventLoopGroupProxy-4-8] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:56:00.164 [eventLoopGroupProxy-4-7] INFO  Application - GET /api/v1/symptoms/history → 200 OK
-2026-03-09 05:56:00.184 [eventLoopGroupProxy-4-8] INFO  Application - GET /api/v1/symptoms/history → 200 OK
-2026-03-09 05:56:20.841 [eventLoopGroupProxy-4-7] INFO  Application - GET /api/v1/doctors/1 → 200 OK
-2026-03-09 05:56:20.925 [eventLoopGroupProxy-4-7] INFO  Application - GET /api/v1/doctors/2 → 200 OK
-2026-03-09 05:56:20.978 [eventLoopGroupProxy-4-7] INFO  Application - GET /api/v1/doctors/5 → 200 OK
-2026-03-09 05:56:22.392 [eventLoopGroupProxy-4-7] INFO  Application - GET /api/v1/doctors → 200 OK
-2026-03-09 05:56:25.346 [eventLoopGroupProxy-4-7] INFO  Application - GET /api/v1/clinics → 200 OK
-2026-03-09 05:58:45.539 [eventLoopGroupProxy-4-9] INFO  Application - POST /api/v1/auth/fcm-token → 200 OK
-2026-03-09 05:58:46.283 [eventLoopGroupProxy-4-9] INFO  Application - GET /api/v1/symptoms/history → 200 OK
-2026-03-09 05:58:46.625 [eventLoopGroupProxy-4-9] INFO  Application - GET /api/v1/doctors/1 → 200 OK
-2026-03-09 05:58:48.003 [eventLoopGroupProxy-4-9] INFO  Application - GET /api/v1/doctors/2 → 200 OK
-2026-03-09 05:58:48.074 [eventLoopGroupProxy-4-9] INFO  Application - GET /api/v1/doctors/5 → 200 OK
-2026-03-09 05:58:51.872 [eventLoopGroupProxy-4-9] INFO  Application - GET /api/v1/clinics → 200 OK
-2026-03-09 05:59:49.731 [eventLoopGroupProxy-4-9] INFO  Application - GET /api/v1/auth/me → 200 OK
-2026-03-09 05:59:50.819 [eventLoopGroupProxy-4-9] INFO  Application - GET /api/v1/doctors/1 → 200 OK
-2026-03-09 05:59:50.948 [eventLoopGroupProxy-4-9] INFO  Application - GET /api/v1/doctors/2 → 200 OK
-2026-03-09 05:59:50.985 [eventLoopGroupProxy-4-9] INFO  Application - GET /api/v1/doctors/5 → 200 OK
-2026-03-09 06:00:00.449 [eventLoopGroupProxy-4-9] INFO  Application - GET /api/v1/doctors/1 → 200 OK
-2026-03-09 06:00:00.525 [eventLoopGroupProxy-4-9] INFO  Application - GET /api/v1/doctors/2 → 200 OK
-2026-03-09 06:00:00.552 [eventLoopGroupProxy-4-9] INFO  Application - GET /api/v1/doctors/5 → 200 OK
-2026-03-09 06:28:03.007 [main] INFO  Application - Application stopping: io.ktor.server.application.Application@661d88a
-2026-03-09 06:28:03.027 [main] INFO  Application - Application stopped: io.ktor.server.application.Application@661d88a
+2026-03-14 14:18:05.912 [eventLoopGroupProxy-4-2] WARN  Exposed - Wait 0 milliseconds before retrying
+2026-03-14 14:18:06.041 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-03-14 14:18:06.041 [eventLoopGroupProxy-4-2] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-03-14 14:18:45.210 [eventLoopGroupProxy-4-1] INFO  com.eva.service.AiService - OpenAI запрос: Перестал курить, на утро очень болит голова...
+2026-03-14 14:18:46.169 [eventLoopGroupProxy-4-1] ERROR com.eva.service.AiService - Ошибка обращения к OpenAI: Illegal input: Fields [choices, usage] are required for type with serial name 'com.eva.service.OpenAiResponse', but they were missing at path: $
+2026-03-14 14:18:46.262 [eventLoopGroupProxy-4-1] INFO  Application - POST /api/v1/symptoms/analyze → 200 OK
+2026-03-14 14:18:46.346 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-03-14 14:19:40.902 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors → 200 OK
+2026-03-14 14:19:44.004 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-03-14 14:19:44.017 [eventLoopGroupProxy-4-2] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-03-14 14:20:12.139 [eventLoopGroupProxy-4-1] INFO  com.eva.service.AiService - OpenAI запрос: Решил бросить курить, и на утро очень болела голова. И так в...
+2026-03-14 14:20:13.295 [eventLoopGroupProxy-4-1] ERROR com.eva.service.AiService - Ошибка обращения к OpenAI: Illegal input: Fields [choices, usage] are required for type with serial name 'com.eva.service.OpenAiResponse', but they were missing at path: $
+2026-03-14 14:20:13.322 [eventLoopGroupProxy-4-1] INFO  Application - POST /api/v1/symptoms/analyze → 200 OK
+2026-03-14 14:20:13.402 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-03-14 14:20:35.686 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/doctors → 200 OK
+2026-03-14 14:20:37.687 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-03-14 14:20:37.710 [eventLoopGroupProxy-4-2] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-03-14 14:20:58.197 [eventLoopGroupProxy-4-1] INFO  com.eva.service.AiService - OpenAI запрос: Перестал курить, на утро очень болит голова, хз что делать...
+2026-03-14 14:21:02.262 [eventLoopGroupProxy-4-1] INFO  com.eva.service.AiService - OpenAI ответил за 4054мс | токены: prompt=443 completion=113 total=556
+2026-03-14 14:21:02.302 [eventLoopGroupProxy-4-1] INFO  Application - POST /api/v1/symptoms/analyze → 200 OK
+2026-03-14 14:21:02.396 [eventLoopGroupProxy-4-1] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-03-14 14:28:35.607 [eventLoopGroupProxy-4-3] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-03-14 14:28:35.606 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-03-14 14:28:36.878 [eventLoopGroupProxy-4-3] INFO  Application - GET /api/v1/doctors/2 → 200 OK
+2026-03-14 14:28:36.884 [eventLoopGroupProxy-4-4] INFO  Application - GET /api/v1/doctors/5 → 200 OK
+2026-03-14 14:28:40.103 [eventLoopGroupProxy-4-3] INFO  Application - GET /api/v1/doctors → 200 OK
+2026-03-14 14:28:40.837 [eventLoopGroupProxy-4-3] INFO  Application - GET /api/v1/doctors/1 → 200 OK
+2026-03-14 14:28:40.861 [eventLoopGroupProxy-4-3] INFO  Application - GET /api/v1/doctors/1/reviews → 200 OK
+2026-03-14 14:28:40.899 [eventLoopGroupProxy-4-3] INFO  Application - GET /api/v1/doctors/1/can-review → 200 OK
+2026-03-14 14:28:41.801 [eventLoopGroupProxy-4-3] INFO  Application - GET /api/v1/doctors/1 → 200 OK
+2026-03-14 14:28:41.823 [eventLoopGroupProxy-4-3] INFO  Application - GET /api/v1/schedules → 200 OK
+2026-03-14 14:34:06.610 [eventLoopGroupProxy-4-5] INFO  Application - POST /api/v1/auth/fcm-token → 200 OK
+2026-03-14 14:34:07.169 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/symptoms/history → 200 OK
+2026-03-14 14:34:07.470 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/doctors/2 → 200 OK
+2026-03-14 14:34:07.483 [eventLoopGroupProxy-4-6] INFO  Application - GET /api/v1/doctors/5 → 200 OK
+2026-03-14 14:34:12.696 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/doctors → 200 OK
+2026-03-14 14:34:13.933 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/doctors/1 → 200 OK
+2026-03-14 14:34:14.040 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/doctors/1/reviews → 200 OK
+2026-03-14 14:34:14.119 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/doctors/1/can-review → 200 OK
+2026-03-14 14:34:15.319 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/doctors/1 → 200 OK
+2026-03-14 14:34:15.384 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/schedules → 200 OK
+2026-03-14 14:34:15.433 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/schedules → 200 OK
+2026-03-14 14:34:15.516 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/schedules → 200 OK
+2026-03-14 14:34:15.597 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/schedules → 200 OK
+2026-03-14 14:34:24.461 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/schedules → 200 OK
+2026-03-14 14:34:25.308 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/schedules → 200 OK
+2026-03-14 14:34:26.758 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/schedules → 200 OK
+2026-03-14 14:34:34.409 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/doctors/1 → 200 OK
+2026-03-14 14:34:34.453 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/doctors/1/reviews → 200 OK
+2026-03-14 14:34:34.489 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/doctors/1/can-review → 200 OK
+2026-03-14 14:34:36.130 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/doctors/1 → 200 OK
+2026-03-14 14:34:36.157 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/schedules → 200 OK
+2026-03-14 14:34:36.180 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/schedules → 200 OK
+2026-03-14 14:34:36.207 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/schedules → 200 OK
+2026-03-14 14:34:36.240 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/schedules → 200 OK
+2026-03-14 14:34:37.445 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/schedules → 200 OK
+2026-03-14 14:34:40.746 [eventLoopGroupProxy-4-5] INFO  Application - GET /api/v1/schedules → 200 OK
+2026-03-14 14:40:33.458 [main] INFO  Application - Application stopping: io.ktor.server.application.Application@43fda8d9
+2026-03-14 14:40:33.465 [main] INFO  Application - Application stopped: io.ktor.server.application.Application@43fda8d9

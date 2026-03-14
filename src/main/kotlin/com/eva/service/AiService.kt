@@ -5,7 +5,6 @@ import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
@@ -14,130 +13,188 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.slf4j.LoggerFactory
 import java.math.BigDecimal
+import kotlin.system.measureTimeMillis
 
-class AiService(config: ApplicationConfig) {
+// Системный промпт — вся «медицинская логика» живёт здесь
+private val SYSTEM_PROMPT = """
+Ты — медицинский ассистент мобильного приложения EVA. Твоя задача — проанализировать
+симптомы пользователя и вернуть структурированный JSON-ответ.
 
-    private val log       = LoggerFactory.getLogger(AiService::class.java)
-    private val aiConfig  = config.config("ai")
-    private val baseUrl   = aiConfig.property("baseUrl").getString()
-    private val timeoutMs = aiConfig.property("timeoutMs").getString().toLong()
+СТРОГИЕ ПРАВИЛА:
+1. Отвечай ТОЛЬКО валидным JSON. Никаких markdown-блоков, пояснений или текста вне JSON.
+2. Никогда не ставь окончательный диагноз — только предварительную оценку.
+3. При серьёзных симптомах (боль в груди, затруднённое дыхание, потеря сознания,
+   признаки инсульта — асимметрия лица, онемение конечностей, спутанность речи)
+   устанавливай urgency = "high" и рекомендуй немедленно вызвать скорую помощь (103/112).
+4. Если описание слишком короткое или неинформативное — попроси уточнить симптомы
+   через поле diagnosis, confidence поставь ниже 0.4.
+5. Отвечай исключительно на русском языке.
+6. specializationName — одно слово или короткая фраза, название специализации врача
+   в именительном падеже (например: "Терапевт", "Кардиолог", "Невролог").
 
-    private val httpClient = HttpClient(CIO) {
-        install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
-        install(Logging) { level = LogLevel.INFO }
-        install(HttpTimeout) {
-            requestTimeoutMillis = timeoutMs
-            connectTimeoutMillis = 3000
-        }
-    }
-
-    suspend fun analyze(symptomsText: String): AiAnalysisResult {
-        return try {
-            analyzeStub(symptomsText)
-        } catch (e: Exception) {
-            log.error("AI service error: ${e.message}", e)
-            AiAnalysisResult(
-                diagnosis          = "AI-сервис временно недоступен.",
-                recommendations    = "Пожалуйста, запишитесь к врачу для получения консультации.",
-                urgency            = "normal",
-                confidence         = BigDecimal("0.0"),
-                modelVersion       = "stub-fallback",
-                processingMs       = 0,
-                rawResponse        = null,
-                isStub             = true,
-                specializationName = null
-            )
-        }
-    }
-
-    private fun analyzeStub(symptomsText: String): AiAnalysisResult {
-        log.info("[AI STUB] Analyzing: ${symptomsText.take(50)}...")
-        val start     = System.currentTimeMillis()
-        val lowerText = symptomsText.lowercase()
-
-        data class R(val diagnosis: String, val recommendations: String,
-                     val urgency: String, val confidence: String, val spec: String)
-
-        val r = when {
-            "боль в груди" in lowerText || "сердце" in lowerText ->
-                R("Возможные проблемы с сердечно-сосудистой системой",
-                    "Рекомендуется СРОЧНОЕ обращение к кардиологу. Вызовите скорую помощь при усилении боли.",
-                    "urgent", "0.7200", "Кардиология")
-            "температур" in lowerText || "простуд" in lowerText || "насморк" in lowerText ->
-                R("Вероятное направление: ОРВИ или грипп",
-                    "Рекомендуется обратиться к терапевту. Обильное питьё, постельный режим.",
-                    "normal", "0.7800", "Терапия")
-            "голов" in lowerText && "боль" in lowerText ->
-                R("Головная боль напряжения или мигрень",
-                    "Рекомендуется консультация невролога. Избегайте стресса, обеспечьте отдых.",
-                    "normal", "0.6500", "Неврология")
-            "живот" in lowerText || "желудок" in lowerText ->
-                R("Возможные нарушения ЖКТ",
-                    "Рекомендуется обратиться к терапевту или гастроэнтерологу.",
-                    "normal", "0.6000", "Гастроэнтерология")
-            "сыпь" in lowerText || "зуд" in lowerText || "кожа" in lowerText ->
-                R("Возможное кожное заболевание или аллергическая реакция",
-                    "Рекомендуется консультация дерматолога.",
-                    "low", "0.5500", "Дерматология")
-            else ->
-                R("Недостаточно данных для предварительного анализа",
-                    "Рекомендуется очная консультация терапевта для уточнения диагноза.",
-                    "low", "0.3000", "Терапия")
-        }
-
-        return AiAnalysisResult(
-            diagnosis          = "${r.diagnosis}\n\n⚠️ ВАЖНО: данный анализ является предварительным и не заменяет консультацию врача.",
-            recommendations    = r.recommendations,
-            urgency            = r.urgency,
-            confidence         = BigDecimal(r.confidence),
-            modelVersion       = "eva-stub-v1.0",
-            processingMs       = (System.currentTimeMillis() - start).toInt() + (100..400).random(),
-            rawResponse        = """{"stub":true,"text":"${symptomsText.take(50)}"}""",
-            isStub             = true,
-            specializationName = r.spec
-        )
-    }
-
-    @Suppress("unused")
-    private suspend fun analyzeReal(symptomsText: String): AiAnalysisResult {
-        val start = System.currentTimeMillis()
-        val response: AiApiResponse = httpClient.post("$baseUrl/analyze") {
-            contentType(ContentType.Application.Json)
-            setBody(AiApiRequest(symptomsText = symptomsText))
-        }.body()
-        return AiAnalysisResult(
-            diagnosis          = response.diagnosis,
-            recommendations    = response.recommendations,
-            urgency            = response.urgency,
-            confidence         = BigDecimal(response.confidence.toString()),
-            modelVersion       = response.modelVersion,
-            processingMs       = (System.currentTimeMillis() - start).toInt(),
-            rawResponse        = response.toString(),
-            isStub             = false,
-            specializationName = null
-        )
-    }
+Структура ответа (строго эта, без лишних полей):
+{
+  "diagnosis": "Предварительная оценка состояния в 1-3 предложениях",
+  "recommendations": "Рекомендации через символ \n, например:\n1. Обратитесь к врачу\n2. Соблюдайте постельный режим",
+  "urgency": "low",
+  "specializationName": "Терапевт",
+  "confidence": 0.75
 }
 
-data class AiAnalysisResult(
-    val diagnosis: String,
-    val recommendations: String,
-    val urgency: String,
-    val confidence: BigDecimal,
-    val modelVersion: String,
-    val processingMs: Int?,
-    val rawResponse: String?,
-    val isStub: Boolean = false,
-    val specializationName: String? = null
-)
+Допустимые значения urgency:
+- "low"    — несрочно, плановая запись
+- "normal" — стоит обратиться в течение 1-3 дней
+- "high"   — срочная медицинская помощь, возможно скорая
+""".trimIndent()
 
-@Serializable data class AiApiRequest(val symptomsText: String)
+// AiService
+class AiService(config: ApplicationConfig) : java.io.Closeable {
+
+    private val logger = LoggerFactory.getLogger(AiService::class.java)
+
+    private val apiKey = config.property("openai.apiKey").getString()
+    private val model  = config.tryGetString("openai.model") ?: "gpt-4o-mini"
+
+    private val json = Json { ignoreUnknownKeys = true }
+
+    private val httpClient = HttpClient(CIO) {
+        install(ContentNegotiation) { json(json) }
+        install(HttpTimeout) {
+            requestTimeoutMillis = 60_000
+            connectTimeoutMillis = 10_000
+        }
+    }
+
+    override fun close() { httpClient.close() }
+
+    suspend fun analyze(symptomsText: String): AiAnalysisResult {
+        logger.info("OpenAI запрос: ${symptomsText.take(60)}...")
+
+        var processingMs = 0L
+        val rawJson: String
+
+        try {
+            val response: OpenAiResponse
+            processingMs = measureTimeMillis {
+                response = httpClient.post("https://api.openai.com/v1/chat/completions") {
+                    contentType(ContentType.Application.Json)
+                    header("Authorization", "Bearer $apiKey")
+                    setBody(
+                        OpenAiRequest(
+                            model    = model,
+                            messages = listOf(
+                                OpenAiMessage(role = "system", content = SYSTEM_PROMPT),
+                                OpenAiMessage(role = "user",   content = "Симптомы пациента:\n$symptomsText")
+                            ),
+                            temperature     = 0.3,
+                            max_tokens      = 600,
+                            response_format = ResponseFormat(type = "json_object")
+                        )
+                    )
+                }.body()
+            }
+
+            val usage = response.usage
+            logger.info(
+                "OpenAI ответил за ${processingMs}мс | " +
+                        "токены: prompt=${usage.prompt_tokens} completion=${usage.completion_tokens} total=${usage.total_tokens}"
+            )
+
+            rawJson = response.choices.firstOrNull()?.message?.content
+                ?: throw IllegalStateException("OpenAI вернул пустой список choices")
+
+        } catch (e: Exception) {
+            logger.error("Ошибка обращения к OpenAI: ${e.message}")
+            return fallbackResult()
+        }
+
+        return try {
+            val parsed = json.decodeFromString<AiJsonResponse>(rawJson)
+
+            val safeUrgency = parsed.urgency
+                .lowercase()
+                .takeIf { it in setOf("low", "normal", "high") }
+                ?: "normal"
+
+            AiAnalysisResult(
+                diagnosis          = parsed.diagnosis.trim(),
+                recommendations    = parsed.recommendations.trim(),
+                urgency            = safeUrgency,
+                specializationName = parsed.specializationName.trim().ifBlank { null },
+                confidence         = BigDecimal(parsed.confidence.coerceIn(0.0, 1.0))
+                    .setScale(4, java.math.RoundingMode.HALF_UP),
+                modelVersion       = model,
+                processingMs       = processingMs.toInt(),
+                rawResponse        = rawJson,
+                isStub             = false
+            )
+        } catch (e: Exception) {
+            logger.error("Не удалось распарсить JSON от OpenAI: $rawJson", e)
+            fallbackResult(rawJson)
+        }
+    }
+
+    private fun fallbackResult(raw: String? = null) = AiAnalysisResult(
+        diagnosis          = "Не удалось выполнить анализ симптомов. Пожалуйста, попробуйте позже или обратитесь к врачу напрямую.",
+        recommendations    = "Запишитесь на приём к терапевту для первичного осмотра.",
+        urgency            = "normal",
+        specializationName = "Терапевт",
+        confidence         = BigDecimal("0.0000"),
+        modelVersion       = "fallback",
+        processingMs       = null,   // БД: CHECK (processing_ms IS NULL OR processing_ms > 0)
+        rawResponse        = raw,
+        isStub             = true
+    )
+}
 
 @Serializable
-data class AiApiResponse(
-    val diagnosis: String,
-    val recommendations: String,
-    val urgency: String,
-    val confidence: Double,
-    val modelVersion: String
+private data class OpenAiRequest(
+    val model           : String,
+    val messages        : List<OpenAiMessage>,
+    val temperature     : Double,
+    val max_tokens      : Int,
+    val response_format : ResponseFormat
+)
+
+@Serializable
+private data class OpenAiMessage(val role: String, val content: String)
+
+@Serializable
+private data class ResponseFormat(val type: String)
+
+@Serializable
+private data class OpenAiResponse(
+    val choices : List<OpenAiChoice>,
+    val usage   : OpenAiUsage
+)
+
+@Serializable
+private data class OpenAiChoice(val message: OpenAiMessage)
+
+@Serializable
+private data class OpenAiUsage(
+    val prompt_tokens     : Int,
+    val completion_tokens : Int,
+    val total_tokens      : Int
+)
+
+@Serializable
+private data class AiJsonResponse(
+    val diagnosis          : String,
+    val recommendations    : String,
+    val urgency            : String,
+    val specializationName : String,
+    val confidence         : Double
+)
+
+data class AiAnalysisResult(
+    val diagnosis          : String,
+    val recommendations    : String,
+    val urgency            : String,
+    val specializationName : String?,
+    val confidence         : BigDecimal,
+    val modelVersion       : String,
+    val processingMs       : Int?,
+    val rawResponse        : String?,
+    val isStub             : Boolean = false
 )

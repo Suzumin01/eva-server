@@ -17,8 +17,10 @@ class ScheduleRepositoryImpl {
         date: LocalDate? = null,
         dateTo: LocalDate? = null
     ): List<Schedule> = transaction {
-        val today   = LocalDate.now()
-        val nowTime = java.time.LocalTime.now()
+        // Используем московское время — данные в БД хранятся в UTC+3
+        val moscowZone = java.time.ZoneId.of("Europe/Moscow")
+        val today   = LocalDate.now(moscowZone)
+        val nowTime = java.time.LocalTime.now(moscowZone)
 
         val query = (SchedulesTable innerJoin DoctorsTable)
             .select {
@@ -26,8 +28,13 @@ class ScheduleRepositoryImpl {
                         (SchedulesTable.isAvailable eq true) and
                         (SchedulesTable.slotDate greaterEq today)
             }
-        date?.let  { query.andWhere { SchedulesTable.slotDate eq it } }
-        dateTo?.let { query.andWhere { SchedulesTable.slotDate lessEq it } }
+        // Если передан только date — точный день; если передан dateTo — date становится нижней границей диапазона
+        if (dateTo != null) {
+            date?.let  { query.andWhere { SchedulesTable.slotDate greaterEq it } }
+            query.andWhere { SchedulesTable.slotDate lessEq dateTo }
+        } else {
+            date?.let  { query.andWhere { SchedulesTable.slotDate eq it } }
+        }
 
         query.orderBy(SchedulesTable.slotDate to SortOrder.ASC, SchedulesTable.slotTime to SortOrder.ASC)
             .map { it.toSchedule() }
@@ -114,7 +121,18 @@ class AppointmentRepositoryImpl {
     }
 
     fun cancel(appointmentId: UUID, userId: UUID): Boolean = transaction {
-        val rows = AppointmentsTable.update({
+        val scheduleId = AppointmentsTable
+            .slice(AppointmentsTable.scheduleId)
+            .select {
+                AppointmentsTable.appointmentId eq appointmentId and
+                        (AppointmentsTable.userId eq userId) and
+                        (AppointmentsTable.status eq "scheduled")
+            }
+            .singleOrNull()
+            ?.get(AppointmentsTable.scheduleId)
+            ?: return@transaction false
+
+        AppointmentsTable.update({
             AppointmentsTable.appointmentId eq appointmentId and
                     (AppointmentsTable.userId eq userId) and
                     (AppointmentsTable.status eq "scheduled")
@@ -123,18 +141,12 @@ class AppointmentRepositoryImpl {
             it[updatedAt] = OffsetDateTime.now()
         }
 
-        if (rows > 0) {
-            // Освобождаем слот
-            val scheduleId = AppointmentsTable
-                .select { AppointmentsTable.appointmentId eq appointmentId }
-                .single()[AppointmentsTable.scheduleId]
-
-            SchedulesTable.update({ SchedulesTable.scheduleId eq scheduleId }) {
-                it[isAvailable] = true
-                it[updatedAt]   = OffsetDateTime.now()
-            }
+        SchedulesTable.update({ SchedulesTable.scheduleId eq scheduleId }) {
+            it[isAvailable] = true
+            it[updatedAt]   = OffsetDateTime.now()
         }
-        rows > 0
+
+        true
     }
 
     fun setConclusion(appointmentId: UUID, conclusion: String): Boolean = transaction {

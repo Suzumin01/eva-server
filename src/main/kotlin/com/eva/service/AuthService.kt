@@ -38,7 +38,7 @@ class AuthService(
         )
     }
 
-    fun login(email: String, password: String): String {
+    fun login(email: String, password: String): LoginResult {
         val user = userRepository.findByEmail(email)
             ?: throw IllegalArgumentException("Неверный email или пароль")
 
@@ -52,8 +52,16 @@ class AuthService(
             throw IllegalArgumentException("Неверный email или пароль")
 
         userRepository.updateLastLogin(user.userId)
-        return generateToken(user.userId, user.roleName)
+        val token = generateToken(user.userId, user.roleName)
+        return LoginResult(token = token, userId = user.userId, fullName = user.fullName, roleName = user.roleName)
     }
+
+    data class LoginResult(
+        val token: String,
+        val userId: UUID,
+        val fullName: String,
+        val roleName: String
+    )
 
     fun generateToken(userId: UUID, role: String): String =
         JWT.create()

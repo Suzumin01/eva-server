@@ -40,7 +40,9 @@ fun Application.configureSecurity() {
 }
 
 fun ApplicationCall.getUserId(): String =
-    principal<JWTPrincipal>()!!.payload.getClaim("userId").asString()
+    principal<JWTPrincipal>()?.payload?.getClaim("userId")?.asString()
+        ?: error("getUserId() вызван вне authenticate-блока")
 
 fun ApplicationCall.getUserRole(): String =
-    principal<JWTPrincipal>()!!.payload.getClaim("role").asString()
+    principal<JWTPrincipal>()?.payload?.getClaim("role")?.asString()
+        ?: error("getUserRole() вызван вне authenticate-блока")
