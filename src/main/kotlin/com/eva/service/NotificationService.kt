@@ -1,13 +1,16 @@
 package com.eva.service
 
+import com.eva.data.repository.AppointmentRepositoryImpl
 import com.eva.data.repository.FcmTokenRepositoryImpl
 import com.eva.data.repository.NotificationRepositoryImpl
+import java.time.LocalDate
 import java.util.UUID
 
 class NotificationService(
     private val notificationRepository: NotificationRepositoryImpl,
     private val fcmService: FcmService,
-    private val fcmTokenRepository: FcmTokenRepositoryImpl
+    private val fcmTokenRepository: FcmTokenRepositoryImpl,
+    private val appointmentRepository: AppointmentRepositoryImpl
 ) {
 
     suspend fun notifyAppointmentCreated(
@@ -82,6 +85,20 @@ class NotificationService(
             "appointmentId" to appointmentId.toString(),
             "notifId"       to notifId.toString()
         ))
+    }
+
+    // Отправляет напоминания по всем записям на сегодня — вызывается из планировщика в Routing.kt
+    suspend fun scheduleDailyReminders() {
+        val today = LocalDate.now()
+        val appointments = appointmentRepository.findUpcomingForReminder(today)
+        appointments.forEach { appt ->
+            notifyAppointmentReminder(
+                userId        = appt.userId,
+                appointmentId = appt.appointmentId,
+                doctorName    = appt.doctorName,
+                time          = appt.slotTime.toString()
+            )
+        }
     }
 
     private suspend fun sendPush(userId: UUID, title: String, body: String, data: Map<String, String>) {

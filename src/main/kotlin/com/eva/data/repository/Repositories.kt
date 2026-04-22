@@ -171,6 +171,19 @@ class AppointmentRepositoryImpl {
         } > 0
     }
 
+    fun findUpcomingForReminder(date: LocalDate): List<Appointment> = transaction {
+        AppointmentsTable
+            .innerJoin(DoctorsTable, { AppointmentsTable.doctorId }, { DoctorsTable.doctorId })
+            .innerJoin(ClinicsTable, { DoctorsTable.clinicId }, { ClinicsTable.clinicId })
+            .innerJoin(SpecializationsTable, { DoctorsTable.specializationId }, { SpecializationsTable.specializationId })
+            .innerJoin(SchedulesTable, { AppointmentsTable.scheduleId }, { SchedulesTable.scheduleId })
+            .select {
+                (SchedulesTable.slotDate eq date) and
+                (AppointmentsTable.status eq "scheduled")
+            }
+            .map { it.toAppointment() }
+    }
+
     fun complete(appointmentId: UUID): Boolean = transaction {
         AppointmentsTable.update({
             AppointmentsTable.appointmentId eq appointmentId and

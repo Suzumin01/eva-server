@@ -17,7 +17,10 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.slf4j.LoggerFactory
 import java.util.UUID
+
+private val routesLogger = LoggerFactory.getLogger("com.eva.api.routes.Routes")
 
 fun Route.specializationRoutes(specializationRepository: SpecializationRepositoryImpl) {
     route("/specializations") {
@@ -227,13 +230,17 @@ fun Route.appointmentRoutes(
                         mapOf("message" to "Ошибка при создании записи"))
 
                 call.application.launch(Dispatchers.IO) {
-                    notificationService.notifyAppointmentCreated(
-                        userId        = userId,
-                        appointmentId = appointmentId,
-                        doctorName    = appointment.doctorName,
-                        date          = appointment.slotDate.toString(),
-                        time          = appointment.slotTime.toString()
-                    )
+                    try {
+                        notificationService.notifyAppointmentCreated(
+                            userId        = userId,
+                            appointmentId = appointmentId,
+                            doctorName    = appointment.doctorName,
+                            date          = appointment.slotDate.toString(),
+                            time          = appointment.slotTime.toString()
+                        )
+                    } catch (e: Exception) {
+                        routesLogger.error("Ошибка отправки уведомления о записи $appointmentId: ${e.message}", e)
+                    }
                 }
 
                 logRepository.log(
@@ -316,12 +323,16 @@ fun Route.appointmentRoutes(
                         MessageResponse("Запись уже отменена или завершена"))
 
                 call.application.launch(Dispatchers.IO) {
-                    notificationService.notifyAppointmentCancelled(
-                        userId        = userId,
-                        appointmentId = appointmentId,
-                        doctorName    = appointment.doctorName,
-                        date          = appointment.slotDate.toString()
-                    )
+                    try {
+                        notificationService.notifyAppointmentCancelled(
+                            userId        = userId,
+                            appointmentId = appointmentId,
+                            doctorName    = appointment.doctorName,
+                            date          = appointment.slotDate.toString()
+                        )
+                    } catch (e: Exception) {
+                        routesLogger.error("Ошибка отправки уведомления об отмене $appointmentId: ${e.message}", e)
+                    }
                 }
 
                 logRepository.log(userId, "APPOINTMENT_CANCEL",

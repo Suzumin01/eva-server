@@ -86,7 +86,7 @@ class AiService(config: ApplicationConfig) : java.io.Closeable {
                             model    = model,
                             messages = listOf(
                                 OpenAiMessage(role = "system", content = SYSTEM_PROMPT),
-                                OpenAiMessage(role = "user",   content = "Симптомы пациента:\n$symptomsText")
+                                OpenAiMessage(role = "user",   content = "Симптомы пациента:\n---\n$symptomsText\n---")
                             ),
                             temperature     = 0.3,
                             max_tokens      = 600,
