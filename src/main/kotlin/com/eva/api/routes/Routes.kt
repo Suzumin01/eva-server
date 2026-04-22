@@ -4,6 +4,9 @@ import com.eva.api.dto.*
 import com.eva.data.repository.*
 import com.eva.plugins.getUserId
 import com.eva.plugins.getUserRole
+import io.ktor.server.plugins.ratelimit.*
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import com.eva.service.AiService
 import com.eva.service.NotificationService
 import io.ktor.http.*
@@ -234,7 +237,10 @@ fun Route.appointmentRoutes(
                 logRepository.log(
                     userId = userId,
                     action = "APPOINTMENT_CREATE",
-                    meta   = """{"appointmentId":"$appointmentId","doctorId":${req.doctorId}}"""
+                    meta   = buildJsonObject {
+                        put("appointmentId", appointmentId.toString())
+                        put("doctorId", req.doctorId)
+                    }.toString()
                 )
 
                 call.respond(HttpStatusCode.Created, appointment.toDto())
@@ -318,7 +324,7 @@ fun Route.appointmentRoutes(
                 }
 
                 logRepository.log(userId, "APPOINTMENT_CANCEL",
-                    meta = """{"appointmentId":"$appointmentId"}""")
+                    meta = buildJsonObject { put("appointmentId", appointmentId.toString()) }.toString())
 
                 call.respond(MessageResponse("Запись отменена"))
             }
@@ -350,46 +356,44 @@ fun Route.symptomsRoutes(
     authenticate("jwt-auth") {
         route("/symptoms") {
 
-            post("/analyze") {
-                val userId = UUID.fromString(call.getUserId())
-                val req    = call.receive<AnalyzeSymptomsRequest>()
+            rateLimit(RateLimitName("ai_analyze")) {
+                post("/analyze") {
+                    val userId = UUID.fromString(call.getUserId())
+                    val req    = call.receive<AnalyzeSymptomsRequest>()
 
-                if (req.symptomsText.length < 20)
-                    return@post call.respond(HttpStatusCode.BadRequest,
-                        mapOf("message" to "Описание симптомов слишком короткое (минимум 20 символов)"))
-                if (req.symptomsText.length > 5000)
-                    return@post call.respond(HttpStatusCode.BadRequest,
-                        mapOf("message" to "Описание симптомов слишком длинное (максимум 5000 символов)"))
+                    if (req.symptomsText.length < 20)
+                        return@post call.respond(HttpStatusCode.BadRequest,
+                            mapOf("message" to "Описание симптомов слишком короткое (минимум 20 символов)"))
+                    if (req.symptomsText.length > 5000)
+                        return@post call.respond(HttpStatusCode.BadRequest,
+                            mapOf("message" to "Описание симптомов слишком длинное (максимум 5000 символов)"))
 
-                // Сначала получаем ответ от AI
-                val aiResult = aiService.analyze(req.symptomsText)
+                    val aiResult  = aiService.analyze(req.symptomsText)
+                    val requestId = symptomsRepository.create(userId, req.symptomsText)
 
-                // Сохраняем запрос и ответ только после успешного анализа
-                val requestId = symptomsRepository.create(userId, req.symptomsText)
+                    symptomsRepository.saveAiResponse(
+                        requestId       = requestId,
+                        diagnosis       = aiResult.diagnosis,
+                        recommendations = aiResult.recommendations,
+                        urgency         = aiResult.urgency,
+                        modelVersion    = aiResult.modelVersion,
+                        confidence      = aiResult.confidence,
+                        processingMs    = aiResult.processingMs,
+                        rawResponse     = aiResult.rawResponse
+                    )
 
-                // Сохранить ответ
-                symptomsRepository.saveAiResponse(
-                    requestId       = requestId,
-                    diagnosis       = aiResult.diagnosis,
-                    recommendations = aiResult.recommendations,
-                    urgency         = aiResult.urgency,
-                    modelVersion    = aiResult.modelVersion,
-                    confidence      = aiResult.confidence,
-                    processingMs    = aiResult.processingMs,
-                    rawResponse     = aiResult.rawResponse
-                )
-
-                call.respond(AnalyzeSymptomsResponse(
-                    requestId          = requestId.toString(),
-                    diagnosis          = aiResult.diagnosis,
-                    recommendations    = aiResult.recommendations,
-                    urgency            = aiResult.urgency,
-                    confidence         = aiResult.confidence.toPlainString(),
-                    modelVersion       = aiResult.modelVersion,
-                    processingMs       = aiResult.processingMs,
-                    isStub             = aiResult.isStub,
-                    specializationName = aiResult.specializationName
-                ))
+                    call.respond(AnalyzeSymptomsResponse(
+                        requestId          = requestId.toString(),
+                        diagnosis          = aiResult.diagnosis,
+                        recommendations    = aiResult.recommendations,
+                        urgency            = aiResult.urgency,
+                        confidence         = aiResult.confidence.toPlainString(),
+                        modelVersion       = aiResult.modelVersion,
+                        processingMs       = aiResult.processingMs,
+                        isStub             = aiResult.isStub,
+                        specializationName = aiResult.specializationName
+                    ))
+                }
             }
 
             get("/history") {

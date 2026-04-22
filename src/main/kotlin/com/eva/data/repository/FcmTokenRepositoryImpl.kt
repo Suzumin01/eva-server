@@ -41,7 +41,19 @@ class FcmTokenRepositoryImpl {
             .map { it[FcmTokensTable.token] }
     }
 
-    fun deactivateToken(token: String) {
+    fun deactivateToken(token: String, userId: UUID) {
+        transaction {
+            FcmTokensTable.update({
+                (FcmTokensTable.token eq token) and (FcmTokensTable.userId eq userId)
+            }) {
+                it[isActive]  = false
+                it[updatedAt] = OffsetDateTime.now()
+            }
+        }
+    }
+
+    // (FcmService: устаревший токен, отклонённый Firebase)
+    internal fun deactivateTokenInternal(token: String) {
         transaction {
             FcmTokensTable.update({ FcmTokensTable.token eq token }) {
                 it[isActive]  = false

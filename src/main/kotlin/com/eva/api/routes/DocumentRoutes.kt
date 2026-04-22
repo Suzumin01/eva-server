@@ -136,8 +136,13 @@ fun Route.documentRoutes(documentRepository: DocumentRepositoryImpl) {
                     ?: return@get call.respond(HttpStatusCode.NotFound)
                 val file = File(doc.filePath)
                 if (!file.exists()) return@get call.respond(HttpStatusCode.NotFound)
+                // Санируем имя файла: оставляем только безопасные символы,
+                // чтобы исключить header injection через спецсимволы и переводы строк
+                val safeFileName = doc.fileName
+                    .replace(Regex("[^a-zA-Z0-9._\\-а-яА-ЯёЁ ]"), "_")
+                    .take(200)
                 call.response.header(HttpHeaders.ContentDisposition,
-                    "attachment; filename=\"${doc.fileName}\"")
+                    "attachment; filename=\"$safeFileName\"")
                 call.respondFile(file)
             }
 

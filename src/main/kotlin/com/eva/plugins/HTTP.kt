@@ -3,26 +3,28 @@ package com.eva.plugins
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.callloging.*
-import io.ktor.server.plugins.cors.routing.*
+import io.ktor.server.plugins.ratelimit.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import org.slf4j.event.Level
+import kotlin.time.Duration.Companion.hours
 
 fun Application.configureHTTP() {
 
-    install(CORS) {
-        allowMethod(HttpMethod.Options)
-        allowMethod(HttpMethod.Get)
-        allowMethod(HttpMethod.Post)
-        allowMethod(HttpMethod.Put)
-        allowMethod(HttpMethod.Patch)
-        allowMethod(HttpMethod.Delete)
-        allowHeader(HttpHeaders.Authorization)
-        allowHeader(HttpHeaders.ContentType)
-        // TODO: в production заменить на конкретные домены:
-        // allowHost("your-domain.com", schemes = listOf("https"))
-        anyHost()
+    // CORS не нужен: API используется только мобильным клиентом (Android).
+    // Если потребуется веб-панель — добавить install(CORS) { allowHost("admin.example.com", ...) }
+
+    install(RateLimit) {
+        // 10 запросов к AI-анализу в час на пользователя
+        register(RateLimitName("ai_analyze")) {
+            rateLimiter(limit = 10, refillPeriod = 1.hours)
+            requestKey { call ->
+                call.request.headers["Authorization"]?.removePrefix("Bearer ")?.take(36) ?: "anonymous"
+            }
+        }
     }
 
     install(CallLogging) {

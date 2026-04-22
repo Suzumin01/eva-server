@@ -6,6 +6,8 @@ import com.eva.data.repository.LogRepositoryImpl
 import com.eva.data.repository.UserRepositoryImpl
 import com.eva.plugins.getUserId
 import com.eva.service.AuthService
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -44,7 +46,7 @@ fun Route.authRoutes(
                 userId    = userId,
                 action    = "USER_REGISTER",
                 ipAddress = call.request.origin.remoteHost,
-                meta      = """{"email":"${req.email}"}"""
+                meta      = buildJsonObject { put("email", req.email) }.toString()
             )
 
             call.respond(HttpStatusCode.Created, RegisterResponse(userId = userId.toString()))
@@ -166,8 +168,9 @@ fun Route.authRoutes(
 
             // DELETE /api/v1/auth/fcm-token — разлогин, деактивировать токен
             delete("/fcm-token") {
-                val req = call.receive<RegisterFcmTokenRequest>()
-                fcmTokenRepository.deactivateToken(req.token)
+                val userId = UUID.fromString(call.getUserId())
+                val req    = call.receive<RegisterFcmTokenRequest>()
+                fcmTokenRepository.deactivateToken(req.token, userId)
                 call.respond(mapOf("message" to "Токен деактивирован"))
             }
         }

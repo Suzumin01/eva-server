@@ -74,7 +74,7 @@ class FcmService(
             if (e.messagingErrorCode == com.google.firebase.messaging.MessagingErrorCode.UNREGISTERED ||
                 e.messagingErrorCode == com.google.firebase.messaging.MessagingErrorCode.INVALID_ARGUMENT) {
                 logger.warn("Деактивирую устаревший FCM-токен: ${fcmToken.take(20)}...")
-                fcmTokenRepository.deactivateToken(fcmToken)
+                fcmTokenRepository.deactivateTokenInternal(fcmToken)
             } else {
                 logger.error("Ошибка отправки FCM на токен ${fcmToken.take(20)}...: ${e.message}")
             }
