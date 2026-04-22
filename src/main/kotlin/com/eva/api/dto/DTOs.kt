@@ -21,9 +21,21 @@ data class LoginRequest(
 @Serializable
 data class AuthResponse(
     val token: String,
+    val refreshToken: String,
     val userId: String,
     val fullName: String,
     val role: String
+)
+
+@Serializable
+data class RefreshRequest(
+    val refreshToken: String
+)
+
+@Serializable
+data class RefreshResponse(
+    val token: String,
+    val refreshToken: String
 )
 
 @Serializable

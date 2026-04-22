@@ -1,9 +1,11 @@
 package com.eva.plugins
 
+import com.eva.data.tables.RefreshTokensTable
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.ktor.server.application.*
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 
 fun Application.configureDatabases() {
@@ -27,6 +29,7 @@ fun Application.configureDatabases() {
 
     transaction {
         exec("SELECT 1") { it.next() }
+        SchemaUtils.createMissingTablesAndColumns(RefreshTokensTable)
     }
 
     log.info("Database connected: ${config.property("url").getString()}")

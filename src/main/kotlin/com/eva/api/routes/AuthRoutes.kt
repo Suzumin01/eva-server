@@ -3,6 +3,7 @@ package com.eva.api.routes
 import com.eva.api.dto.*
 import com.eva.data.repository.FcmTokenRepositoryImpl
 import com.eva.data.repository.LogRepositoryImpl
+import com.eva.data.repository.RefreshTokenRepositoryImpl
 import com.eva.data.repository.UserRepositoryImpl
 import com.eva.plugins.getUserId
 import com.eva.service.AuthService
@@ -21,7 +22,8 @@ fun Route.authRoutes(
     authService: AuthService,
     userRepository: UserRepositoryImpl,
     fcmTokenRepository: FcmTokenRepositoryImpl,
-    logRepository: LogRepositoryImpl
+    logRepository: LogRepositoryImpl,
+    refreshTokenRepository: RefreshTokenRepositoryImpl
 ) {
     route("/auth") {
 
@@ -66,10 +68,23 @@ fun Route.authRoutes(
             )
 
             call.respond(AuthResponse(
-                token    = result.token,
-                userId   = result.userId.toString(),
-                fullName = result.fullName,
-                role     = result.roleName
+                token        = result.token,
+                refreshToken = result.refreshToken,
+                userId       = result.userId.toString(),
+                fullName     = result.fullName,
+                role         = result.roleName
+            ))
+        }
+
+        // POST /api/v1/auth/refresh — обновить access-токен по refresh-токену
+        post("/refresh") {
+            val req    = call.receive<RefreshRequest>()
+            val result = authService.refresh(req.refreshToken)
+                ?: return@post call.respond(HttpStatusCode.Unauthorized,
+                    mapOf("message" to "Refresh token недействителен или истёк"))
+            call.respond(RefreshResponse(
+                token        = result.accessToken,
+                refreshToken = result.refreshToken
             ))
         }
 

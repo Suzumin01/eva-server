@@ -1,5 +1,6 @@
 package com.eva.data.tables
 
+import org.jetbrains.exposed.sql.ReferenceOption
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.javatime.date
 import org.jetbrains.exposed.sql.javatime.time
@@ -44,6 +45,16 @@ object FcmTokensTable : Table("fcm_tokens") {
     val isActive = bool("is_active").default(true)
     val createdAt = timestampWithTimeZone("created_at")
     val updatedAt = timestampWithTimeZone("updated_at")
+    override val primaryKey = PrimaryKey(tokenId)
+}
+
+object RefreshTokensTable : Table("refresh_tokens") {
+    val tokenId   = uuid("token_id").clientDefault { java.util.UUID.randomUUID() }
+    val userId    = uuid("user_id").references(UsersTable.userId, onDelete = ReferenceOption.CASCADE)
+    val token     = varchar("token", 255).uniqueIndex()
+    val expiresAt = timestampWithTimeZone("expires_at")
+    val revoked   = bool("revoked").default(false)
+    val createdAt = timestampWithTimeZone("created_at")
     override val primaryKey = PrimaryKey(tokenId)
 }
 

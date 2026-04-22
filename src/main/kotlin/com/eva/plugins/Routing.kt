@@ -27,17 +27,19 @@ fun Application.configureRouting() {
     val appointmentRepository    = AppointmentRepositoryImpl()
     val symptomsRepository       = SymptomsRepositoryImpl()
     val notificationRepository   = NotificationRepositoryImpl()
-    val fcmTokenRepository       = FcmTokenRepositoryImpl()
-    val logRepository            = LogRepositoryImpl()
-    val documentRepository       = DocumentRepositoryImpl()
+    val fcmTokenRepository        = FcmTokenRepositoryImpl()
+    val logRepository             = LogRepositoryImpl()
+    val documentRepository        = DocumentRepositoryImpl()
+    val refreshTokenRepository    = RefreshTokenRepositoryImpl()
 
     val jwtConfig = environment.config.config("jwt")
     val authService = AuthService(
-        userRepository = userRepository,
-        secret         = jwtConfig.property("secret").getString(),
-        issuer         = jwtConfig.property("issuer").getString(),
-        audience       = jwtConfig.property("audience").getString(),
-        expirationMs   = jwtConfig.property("expirationMs").getString().toLong()
+        userRepository         = userRepository,
+        refreshTokenRepository = refreshTokenRepository,
+        secret                 = jwtConfig.property("secret").getString(),
+        issuer                 = jwtConfig.property("issuer").getString(),
+        audience               = jwtConfig.property("audience").getString(),
+        expirationMs           = jwtConfig.property("expirationMs").getString().toLong()
     )
 
     val fcmService = FcmService(fcmTokenRepository, fcmCredentialsPath)
@@ -72,7 +74,7 @@ fun Application.configureRouting() {
 
     routing {
         route("/api/v1") {
-            authRoutes(authService, userRepository, fcmTokenRepository, logRepository)
+            authRoutes(authService, userRepository, fcmTokenRepository, logRepository, refreshTokenRepository)
             specializationRoutes(specializationRepository)
             doctorRoutes(doctorRepository, clinicRepository)
             scheduleRoutes(scheduleRepository)

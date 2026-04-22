@@ -446,3 +446,41 @@ class DocumentRepositoryImpl {
         createdAt   = this[UserDocumentsTable.createdAt]
     )
 }
+
+class RefreshTokenRepositoryImpl {
+
+    fun create(userId: UUID): String = transaction {
+        val raw = java.util.UUID.randomUUID().toString().replace("-", "") +
+                  java.util.UUID.randomUUID().toString().replace("-", "")
+        RefreshTokensTable.insert {
+            it[RefreshTokensTable.userId]    = userId
+            it[RefreshTokensTable.token]     = raw
+            it[RefreshTokensTable.expiresAt] = OffsetDateTime.now().plusDays(30)
+            it[RefreshTokensTable.createdAt] = OffsetDateTime.now()
+        }
+        raw
+    }
+
+    fun findValidUserId(raw: String): UUID? = transaction {
+        RefreshTokensTable
+            .select {
+                (RefreshTokensTable.token     eq raw) and
+                (RefreshTokensTable.revoked   eq false) and
+                (RefreshTokensTable.expiresAt greater OffsetDateTime.now())
+            }
+            .singleOrNull()
+            ?.get(RefreshTokensTable.userId)
+    }
+
+    fun revoke(raw: String): Unit = transaction {
+        RefreshTokensTable.update({ RefreshTokensTable.token eq raw }) {
+            it[revoked] = true
+        }
+    }
+
+    fun revokeAllForUser(userId: UUID): Unit = transaction {
+        RefreshTokensTable.update({ RefreshTokensTable.userId eq userId }) {
+            it[revoked] = true
+        }
+    }
+}

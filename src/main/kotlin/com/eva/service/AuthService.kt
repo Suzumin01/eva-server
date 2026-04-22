@@ -3,6 +3,7 @@ package com.eva.service
 import at.favre.lib.crypto.bcrypt.BCrypt
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.eva.data.repository.RefreshTokenRepositoryImpl
 import com.eva.data.repository.UserRepositoryImpl
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import java.util.Date
@@ -10,6 +11,7 @@ import java.util.UUID
 
 class AuthService(
     private val userRepository: UserRepositoryImpl,
+    private val refreshTokenRepository: RefreshTokenRepositoryImpl,
     private val secret: String,
     private val issuer: String,
     private val audience: String,
@@ -60,15 +62,37 @@ class AuthService(
             throw IllegalArgumentException("Неверный email или пароль")
 
         userRepository.updateLastLogin(user.userId)
-        val token = generateToken(user.userId, user.roleName)
-        return LoginResult(token = token, userId = user.userId, fullName = user.fullName, roleName = user.roleName)
+        val accessToken  = generateToken(user.userId, user.roleName)
+        val refreshToken = refreshTokenRepository.create(user.userId)
+        return LoginResult(
+            token        = accessToken,
+            refreshToken = refreshToken,
+            userId       = user.userId,
+            fullName     = user.fullName,
+            roleName     = user.roleName
+        )
+    }
+
+    fun refresh(rawRefreshToken: String): RefreshResult? {
+        val userId = refreshTokenRepository.findValidUserId(rawRefreshToken) ?: return null
+        val user   = userRepository.findById(userId) ?: return null
+        refreshTokenRepository.revoke(rawRefreshToken)
+        val newAccessToken  = generateToken(userId, user.roleName)
+        val newRefreshToken = refreshTokenRepository.create(userId)
+        return RefreshResult(newAccessToken, newRefreshToken)
     }
 
     data class LoginResult(
         val token: String,
+        val refreshToken: String,
         val userId: UUID,
         val fullName: String,
         val roleName: String
+    )
+
+    data class RefreshResult(
+        val accessToken: String,
+        val refreshToken: String
     )
 
     fun generateToken(userId: UUID, role: String): String =
