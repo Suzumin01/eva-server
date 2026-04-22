@@ -114,14 +114,20 @@ class DoctorRepositoryImpl {
     }
 
     fun updateReview(reviewId: UUID, userId: UUID, rating: Short, comment: String?): Boolean = transaction {
+        val row = DoctorReviewsTable
+            .select { (DoctorReviewsTable.reviewId eq reviewId) and (DoctorReviewsTable.userId eq userId) }
+            .singleOrNull() ?: return@transaction false
+        val doctorId = row[DoctorReviewsTable.doctorId]
         DoctorReviewsTable.update({
             (DoctorReviewsTable.reviewId eq reviewId) and
                     (DoctorReviewsTable.userId   eq userId)
         }) {
-            it[DoctorReviewsTable.rating]     = rating
-            it[DoctorReviewsTable.comment]    = comment
-            it[DoctorReviewsTable.updatedAt]  = OffsetDateTime.now()
-        } > 0
+            it[DoctorReviewsTable.rating]    = rating
+            it[DoctorReviewsTable.comment]   = comment
+            it[DoctorReviewsTable.updatedAt] = OffsetDateTime.now()
+        }
+        recalculateRatingInTransaction(doctorId)
+        true
     }
 
     fun deleteReview(reviewId: UUID, userId: UUID): Int? = transaction {

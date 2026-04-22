@@ -180,8 +180,18 @@ fun Route.scheduleRoutes(scheduleRepository: ScheduleRepositoryImpl) {
                 ?: return@get call.respond(HttpStatusCode.BadRequest, "Укажите doctorId")
             val dateStr   = call.request.queryParameters["date"]
             val dateToStr = call.request.queryParameters["dateTo"]
-            val date      = dateStr?.let { java.time.LocalDate.parse(it) }
-            val dateTo    = dateToStr?.let { java.time.LocalDate.parse(it) }
+            val date = dateStr?.let {
+                runCatching { java.time.LocalDate.parse(it) }.getOrElse {
+                    return@get call.respond(HttpStatusCode.BadRequest,
+                        mapOf("message" to "Некорректный формат date (ожидается YYYY-MM-DD)"))
+                }
+            }
+            val dateTo = dateToStr?.let {
+                runCatching { java.time.LocalDate.parse(it) }.getOrElse {
+                    return@get call.respond(HttpStatusCode.BadRequest,
+                        mapOf("message" to "Некорректный формат dateTo (ожидается YYYY-MM-DD)"))
+                }
+            }
 
             val slots = scheduleRepository.findByDoctor(doctorId, date, dateTo)
             call.respond(slots.map {

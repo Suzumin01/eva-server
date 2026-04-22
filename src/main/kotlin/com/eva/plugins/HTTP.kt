@@ -2,6 +2,8 @@ package com.eva.plugins
 
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.auth.jwt.*
+import io.ktor.server.auth.*
 import io.ktor.server.plugins.callloging.*
 import io.ktor.server.plugins.ratelimit.*
 import io.ktor.server.plugins.statuspages.*
@@ -22,7 +24,7 @@ fun Application.configureHTTP() {
         register(RateLimitName("ai_analyze")) {
             rateLimiter(limit = 10, refillPeriod = 1.hours)
             requestKey { call ->
-                call.request.headers["Authorization"]?.removePrefix("Bearer ")?.take(36) ?: "anonymous"
+                call.principal<JWTPrincipal>()?.payload?.subject ?: "anonymous"
             }
         }
     }

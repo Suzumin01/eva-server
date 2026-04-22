@@ -131,8 +131,7 @@ fun Route.documentRoutes(documentRepository: DocumentRepositoryImpl) {
                 val userId = UUID.fromString(call.getUserId())
                 val docId  = call.parameters["id"]?.let { runCatching { UUID.fromString(it) }.getOrNull() }
                     ?: return@get call.respond(HttpStatusCode.BadRequest)
-                val docs = documentRepository.findByUser(userId)
-                val doc  = docs.find { it.documentId == docId }
+                val doc = documentRepository.findById(docId, userId)
                     ?: return@get call.respond(HttpStatusCode.NotFound)
                 val file = File(doc.filePath)
                 if (!file.exists()) return@get call.respond(HttpStatusCode.NotFound)

@@ -390,6 +390,16 @@ class DocumentRepositoryImpl {
             .map { it.toDocument() }
     }
 
+    fun findById(documentId: UUID, userId: UUID): Document? = transaction {
+        UserDocumentsTable
+            .select {
+                (UserDocumentsTable.documentId eq documentId) and
+                        (UserDocumentsTable.userId eq userId)
+            }
+            .singleOrNull()
+            ?.toDocument()
+    }
+
     fun create(
         userId: UUID, fileName: String, fileType: String,
         filePath: String, fileSize: Long, category: String, description: String?
