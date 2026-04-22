@@ -28,9 +28,10 @@ fun Route.doctorRoutes(
             val offset           = call.request.queryParameters["offset"]?.toLongOrNull() ?: 0L
 
             val doctors = doctorRepository.findAll(specializationId, clinicId, search, limit, offset)
+            val total   = doctorRepository.countAll(specializationId, clinicId, search)
             call.respond(DoctorListResponse(
                 doctors = doctors.map { it.toDto() },
-                total   = doctors.size
+                total   = total.toInt()
             ))
         }
 
@@ -79,7 +80,6 @@ fun Route.doctorRoutes(
                 }
 
                 doctorRepository.addReview(doctorId, userId, req.rating.toShort(), req.comment)
-                doctorRepository.recalculateRating(doctorId)
                 call.respond(HttpStatusCode.Created, mapOf("message" to "Отзыв добавлен"))
             }
 
@@ -107,11 +107,10 @@ fun Route.doctorRoutes(
                 } ?: return@delete call.respond(HttpStatusCode.BadRequest)
                 val userId = UUID.fromString(call.getUserId())
 
-                val doctorId = doctorRepository.deleteReview(reviewId, userId)
+                doctorRepository.deleteReview(reviewId, userId)
                     ?: return@delete call.respond(HttpStatusCode.NotFound,
                         mapOf("message" to "Отзыв не найден или недоступен для удаления"))
 
-                doctorRepository.recalculateRating(doctorId)
                 call.respond(mapOf("message" to "Отзыв удалён"))
             }
 
@@ -205,7 +204,6 @@ fun Route.appointmentRoutes(
 
                 val appointmentId = appointmentRepository.create(
                     userId     = userId,
-                    doctorId   = req.doctorId,
                     scheduleId = req.scheduleId,
                     notes      = req.notes
                 )
@@ -302,7 +300,7 @@ private fun com.eva.domain.models.Appointment.toDto() = AppointmentResponse(
     clinicAddress      = clinicAddress,
     slotDate           = slotDate.toString(),
     slotTime           = slotTime.toString(),
-    durationMinutes    = 30,
+    durationMinutes    = durationMinutes.toInt(),
     status             = status,
     notes              = notes,
     doctorConclusion   = doctorConclusion,

@@ -37,6 +37,22 @@ class DoctorRepositoryImpl {
             .map { it.toDoctor() }
     }
 
+    fun countAll(
+        specializationId: Short? = null,
+        clinicId: Int? = null,
+        search: String? = null
+    ): Long = transaction {
+        val query = (DoctorsTable innerJoin ClinicsTable innerJoin SpecializationsTable)
+            .slice(DoctorsTable.doctorId.count())
+            .select { DoctorsTable.isActive eq true }
+        specializationId?.let { query.andWhere { DoctorsTable.specializationId eq it } }
+        clinicId?.let       { query.andWhere { DoctorsTable.clinicId eq it } }
+        search?.let {
+            query.andWhere { DoctorsTable.fullName.lowerCase() like "%${it.lowercase()}%" }
+        }
+        query.single()[DoctorsTable.doctorId.count()]
+    }
+
     fun findById(doctorId: Int): Doctor? = transaction {
         (DoctorsTable innerJoin ClinicsTable innerJoin SpecializationsTable)
             .select { DoctorsTable.doctorId eq doctorId and (DoctorsTable.isActive eq true) }
@@ -93,6 +109,7 @@ class DoctorRepositoryImpl {
             it[DoctorReviewsTable.createdAt] = OffsetDateTime.now()
             it[DoctorReviewsTable.updatedAt] = OffsetDateTime.now()
         }
+        recalculateRatingInTransaction(doctorId)
         id
     }
 
@@ -115,10 +132,12 @@ class DoctorRepositoryImpl {
         DoctorReviewsTable.deleteWhere {
             (DoctorReviewsTable.reviewId eq reviewId) and (DoctorReviewsTable.userId eq userId)
         }
+        recalculateRatingInTransaction(doctorId)
         doctorId
     }
 
-    fun recalculateRating(doctorId: Int) = transaction {
+    // Вызывается внутри существующей транзакции (addReview / deleteReview)
+    private fun recalculateRatingInTransaction(doctorId: Int) {
         val row = DoctorReviewsTable
             .slice(DoctorReviewsTable.rating.avg(), DoctorReviewsTable.reviewId.count())
             .select { DoctorReviewsTable.doctorId eq doctorId }

@@ -4,6 +4,7 @@ import at.favre.lib.crypto.bcrypt.BCrypt
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.eva.data.repository.UserRepositoryImpl
+import org.jetbrains.exposed.exceptions.ExposedSQLException
 import java.util.Date
 import java.util.UUID
 
@@ -28,14 +29,21 @@ class AuthService(
             throw IllegalArgumentException("Пользователь с таким телефоном уже существует")
 
         val hash = BCrypt.withDefaults().hashToString(12, password.toCharArray())
-        return userRepository.create(
-            fullName       = fullName,
-            email          = email,
-            phone          = phone,
-            passwordHash   = hash,
-            consentMedical = consentMedical,
-            consentAi      = consentAi
-        )
+        return try {
+            userRepository.create(
+                fullName       = fullName,
+                email          = email,
+                phone          = phone,
+                passwordHash   = hash,
+                consentMedical = consentMedical,
+                consentAi      = consentAi
+            )
+        } catch (e: ExposedSQLException) {
+            // sqlState 23505 = unique_violation (PostgreSQL)
+            if (e.sqlState?.startsWith("23") == true)
+                throw IllegalArgumentException("Пользователь с таким email или телефоном уже существует")
+            throw e
+        }
     }
 
     fun login(email: String, password: String): LoginResult {

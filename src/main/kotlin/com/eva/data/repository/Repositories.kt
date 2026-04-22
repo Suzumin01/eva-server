@@ -67,14 +67,16 @@ class ScheduleRepositoryImpl {
 
 class AppointmentRepositoryImpl {
 
-    fun create(userId: UUID, doctorId: Int, scheduleId: Long, notes: String?): UUID = transaction {
-        val available = SchedulesTable
+    fun create(userId: UUID, scheduleId: Long, notes: String?): UUID = transaction {
+        val scheduleRow = SchedulesTable
             .select { SchedulesTable.scheduleId eq scheduleId }
             .forUpdate()
-            .singleOrNull()?.get(SchedulesTable.isAvailable)
-            ?: throw IllegalArgumentException("Слот расписания не найден")
+            .singleOrNull() ?: throw IllegalArgumentException("Слот расписания не найден")
 
+        val available = scheduleRow[SchedulesTable.isAvailable]
         if (!available) throw IllegalArgumentException("Слот уже занят")
+
+        val doctorId = scheduleRow[SchedulesTable.doctorId]
 
         val userRow = UsersTable
             .slice(UsersTable.allergies, UsersTable.chronicDiseases)
@@ -191,6 +193,7 @@ class AppointmentRepositoryImpl {
         scheduleId         = this[SchedulesTable.scheduleId],
         slotDate           = this[SchedulesTable.slotDate],
         slotTime           = this[SchedulesTable.slotTime],
+        durationMinutes    = this[SchedulesTable.durationMinutes],
         status             = this[AppointmentsTable.status],
         notes              = this[AppointmentsTable.notes],
         doctorConclusion   = this[AppointmentsTable.doctorConclusion],

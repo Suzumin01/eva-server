@@ -74,6 +74,7 @@ data class Appointment(
     val scheduleId: Long,
     val slotDate: LocalDate,
     val slotTime: LocalTime,
+    val durationMinutes: Short,
     val status: String,
     val notes: String?,
     val doctorConclusion: String?,
