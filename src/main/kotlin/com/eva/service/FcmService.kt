@@ -11,22 +11,34 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import org.slf4j.LoggerFactory
+import java.io.File
 
 class FcmService(
-    private val fcmTokenRepository: com.eva.data.repository.FcmTokenRepositoryImpl
+    private val fcmTokenRepository: com.eva.data.repository.FcmTokenRepositoryImpl,
+    credentialsPath: String? = null
 ) {
 
     private val logger = LoggerFactory.getLogger(FcmService::class.java)
     private val enabled: Boolean
 
     init {
-        val serviceAccountPath = this::class.java.classLoader
-            .getResourceAsStream("firebase-service-account.json")
+        // Приоритет: явный путь из конфига → classpath (fallback для локальной разработки)
+        val stream = credentialsPath
+            ?.takeIf { it.isNotBlank() }
+            ?.let { path ->
+                val file = File(path)
+                if (file.exists()) file.inputStream()
+                else {
+                    logger.warn("FCM credentials file not found at '$path', falling back to classpath")
+                    null
+                }
+            }
+            ?: this::class.java.classLoader.getResourceAsStream("firebase-service-account.json")
 
-        if (serviceAccountPath != null) {
+        if (stream != null) {
             try {
                 val options = FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccountPath))
+                    .setCredentials(GoogleCredentials.fromStream(stream))
                     .build()
 
                 if (FirebaseApp.getApps().isEmpty()) {

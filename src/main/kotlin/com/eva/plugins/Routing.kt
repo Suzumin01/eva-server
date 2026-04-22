@@ -11,7 +11,7 @@ fun Application.configureRouting() {
     val doctorRepository           = DoctorRepositoryImpl()
     val specializationRepository   = SpecializationRepositoryImpl()
     val clinicRepository           = ClinicRepositoryImpl()
-    val scheduleRepository         = ScheduleRepositoryImpl()
+    val scheduleRepository         = ScheduleRepositoryImpl(appTimezone)
     val appointmentRepository  = AppointmentRepositoryImpl()
     val symptomsRepository     = SymptomsRepositoryImpl()
     val notificationRepository = NotificationRepositoryImpl()
@@ -28,8 +28,10 @@ fun Application.configureRouting() {
         expirationMs   = jwtConfig.property("expirationMs").getString().toLong()
     )
 
-    val fcmService = FcmService(fcmTokenRepository)
-    val aiService  = AiService(environment.config)
+    val appTimezone        = environment.config.tryGetString("app.timezone") ?: "Europe/Moscow"
+    val fcmCredentialsPath = environment.config.tryGetString("fcm.credentialsPath")
+    val fcmService         = FcmService(fcmTokenRepository, fcmCredentialsPath)
+    val aiService          = AiService(environment.config)
 
     val notificationService = NotificationService(
         notificationRepository = notificationRepository,
@@ -43,7 +45,7 @@ fun Application.configureRouting() {
             specializationRoutes(specializationRepository)
             doctorRoutes(doctorRepository, clinicRepository)
             scheduleRoutes(scheduleRepository)
-            appointmentRoutes(appointmentRepository, notificationService, logRepository)
+            appointmentRoutes(appointmentRepository, notificationService, logRepository, appTimezone)
             symptomsRoutes(symptomsRepository, aiService)
             notificationRoutes(notificationRepository, fcmTokenRepository)
             documentRoutes(documentRepository)

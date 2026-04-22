@@ -199,8 +199,10 @@ fun Route.scheduleRoutes(scheduleRepository: ScheduleRepositoryImpl) {
 fun Route.appointmentRoutes(
     appointmentRepository: AppointmentRepositoryImpl,
     notificationService: NotificationService,
-    logRepository: LogRepositoryImpl
+    logRepository: LogRepositoryImpl,
+    timezone: String = "Europe/Moscow"
 ) {
+    val zoneId = java.time.ZoneId.of(timezone)
     suspend fun ApplicationCall.parseAppointmentId(): UUID? {
         val id = parameters["id"]?.let { runCatching { UUID.fromString(it) }.getOrNull() }
         if (id == null) respond(HttpStatusCode.BadRequest, mapOf("message" to "Некорректный ID записи"))
@@ -299,12 +301,11 @@ fun Route.appointmentRoutes(
                 if (appointment == null || appointment.userId != userId)
                     return@delete call.respond(HttpStatusCode.NotFound)
 
-                val slotDateTime = java.time.OffsetDateTime.of(
-                    appointment.slotDate, appointment.slotTime,
-                    java.time.ZoneOffset.of("+03:00")
+                val slotDateTime = java.time.ZonedDateTime.of(
+                    appointment.slotDate, appointment.slotTime, zoneId
                 )
                 val hoursUntil = java.time.Duration.between(
-                    java.time.OffsetDateTime.now(), slotDateTime).toHours()
+                    java.time.ZonedDateTime.now(zoneId), slotDateTime).toHours()
                 if (hoursUntil < 24) {
                     return@delete call.respond(HttpStatusCode.UnprocessableEntity,
                         mapOf("message" to "Отмена невозможна менее чем за 24 часа до приёма"))

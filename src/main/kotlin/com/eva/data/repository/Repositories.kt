@@ -10,17 +10,16 @@ import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.util.UUID
 
-class ScheduleRepositoryImpl {
+class ScheduleRepositoryImpl(private val timezone: String = "Europe/Moscow") {
 
     fun findByDoctor(
         doctorId: Int,
         date: LocalDate? = null,
         dateTo: LocalDate? = null
     ): List<Schedule> = transaction {
-        // Используем московское время — данные в БД хранятся в UTC+3
-        val moscowZone = java.time.ZoneId.of("Europe/Moscow")
-        val today   = LocalDate.now(moscowZone)
-        val nowTime = java.time.LocalTime.now(moscowZone)
+        val zoneId  = java.time.ZoneId.of(timezone)
+        val today   = LocalDate.now(zoneId)
+        val nowTime = java.time.LocalTime.now(zoneId)
 
         val query = (SchedulesTable innerJoin DoctorsTable)
             .select {
