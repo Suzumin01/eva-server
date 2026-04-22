@@ -306,6 +306,7 @@ private fun com.eva.domain.models.Appointment.toDto() = AppointmentResponse(
     status             = status,
     notes              = notes,
     doctorConclusion   = doctorConclusion,
+    patientHealthInfo  = patientHealthInfo,
     createdAt          = createdAt.toString()
 )
 

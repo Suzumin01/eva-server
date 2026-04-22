@@ -2,3 +2,6 @@
 /.gradle/
 /build/
 /build/classes/kotlin/main/
+# Credentials
+src/main/resources/firebase-service-account.json
+logs/

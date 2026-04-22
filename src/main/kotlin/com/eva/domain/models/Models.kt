@@ -18,7 +18,11 @@ data class User(
     val consentMedical: Boolean,
     val consentAi: Boolean,
     val lastLoginAt: OffsetDateTime?,
-    val createdAt: OffsetDateTime
+    val createdAt: OffsetDateTime,
+    val allergies: String?,
+    val chronicDiseases: String?,
+    val insurancePolicy: String?,
+    val dateOfBirth: LocalDate?
 )
 
 data class Doctor(
@@ -73,6 +77,7 @@ data class Appointment(
     val status: String,
     val notes: String?,
     val doctorConclusion: String?,
+    val patientHealthInfo: String?,
     val createdAt: OffsetDateTime
 )
 

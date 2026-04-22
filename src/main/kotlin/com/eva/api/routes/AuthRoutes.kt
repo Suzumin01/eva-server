@@ -87,7 +87,11 @@ fun Route.authRoutes(
                     role           = user.roleName,
                     isActive       = user.isActive,
                     consentMedical = user.consentMedical,
-                    consentAi      = user.consentAi
+                    consentAi      = user.consentAi,
+                    dateOfBirth    = user.dateOfBirth?.toString(),
+                    allergies      = user.allergies,
+                    chronicDiseases = user.chronicDiseases,
+                    insurancePolicy = user.insurancePolicy
                 ))
             }
 
@@ -100,10 +104,26 @@ fun Route.authRoutes(
                     require(req.fullName.trim().length >= 2) { "Имя должно содержать минимум 2 символа" }
                 }
 
+                val parsedDob = req.dateOfBirth?.let {
+                    if (it.isBlank()) null
+                    else runCatching { java.time.LocalDate.parse(it) }.getOrElse {
+                        return@patch call.respond(HttpStatusCode.BadRequest,
+                            mapOf("message" to "Некорректный формат даты рождения (ожидается YYYY-MM-DD)"))
+                    }
+                }
+
                 val updated = userRepository.updateProfile(
-                    userId   = userId,
-                    fullName = req.fullName,
-                    phone    = req.phone
+                    userId          = userId,
+                    fullName        = req.fullName,
+                    phone           = req.phone,
+                    dateOfBirth     = parsedDob,
+                    allergies       = req.allergies,
+                    chronicDiseases = req.chronicDiseases,
+                    insurancePolicy = req.insurancePolicy,
+                    clearDateOfBirth = req.dateOfBirth == "",
+                    clearAllergies   = req.allergies == "",
+                    clearChronic     = req.chronicDiseases == "",
+                    clearInsurance   = req.insurancePolicy == ""
                 )
 
                 if (!updated) return@patch call.respond(HttpStatusCode.NotFound)
@@ -111,14 +131,18 @@ fun Route.authRoutes(
                 val user = userRepository.findById(userId)
                     ?: return@patch call.respond(HttpStatusCode.InternalServerError)
                 call.respond(UserProfileDto(
-                    userId         = user.userId.toString(),
-                    fullName       = user.fullName,
-                    email          = user.email,
-                    phone          = user.phone,
-                    role           = user.roleName,
-                    isActive       = user.isActive,
-                    consentMedical = user.consentMedical,
-                    consentAi      = user.consentAi
+                    userId          = user.userId.toString(),
+                    fullName        = user.fullName,
+                    email           = user.email,
+                    phone           = user.phone,
+                    role            = user.roleName,
+                    isActive        = user.isActive,
+                    consentMedical  = user.consentMedical,
+                    consentAi       = user.consentAi,
+                    dateOfBirth     = user.dateOfBirth?.toString(),
+                    allergies       = user.allergies,
+                    chronicDiseases = user.chronicDiseases,
+                    insurancePolicy = user.insurancePolicy
                 ))
             }
 

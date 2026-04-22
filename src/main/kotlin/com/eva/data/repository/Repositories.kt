@@ -76,15 +76,29 @@ class AppointmentRepositoryImpl {
 
         if (!available) throw IllegalArgumentException("Слот уже занят")
 
+        val userRow = UsersTable
+            .slice(UsersTable.allergies, UsersTable.chronicDiseases)
+            .select { UsersTable.userId eq userId }
+            .singleOrNull()
+
+        val patientHealthInfo = buildString {
+            val allergies = userRow?.get(UsersTable.allergies)
+            val chronic   = userRow?.get(UsersTable.chronicDiseases)
+            if (!allergies.isNullOrBlank()) append("Аллергии: $allergies")
+            if (!allergies.isNullOrBlank() && !chronic.isNullOrBlank()) append("\n")
+            if (!chronic.isNullOrBlank()) append("Хронические заболевания: $chronic")
+        }.ifBlank { null }
+
         val id = UUID.randomUUID()
         AppointmentsTable.insert {
             it[appointmentId] = id
-            it[AppointmentsTable.userId]     = userId
-            it[AppointmentsTable.doctorId]   = doctorId
-            it[AppointmentsTable.scheduleId] = scheduleId
-            it[AppointmentsTable.notes]           = notes
+            it[AppointmentsTable.userId]            = userId
+            it[AppointmentsTable.doctorId]          = doctorId
+            it[AppointmentsTable.scheduleId]        = scheduleId
+            it[AppointmentsTable.notes]             = notes
             it[AppointmentsTable.doctorConclusion]  = null
-            it[AppointmentsTable.status]              = "scheduled"
+            it[AppointmentsTable.patientHealthInfo] = patientHealthInfo
+            it[AppointmentsTable.status]            = "scheduled"
             it[createdAt] = OffsetDateTime.now()
             it[updatedAt] = OffsetDateTime.now()
         }
@@ -180,6 +194,7 @@ class AppointmentRepositoryImpl {
         status             = this[AppointmentsTable.status],
         notes              = this[AppointmentsTable.notes],
         doctorConclusion   = this[AppointmentsTable.doctorConclusion],
+        patientHealthInfo  = this[AppointmentsTable.patientHealthInfo],
         createdAt          = this[AppointmentsTable.createdAt]
     )
 }

@@ -13,7 +13,18 @@ import io.ktor.server.routing.*
 import java.io.File
 import java.util.UUID
 
-private val UPLOAD_DIR = System.getenv("UPLOAD_DIR") ?: "/app/uploads"
+private val UPLOAD_DIR: String = run {
+    val fromEnv = System.getenv("UPLOAD_DIR")
+    if (!fromEnv.isNullOrBlank()) {
+        fromEnv
+    } else {
+        // В Docker задаётся через ENV UPLOAD_DIR=/app/uploads.
+        // При локальном запуске создаём папку рядом с рабочим каталогом.
+        val localDir = File("uploads").absoluteFile
+        localDir.mkdirs()
+        localDir.absolutePath
+    }
+}
 private const val MAX_FILE_SIZE = 20 * 1024 * 1024L // 20 MB
 
 fun Route.documentRoutes(documentRepository: DocumentRepositoryImpl) {
@@ -52,8 +63,16 @@ fun Route.documentRoutes(documentRepository: DocumentRepositoryImpl) {
                                 fileName.matches(Regex(".*\\.(jpg|jpeg|png|heic)", RegexOption.IGNORE_CASE)) -> "image"
                                 else -> "other"
                             }
-                            val dir  = File("$UPLOAD_DIR/$userId").also { it.mkdirs() }
-                            val file = File(dir, "${UUID.randomUUID()}_$fileName")
+                            val dir = File("$UPLOAD_DIR/$userId").also {
+                                if (!it.exists() && !it.mkdirs()) {
+                                    // директорию создать не удалось — прерываем загрузку
+                                    savedPath = ""
+                                    fileSize  = -1L   // сигнал об ошибке ФС
+                                    part.dispose()
+                                    return@forEachPart
+                                }
+                            }
+                            val file = File(dir, "${UUID.randomUUID()}_${fileName.replace(":", "_")}")
                             var written = 0L
                             var overLimit = false
                             part.streamProvider().use { input ->
@@ -82,6 +101,12 @@ fun Route.documentRoutes(documentRepository: DocumentRepositoryImpl) {
                         else -> {}
                     }
                     part.dispose()
+                }
+
+                if (fileSize == -1L) {
+                    return@post call.respond(HttpStatusCode.InternalServerError,
+                        mapOf("message" to "Не удалось создать директорию для загрузки файлов. " +
+                                "Проверьте переменную UPLOAD_DIR или права доступа."))
                 }
 
                 if (fileSize > MAX_FILE_SIZE) {

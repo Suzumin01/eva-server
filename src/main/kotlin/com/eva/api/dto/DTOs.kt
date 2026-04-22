@@ -41,13 +41,21 @@ data class UserProfileDto(
     val role: String,
     val isActive: Boolean,
     val consentMedical: Boolean,
-    val consentAi: Boolean
+    val consentAi: Boolean,
+    val dateOfBirth: String? = null,
+    val allergies: String? = null,
+    val chronicDiseases: String? = null,
+    val insurancePolicy: String? = null
 )
 
 @Serializable
 data class UpdateProfileRequest(
     val fullName: String? = null,
-    val phone: String? = null
+    val phone: String? = null,
+    val dateOfBirth: String? = null,
+    val allergies: String? = null,
+    val chronicDiseases: String? = null,
+    val insurancePolicy: String? = null
 )
 
 @Serializable
@@ -150,6 +158,7 @@ data class AppointmentResponse(
     val status: String,
     val notes: String?,
     val doctorConclusion: String? = null,
+    val patientHealthInfo: String? = null,
     val createdAt: String
 )
 
