@@ -7,10 +7,11 @@ import io.ktor.server.application.*
 import io.ktor.server.routing.*
 
 fun Application.configureRouting() {
-    val userRepository         = UserRepositoryImpl()
-    val doctorRepository       = DoctorRepositoryImpl()
-    val clinicRepository       = ClinicRepositoryImpl()
-    val scheduleRepository     = ScheduleRepositoryImpl()
+    val userRepository             = UserRepositoryImpl()
+    val doctorRepository           = DoctorRepositoryImpl()
+    val specializationRepository   = SpecializationRepositoryImpl()
+    val clinicRepository           = ClinicRepositoryImpl()
+    val scheduleRepository         = ScheduleRepositoryImpl()
     val appointmentRepository  = AppointmentRepositoryImpl()
     val symptomsRepository     = SymptomsRepositoryImpl()
     val notificationRepository = NotificationRepositoryImpl()
@@ -39,6 +40,7 @@ fun Application.configureRouting() {
     routing {
         route("/api/v1") {
             authRoutes(authService, userRepository, fcmTokenRepository, logRepository)
+            specializationRoutes(specializationRepository)
             doctorRoutes(doctorRepository, clinicRepository)
             scheduleRoutes(scheduleRepository)
             appointmentRoutes(appointmentRepository, notificationService, logRepository)

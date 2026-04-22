@@ -115,6 +115,13 @@ data class AddReviewRequest(
 )
 
 @Serializable
+data class SpecializationResponse(
+    val specializationId: Int,
+    val name: String,
+    val description: String? = null
+)
+
+@Serializable
 data class ClinicResponse(
     val clinicId: Int,
     val clinicName: String,

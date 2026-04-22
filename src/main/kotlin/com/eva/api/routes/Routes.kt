@@ -3,6 +3,7 @@ package com.eva.api.routes
 import com.eva.api.dto.*
 import com.eva.data.repository.*
 import com.eva.plugins.getUserId
+import com.eva.plugins.getUserRole
 import com.eva.service.AiService
 import com.eva.service.NotificationService
 import io.ktor.http.*
@@ -14,6 +15,14 @@ import io.ktor.server.routing.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.UUID
+
+fun Route.specializationRoutes(specializationRepository: SpecializationRepositoryImpl) {
+    route("/specializations") {
+        get {
+            call.respond(specializationRepository.findAll())
+        }
+    }
+}
 
 fun Route.doctorRoutes(
     doctorRepository: DoctorRepositoryImpl,
@@ -248,6 +257,32 @@ fun Route.appointmentRoutes(
                     return@get call.respond(HttpStatusCode.Forbidden)
 
                 call.respond(appointment.toDto())
+            }
+
+            patch("/{id}/complete") {
+                if (call.getUserRole() != "admin")
+                    return@patch call.respond(HttpStatusCode.Forbidden,
+                        mapOf("message" to "Недостаточно прав"))
+                val appointmentId = call.parseAppointmentId() ?: return@patch
+                val updated = appointmentRepository.complete(appointmentId)
+                if (!updated) return@patch call.respond(HttpStatusCode.Conflict,
+                    MessageResponse("Запись не найдена или уже завершена/отменена"))
+                call.respond(MessageResponse("Статус записи обновлён: completed"))
+            }
+
+            patch("/{id}/conclusion") {
+                if (call.getUserRole() != "admin")
+                    return@patch call.respond(HttpStatusCode.Forbidden,
+                        mapOf("message" to "Недостаточно прав"))
+                val appointmentId = call.parseAppointmentId() ?: return@patch
+                val req = call.receive<SetConclusionRequest>()
+                if (req.conclusion.isBlank())
+                    return@patch call.respond(HttpStatusCode.BadRequest,
+                        mapOf("message" to "Заключение не может быть пустым"))
+                val updated = appointmentRepository.setConclusion(appointmentId, req.conclusion)
+                if (!updated) return@patch call.respond(HttpStatusCode.NotFound,
+                    MessageResponse("Запись не найдена"))
+                call.respond(MessageResponse("Заключение сохранено"))
             }
 
             delete("/{id}") {

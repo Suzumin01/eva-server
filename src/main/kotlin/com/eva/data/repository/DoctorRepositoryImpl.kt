@@ -170,6 +170,21 @@ class DoctorRepositoryImpl {
     )
 }
 
+class SpecializationRepositoryImpl {
+    fun findAll(): List<com.eva.api.dto.SpecializationResponse> = transaction {
+        SpecializationsTable
+            .selectAll()
+            .orderBy(SpecializationsTable.specializationId to SortOrder.ASC)
+            .map {
+                com.eva.api.dto.SpecializationResponse(
+                    specializationId = it[SpecializationsTable.specializationId].toInt(),
+                    name             = it[SpecializationsTable.name],
+                    description      = it[SpecializationsTable.description]
+                )
+            }
+    }
+}
+
 class ClinicRepositoryImpl {
     fun findAll(): List<Clinic> = transaction {
         // Агрегируем рейтинг из отзывов врачей клиники
