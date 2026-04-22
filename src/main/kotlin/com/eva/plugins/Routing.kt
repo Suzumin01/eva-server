@@ -42,6 +42,7 @@ fun Application.configureRouting() {
 
     val fcmService = FcmService(fcmTokenRepository, fcmCredentialsPath)
     val aiService  = AiService(environment.config)
+    environment.monitor.subscribe(ApplicationStopped) { aiService.close() }
 
     val notificationService = NotificationService(
         notificationRepository = notificationRepository,

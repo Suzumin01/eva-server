@@ -62,7 +62,7 @@ fun Route.authRoutes(
                 action    = "USER_LOGIN",
                 ipAddress = call.request.origin.remoteHost,
                 userAgent = call.request.headers["User-Agent"],
-                meta      = """{"success":true}"""
+                meta      = buildJsonObject { put("success", true) }.toString()
             )
 
             call.respond(AuthResponse(
