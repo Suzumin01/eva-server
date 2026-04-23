@@ -16,8 +16,8 @@ import java.time.ZonedDateTime
 private val routingLogger = LoggerFactory.getLogger("com.eva.plugins.Routing")
 
 fun Application.configureRouting() {
-    val appTimezone        = environment.config.tryGetString("app.timezone") ?: "Europe/Moscow"
-    val fcmCredentialsPath = environment.config.tryGetString("fcm.credentialsPath")
+    val appTimezone        = environment.config.propertyOrNull("app.timezone")?.getString() ?: "Europe/Moscow"
+    val fcmCredentialsPath = environment.config.propertyOrNull("fcm.credentialsPath")?.getString()
 
     val userRepository           = UserRepositoryImpl()
     val doctorRepository         = DoctorRepositoryImpl()

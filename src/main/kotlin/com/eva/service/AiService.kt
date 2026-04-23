@@ -54,8 +54,8 @@ class AiService(config: ApplicationConfig) : java.io.Closeable {
 
     private val logger = LoggerFactory.getLogger(AiService::class.java)
 
-    private val apiKey = config.property("openai.apiKey").getString()
-    private val model  = config.tryGetString("openai.model") ?: "gpt-4o-mini"
+    private val apiKey = config.propertyOrNull("openai.apiKey")?.getString()
+    private val model  = config.propertyOrNull("openai.model")?.getString() ?: "gpt-4o-mini"
 
     private val json = Json { ignoreUnknownKeys = true }
 
@@ -70,6 +70,10 @@ class AiService(config: ApplicationConfig) : java.io.Closeable {
     override fun close() { httpClient.close() }
 
     suspend fun analyze(symptomsText: String): AiAnalysisResult {
+        if (apiKey == null) {
+            logger.warn("OPENAI_API_KEY не задан — возвращаю заглушку")
+            return fallbackResult()
+        }
         logger.info("OpenAI запрос: ${symptomsText.take(60)}...")
 
         var processingMs = 0L
@@ -86,7 +90,7 @@ class AiService(config: ApplicationConfig) : java.io.Closeable {
                             model    = model,
                             messages = listOf(
                                 OpenAiMessage(role = "system", content = SYSTEM_PROMPT),
-                                OpenAiMessage(role = "user",   content = "Симптомы пациента:\n---\n$symptomsText\n---")
+                                OpenAiMessage(role = "user",   content = "Симптомы пациента:\n<symptoms>\n$symptomsText\n</symptoms>")
                             ),
                             temperature     = 0.3,
                             max_tokens      = 600,

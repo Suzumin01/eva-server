@@ -5,6 +5,7 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.ktor.server.application.*
 import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.DatabaseConfig
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 
@@ -18,14 +19,15 @@ fun Application.configureDatabases() {
         password             = config.property("password").getString()
         maximumPoolSize      = config.property("maxPoolSize").getString().toInt()
         isAutoCommit         = false
-        transactionIsolation = "TRANSACTION_REPEATABLE_READ"
         poolName             = "EVA-HikariPool"
         connectionInitSql    = "SET search_path TO public"
         validate()
     }
 
     val dataSource = HikariDataSource(hikariConfig)
-    Database.connect(dataSource)
+    Database.connect(dataSource, databaseConfig = DatabaseConfig {
+        defaultIsolationLevel = java.sql.Connection.TRANSACTION_REPEATABLE_READ
+    })
 
     transaction {
         exec("SELECT 1") { it.next() }

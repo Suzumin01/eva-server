@@ -5,6 +5,7 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.eva.data.repository.RefreshTokenRepositoryImpl
 import com.eva.data.repository.UserRepositoryImpl
+import com.eva.plugins.ConflictException
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import java.util.Date
 import java.util.UUID
@@ -26,9 +27,9 @@ class AuthService(
         consentAi: Boolean
     ): UUID {
         if (userRepository.existsByEmail(email))
-            throw IllegalArgumentException("Пользователь с таким email уже существует")
+            throw ConflictException("Пользователь с таким email уже существует")
         if (phone != null && userRepository.existsByPhone(phone))
-            throw IllegalArgumentException("Пользователь с таким телефоном уже существует")
+            throw ConflictException("Пользователь с таким телефоном уже существует")
 
         val hash = BCrypt.withDefaults().hashToString(12, password.toCharArray())
         return try {

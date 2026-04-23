@@ -29,6 +29,10 @@ repositories {
     mavenCentral()
 }
 
+configurations.all {
+    exclude(group = "com.google.guava", module = "listenablefuture")
+}
+
 dependencies {
     // Ktor server core
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
@@ -63,6 +67,9 @@ dependencies {
     // Firebase Admin SDK (FCM)
     implementation("com.google.firebase:firebase-admin:$firebase_version")
 
+    // Guava — required by Firebase Admin SDK at runtime
+    implementation("com.google.guava:guava:32.1.1-jre")
+
     // HTTP Client (для вызова AI-модуля)
     implementation("io.ktor:ktor-client-core:$ktor_version")
     implementation("io.ktor:ktor-client-cio:$ktor_version")
@@ -72,9 +79,6 @@ dependencies {
 
     // Logging
     implementation("ch.qos.logback:logback-classic:$logback_version")
-
-    // Firebase
-    implementation("com.google.firebase:firebase-admin:9.2.0")
 
     // Testing
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")

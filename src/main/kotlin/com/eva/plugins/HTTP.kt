@@ -53,6 +53,10 @@ fun Application.configureHTTP() {
             call.respond(HttpStatusCode.Forbidden, ApiError("FORBIDDEN", "Недостаточно прав"))
         }
 
+        exception<ConflictException> { call, e ->
+            call.respond(HttpStatusCode.Conflict, ApiError("CONFLICT", e.message ?: "Конфликт данных"))
+        }
+
         exception<IllegalArgumentException> { call, e ->
             call.respond(HttpStatusCode.BadRequest, ApiError("BAD_REQUEST", e.message ?: "Некорректный запрос"))
         }
@@ -72,3 +76,5 @@ data class ApiError(
     val code: String,
     val message: String
 )
+
+class ConflictException(message: String) : Exception(message)
