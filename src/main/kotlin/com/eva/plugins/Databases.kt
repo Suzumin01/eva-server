@@ -6,7 +6,6 @@ import io.ktor.server.application.*
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.DatabaseConfig
-import org.jetbrains.exposed.sql.transactions.transaction
 
 fun Application.configureDatabases() {
     val config = environment.config.config("database")
@@ -37,9 +36,10 @@ fun Application.configureDatabases() {
     }
 
     val dataSource = HikariDataSource(hikariConfig)
-    Database.connect(dataSource, databaseConfig = DatabaseConfig {
-        defaultIsolationLevel = java.sql.Connection.TRANSACTION_REPEATABLE_READ
-    })
+    // Не устанавливаем defaultIsolationLevel: Exposed не будет вызывать setTransactionIsolation()
+    // на соединениях HikariCP (autoCommit=false), что вызывало PSQLException.
+    // PostgreSQL-дефолт READ COMMITTED достаточен для всех операций.
+    Database.connect(dataSource, databaseConfig = DatabaseConfig { })
 
     log.info("Database connected and migrations applied: $jdbcUrl")
 }
