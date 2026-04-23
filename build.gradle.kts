@@ -8,6 +8,7 @@ val postgresql_version: String by project
 val hikari_version: String by project
 val bcrypt_version: String by project
 val firebase_version: String by project
+val flyway_version: String by project
 
 plugins {
     kotlin("jvm") version "1.9.22"
@@ -60,6 +61,10 @@ dependencies {
     // PostgreSQL Driver + Connection Pool
     implementation("org.postgresql:postgresql:$postgresql_version")
     implementation("com.zaxxer:HikariCP:$hikari_version")
+
+    // Flyway — database migrations
+    implementation("org.flywaydb:flyway-core:$flyway_version")
+    implementation("org.flywaydb:flyway-database-postgresql:$flyway_version")
 
     // Password hashing
     implementation("at.favre.lib:bcrypt:$bcrypt_version")

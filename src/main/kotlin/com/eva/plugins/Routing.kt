@@ -9,9 +9,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
-import java.time.LocalTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
 
 private val routingLogger = LoggerFactory.getLogger("com.eva.plugins.Routing")
 
@@ -24,7 +21,7 @@ fun Application.configureRouting() {
     val specializationRepository = SpecializationRepositoryImpl()
     val clinicRepository         = ClinicRepositoryImpl()
     val scheduleRepository       = ScheduleRepositoryImpl(appTimezone)
-    val appointmentRepository    = AppointmentRepositoryImpl()
+    val appointmentRepository    = AppointmentRepositoryImpl(appTimezone)
     val symptomsRepository       = SymptomsRepositoryImpl()
     val notificationRepository   = NotificationRepositoryImpl()
     val fcmTokenRepository        = FcmTokenRepositoryImpl()
@@ -53,22 +50,15 @@ fun Application.configureRouting() {
         appointmentRepository  = appointmentRepository
     )
 
-    // Ежедневные напоминания о записях — запускаются каждый день в 08:00 по appTimezone
+    // Напоминания о записях — проверка каждые 5 минут
     launch(Dispatchers.IO) {
-        val zoneId = ZoneId.of(appTimezone)
         while (true) {
             try {
-                val now  = ZonedDateTime.now(zoneId)
-                val next = now.toLocalDate().atTime(LocalTime.of(8, 0)).atZone(zoneId)
-                    .let { if (it.isAfter(now)) it else it.plusDays(1) }
-                val delayMs = java.time.Duration.between(now, next).toMillis()
-                delay(delayMs)
-                routingLogger.info("Отправка ежедневных напоминаний о записях")
-                notificationService.scheduleDailyReminders()
+                notificationService.sendPendingReminders()
             } catch (e: Exception) {
                 routingLogger.error("Ошибка в планировщике напоминаний: ${e.message}", e)
-                delay(60_000)
             }
+            delay(5 * 60_000L)
         }
     }
 

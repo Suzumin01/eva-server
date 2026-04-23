@@ -7,8 +7,19 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.OffsetDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.UUID
+
+data class ReminderTarget(
+    val appointmentId: UUID,
+    val userId:        UUID,
+    val doctorName:    String,
+    val slotDate:      java.time.LocalDate,
+    val slotTime:      java.time.LocalTime
+)
 
 class ScheduleRepositoryImpl(private val timezone: String = "Europe/Moscow") {
 
@@ -64,7 +75,7 @@ class ScheduleRepositoryImpl(private val timezone: String = "Europe/Moscow") {
     )
 }
 
-class AppointmentRepositoryImpl {
+class AppointmentRepositoryImpl(private val timezone: String = "Europe/Moscow") {
 
     fun create(userId: UUID, scheduleId: Long, notes: String?): UUID = transaction {
         val scheduleRow = SchedulesTable
@@ -171,17 +182,55 @@ class AppointmentRepositoryImpl {
         } > 0
     }
 
-    fun findUpcomingForReminder(date: LocalDate): List<Appointment> = transaction {
-        AppointmentsTable
-            .innerJoin(DoctorsTable, { AppointmentsTable.doctorId }, { DoctorsTable.doctorId })
-            .innerJoin(ClinicsTable, { DoctorsTable.clinicId }, { ClinicsTable.clinicId })
-            .innerJoin(SpecializationsTable, { DoctorsTable.specializationId }, { SpecializationsTable.specializationId })
-            .innerJoin(SchedulesTable, { AppointmentsTable.scheduleId }, { SchedulesTable.scheduleId })
-            .select {
-                (SchedulesTable.slotDate eq date) and
-                (AppointmentsTable.status eq "scheduled")
+    fun findAndMarkPendingReminders24h(): List<ReminderTarget> =
+        findAndMarkPending("reminder_24h_sent", fromMinutes = 23 * 60L, toMinutes = 25 * 60L)
+
+    fun findAndMarkPendingReminders1h(): List<ReminderTarget> =
+        findAndMarkPending("reminder_1h_sent", fromMinutes = 55L, toMinutes = 65L)
+
+    private val dtFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+
+    private fun findAndMarkPending(
+        flagColumn: String,
+        fromMinutes: Long,
+        toMinutes: Long
+    ): List<ReminderTarget> = transaction {
+        val now  = LocalDateTime.now(ZoneId.of(timezone))
+        val from = now.plusMinutes(fromMinutes).format(dtFmt)
+        val to   = now.plusMinutes(toMinutes).format(dtFmt)
+
+        exec("""
+            WITH due AS (
+                SELECT a.appointment_id, a.user_id, d.full_name AS doctor_name,
+                       s.slot_date, s.slot_time
+                FROM appointments a
+                JOIN schedules s ON s.schedule_id = a.schedule_id
+                JOIN doctors   d ON d.doctor_id   = a.doctor_id
+                WHERE a.status = 'scheduled'
+                  AND a.$flagColumn = false
+                  AND (s.slot_date + s.slot_time) BETWEEN '$from' AND '$to'
+            ),
+            updated AS (
+                UPDATE appointments
+                SET $flagColumn = true, updated_at = NOW()
+                WHERE appointment_id IN (SELECT appointment_id FROM due)
+                RETURNING appointment_id
+            )
+            SELECT due.* FROM due
+            JOIN updated ON updated.appointment_id = due.appointment_id
+        """) { rs ->
+            val list = mutableListOf<ReminderTarget>()
+            while (rs.next()) {
+                list.add(ReminderTarget(
+                    appointmentId = UUID.fromString(rs.getString("appointment_id")),
+                    userId        = UUID.fromString(rs.getString("user_id")),
+                    doctorName    = rs.getString("doctor_name"),
+                    slotDate      = rs.getObject("slot_date", java.time.LocalDate::class.java),
+                    slotTime      = rs.getObject("slot_time", java.time.LocalTime::class.java)
+                ))
             }
-            .map { it.toAppointment() }
+            list
+        } ?: emptyList()
     }
 
     fun complete(appointmentId: UUID): Boolean = transaction {

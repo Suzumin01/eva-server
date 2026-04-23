@@ -1,26 +1,38 @@
 package com.eva.plugins
 
-import com.eva.data.tables.RefreshTokensTable
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.ktor.server.application.*
+import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.DatabaseConfig
-import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 
 fun Application.configureDatabases() {
     val config = environment.config.config("database")
 
+    val jdbcUrl  = config.property("url").getString()
+    val user     = config.property("user").getString()
+    val password = config.property("password").getString()
+
+    // Flyway: накатываем миграции до того, как открываем пул соединений
+    Flyway.configure()
+        .dataSource(jdbcUrl, user, password)
+        .locations("classpath:db/migration")
+        .baselineOnMigrate(true)      // на существующей БД без истории Flyway пометит V1 как применённую
+        .baselineVersion("1")
+        .load()
+        .migrate()
+
     val hikariConfig = HikariConfig().apply {
-        driverClassName      = config.property("driver").getString()
-        jdbcUrl              = config.property("url").getString()
-        username             = config.property("user").getString()
-        password             = config.property("password").getString()
-        maximumPoolSize      = config.property("maxPoolSize").getString().toInt()
-        isAutoCommit         = false
-        poolName             = "EVA-HikariPool"
-        connectionInitSql    = "SET search_path TO public"
+        driverClassName   = config.property("driver").getString()
+        this.jdbcUrl      = jdbcUrl
+        username          = user
+        this.password     = password
+        maximumPoolSize   = config.property("maxPoolSize").getString().toInt()
+        isAutoCommit      = false
+        poolName          = "EVA-HikariPool"
+        connectionInitSql = "SET search_path TO public"
         validate()
     }
 
@@ -29,10 +41,5 @@ fun Application.configureDatabases() {
         defaultIsolationLevel = java.sql.Connection.TRANSACTION_REPEATABLE_READ
     })
 
-    transaction {
-        exec("SELECT 1") { it.next() }
-        SchemaUtils.createMissingTablesAndColumns(RefreshTokensTable)
-    }
-
-    log.info("Database connected: ${config.property("url").getString()}")
+    log.info("Database connected and migrations applied: $jdbcUrl")
 }

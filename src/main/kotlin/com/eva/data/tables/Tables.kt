@@ -130,8 +130,10 @@ object AppointmentsTable : Table("appointments") {
     val notes              = text("notes").nullable()
     val doctorConclusion   = text("doctor_conclusion").nullable()
     val patientHealthInfo  = text("patient_health_info").nullable()
+    val reminder24hSent    = bool("reminder_24h_sent").default(false)
+    val reminder1hSent     = bool("reminder_1h_sent").default(false)
     val createdAt          = timestampWithTimeZone("created_at")
-    val updatedAt     = timestampWithTimeZone("updated_at")
+    val updatedAt          = timestampWithTimeZone("updated_at")
     override val primaryKey = PrimaryKey(appointmentId)
 }
 
