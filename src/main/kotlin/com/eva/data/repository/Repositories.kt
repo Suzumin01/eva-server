@@ -4,6 +4,7 @@ import com.eva.data.tables.*
 import com.eva.domain.models.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.statements.StatementType
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -199,7 +200,8 @@ class AppointmentRepositoryImpl(private val timezone: String = "Europe/Moscow") 
         val from = now.plusMinutes(fromMinutes).format(dtFmt)
         val to   = now.plusMinutes(toMinutes).format(dtFmt)
 
-        exec("""
+        exec(
+            stmt = """
             WITH due AS (
                 SELECT a.appointment_id, a.user_id, d.full_name AS doctor_name,
                        s.slot_date, s.slot_time
@@ -218,7 +220,9 @@ class AppointmentRepositoryImpl(private val timezone: String = "Europe/Moscow") 
             )
             SELECT due.* FROM due
             JOIN updated ON updated.appointment_id = due.appointment_id
-        """) { rs ->
+            """,
+            explicitStatementType = StatementType.SELECT
+        ) { rs ->
             val list = mutableListOf<ReminderTarget>()
             while (rs.next()) {
                 list.add(ReminderTarget(
