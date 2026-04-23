@@ -7,16 +7,25 @@ import com.eva.data.repository.RefreshTokenRepositoryImpl
 import com.eva.data.repository.UserRepositoryImpl
 import com.eva.plugins.getUserId
 import com.eva.service.AuthService
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.put
 import io.ktor.http.*
+import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.plugins.origin
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
+import java.io.File
 import java.util.UUID
+
+private val AVATAR_DIR: String = run {
+    val fromEnv = System.getenv("UPLOAD_DIR")
+    val base = if (!fromEnv.isNullOrBlank()) fromEnv else File("uploads").absolutePath
+    File("$base/avatars").also { it.mkdirs() }.absolutePath
+}
+private const val AVATAR_MAX_BYTES = 5 * 1024 * 1024L // 5 MB
 
 fun Route.authRoutes(
     authService: AuthService,
@@ -88,6 +97,18 @@ fun Route.authRoutes(
             ))
         }
 
+        // GET /api/v1/auth/photo/{userId} — отдать аватар (без авторизации)
+        get("/photo/{userId}") {
+            val rawId = call.parameters["userId"]
+                ?: return@get call.respond(HttpStatusCode.BadRequest)
+            val file = listOf("jpg", "png")
+                .map { File("$AVATAR_DIR/$rawId.$it") }
+                .firstOrNull { it.exists() }
+                ?: return@get call.respond(HttpStatusCode.NotFound)
+            val contentType = if (file.extension == "png") ContentType.Image.PNG else ContentType.Image.JPEG
+            call.respondFile(file, configure = { this.contentType = contentType })
+        }
+
         authenticate("jwt-auth") {
 
             // GET /api/v1/auth/me
@@ -96,20 +117,7 @@ fun Route.authRoutes(
                 val user   = userRepository.findById(userId)
                     ?: return@get call.respond(HttpStatusCode.NotFound)
 
-                call.respond(UserProfileDto(
-                    userId         = user.userId.toString(),
-                    fullName       = user.fullName,
-                    email          = user.email,
-                    phone          = user.phone,
-                    role           = user.roleName,
-                    isActive       = user.isActive,
-                    consentMedical = user.consentMedical,
-                    consentAi      = user.consentAi,
-                    dateOfBirth    = user.dateOfBirth?.toString(),
-                    allergies      = user.allergies,
-                    chronicDiseases = user.chronicDiseases,
-                    insurancePolicy = user.insurancePolicy
-                ))
+                call.respond(user.toProfileDto())
             }
 
             // PATCH /api/v1/auth/me
@@ -147,20 +155,64 @@ fun Route.authRoutes(
 
                 val user = userRepository.findById(userId)
                     ?: return@patch call.respond(HttpStatusCode.InternalServerError)
-                call.respond(UserProfileDto(
-                    userId          = user.userId.toString(),
-                    fullName        = user.fullName,
-                    email           = user.email,
-                    phone           = user.phone,
-                    role            = user.roleName,
-                    isActive        = user.isActive,
-                    consentMedical  = user.consentMedical,
-                    consentAi       = user.consentAi,
-                    dateOfBirth     = user.dateOfBirth?.toString(),
-                    allergies       = user.allergies,
-                    chronicDiseases = user.chronicDiseases,
-                    insurancePolicy = user.insurancePolicy
-                ))
+                call.respond(user.toProfileDto())
+            }
+
+            // POST /api/v1/auth/photo — загрузить аватар (multipart/form-data, поле "photo")
+            post("/photo") {
+                val userId = UUID.fromString(call.getUserId())
+                val multipart = call.receiveMultipart()
+
+                var ext       = ""
+                var savedFile: File? = null
+                var overLimit = false
+
+                multipart.forEachPart { part ->
+                    if (part is PartData.FileItem && part.name == "photo") {
+                        val origName = part.originalFileName ?: ""
+                        ext = when {
+                            origName.endsWith(".jpg",  ignoreCase = true) -> "jpg"
+                            origName.endsWith(".jpeg", ignoreCase = true) -> "jpg"
+                            origName.endsWith(".png",  ignoreCase = true) -> "png"
+                            else -> ""
+                        }
+                        if (ext.isNotEmpty()) {
+                            val file = File("$AVATAR_DIR/$userId.$ext")
+                            var written = 0L
+                            part.streamProvider().use { input ->
+                                file.outputStream().use { output ->
+                                    val buf = ByteArray(8192)
+                                    var read: Int
+                                    while (input.read(buf).also { read = it } != -1) {
+                                        written += read
+                                        if (written > AVATAR_MAX_BYTES) { overLimit = true; break }
+                                        output.write(buf, 0, read)
+                                    }
+                                }
+                            }
+                            if (overLimit) file.delete() else savedFile = file
+                        }
+                    }
+                    part.dispose()
+                }
+
+                when {
+                    overLimit     -> call.respond(HttpStatusCode.PayloadTooLarge,
+                        mapOf("message" to "Файл слишком большой (макс. 5 МБ)"))
+                    ext.isEmpty() -> call.respond(HttpStatusCode.BadRequest,
+                        mapOf("message" to "Поддерживаются только jpg/jpeg/png"))
+                    savedFile == null -> call.respond(HttpStatusCode.BadRequest,
+                        mapOf("message" to "Файл не получен (ожидается поле 'photo')"))
+                    else -> {
+                        // Удаляем старый аватар с другим расширением
+                        listOf("jpg", "png").filter { it != ext }.forEach {
+                            File("$AVATAR_DIR/$userId.$it").delete()
+                        }
+                        val avatarUrl = "/api/v1/auth/photo/$userId"
+                        userRepository.updateAvatarUrl(userId, avatarUrl)
+                        call.respond(mapOf("avatarUrl" to avatarUrl))
+                    }
+                }
             }
 
             // POST /api/v1/auth/fcm-token — сохранить FCM-токен устройства
@@ -191,3 +243,19 @@ fun Route.authRoutes(
         }
     }
 }
+
+private fun com.eva.domain.models.User.toProfileDto() = UserProfileDto(
+    userId          = userId.toString(),
+    fullName        = fullName,
+    email           = email,
+    phone           = phone,
+    role            = roleName,
+    isActive        = isActive,
+    consentMedical  = consentMedical,
+    consentAi       = consentAi,
+    avatarUrl       = avatarUrl,
+    dateOfBirth     = dateOfBirth?.toString(),
+    allergies       = allergies,
+    chronicDiseases = chronicDiseases,
+    insurancePolicy = insurancePolicy
+)

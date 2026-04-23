@@ -19,6 +19,7 @@ data class User(
     val consentAi: Boolean,
     val lastLoginAt: OffsetDateTime?,
     val createdAt: OffsetDateTime,
+    val avatarUrl: String?,
     val allergies: String?,
     val chronicDiseases: String?,
     val insurancePolicy: String?,

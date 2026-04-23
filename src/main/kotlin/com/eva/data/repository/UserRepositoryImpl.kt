@@ -101,6 +101,13 @@ class UserRepositoryImpl {
         } > 0
     }
 
+    fun updateAvatarUrl(userId: UUID, url: String): Boolean = transaction {
+        UsersTable.update({ UsersTable.userId eq userId }) {
+            it[avatarUrl]  = url
+            it[updatedAt]  = OffsetDateTime.now()
+        } > 0
+    }
+
     private fun ResultRow.toUser() = User(
         userId       = this[UsersTable.userId],
         fullName     = this[UsersTable.fullName],
@@ -114,6 +121,7 @@ class UserRepositoryImpl {
         consentAi       = this[UsersTable.consentAi],
         lastLoginAt     = this[UsersTable.lastLoginAt],
         createdAt       = this[UsersTable.createdAt],
+        avatarUrl       = this[UsersTable.avatarUrl],
         allergies       = this[UsersTable.allergies],
         chronicDiseases = this[UsersTable.chronicDiseases],
         insurancePolicy = this[UsersTable.insurancePolicy],
