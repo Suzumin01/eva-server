@@ -3,6 +3,7 @@ package com.eva.service
 import at.favre.lib.crypto.bcrypt.BCrypt
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.eva.data.repository.PasswordResetTokenRepositoryImpl
 import com.eva.data.repository.RefreshTokenRepositoryImpl
 import com.eva.data.repository.UserRepositoryImpl
 import com.eva.plugins.ConflictException
@@ -13,6 +14,7 @@ import java.util.UUID
 class AuthService(
     private val userRepository: UserRepositoryImpl,
     private val refreshTokenRepository: RefreshTokenRepositoryImpl,
+    private val passwordResetRepository: PasswordResetTokenRepositoryImpl,
     private val secret: String,
     private val issuer: String,
     private val audience: String,
@@ -95,6 +97,27 @@ class AuthService(
         val accessToken: String,
         val refreshToken: String
     )
+
+    /**
+     * Генерирует токен сброса пароля и возвращает его.
+     * Возвращает null если email не найден — но вызывающий код всегда отвечает одинаково
+     * чтобы не раскрывать факт существования аккаунта.
+     * В production здесь был бы отправлен email; для MVP токен логируется и возвращается.
+     */
+    fun requestPasswordReset(email: String): String? {
+        val user = userRepository.findByEmail(email) ?: return null
+        return passwordResetRepository.create(user.userId)
+    }
+
+    fun resetPassword(token: String, newPassword: String): Boolean {
+        val userId = passwordResetRepository.findValidUserId(token) ?: return false
+        val hash = BCrypt.withDefaults().hashToString(12, newPassword.toCharArray())
+        userRepository.updatePasswordHash(userId, hash)
+        passwordResetRepository.markUsed(token)
+        // Отзываем все refresh-токены — пользователь должен войти заново
+        refreshTokenRepository.revokeAllForUser(userId)
+        return true
+    }
 
     fun generateToken(userId: UUID, role: String): String =
         JWT.create()

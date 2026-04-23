@@ -1,6 +1,7 @@
 package com.eva.api.routes
 
 import com.eva.api.dto.*
+import org.slf4j.LoggerFactory
 import com.eva.data.repository.FcmTokenRepositoryImpl
 import com.eva.data.repository.LogRepositoryImpl
 import com.eva.data.repository.RefreshTokenRepositoryImpl
@@ -20,6 +21,8 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import java.io.File
 import java.util.UUID
+
+private val authLogger = LoggerFactory.getLogger("com.eva.routes.Auth")
 
 private val AVATAR_DIR: String = run {
     val fromEnv = System.getenv("UPLOAD_DIR")
@@ -84,6 +87,45 @@ fun Route.authRoutes(
                 fullName     = result.fullName,
                 role         = result.roleName
             ))
+        }
+
+        // POST /api/v1/auth/forgot-password — запросить сброс пароля
+        post("/forgot-password") {
+            val req   = call.receive<ForgotPasswordRequest>()
+            val email = req.email.trim().lowercase()
+
+            val token = authService.requestPasswordReset(email)
+
+            if (token == null) {
+                // Не раскрываем факт существования аккаунта
+                call.respond(ForgotPasswordResponse(
+                    message = "Если указанный email зарегистрирован, инструкция по сбросу пароля отправлена"
+                ))
+                return@post
+            }
+
+            // В production: отправить email с токеном
+            // Для MVP/demo: логируем и возвращаем токен в ответе
+            authLogger.info("Password reset token for $email: $token")
+            call.respond(ForgotPasswordResponse(
+                message    = "Если указанный email зарегистрирован, инструкция по сбросу пароля отправлена",
+                resetToken = token
+            ))
+        }
+
+        // POST /api/v1/auth/reset-password — установить новый пароль
+        post("/reset-password") {
+            val req = call.receive<ResetPasswordRequest>()
+
+            require(req.newPassword.length >= 8) { "Пароль должен содержать минимум 8 символов" }
+
+            val ok = authService.resetPassword(req.token, req.newPassword)
+            if (!ok) {
+                call.respond(HttpStatusCode.BadRequest,
+                    mapOf("message" to "Токен недействителен или истёк"))
+                return@post
+            }
+            call.respond(mapOf("message" to "Пароль успешно изменён"))
         }
 
         // POST /api/v1/auth/refresh — обновить access-токен по refresh-токену

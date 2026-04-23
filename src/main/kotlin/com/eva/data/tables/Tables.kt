@@ -185,6 +185,16 @@ object UserDocumentsTable : Table("user_documents") {
     override val primaryKey = PrimaryKey(documentId)
 }
 
+object PasswordResetTokensTable : Table("password_reset_tokens") {
+    val tokenId   = uuid("token_id").clientDefault { java.util.UUID.randomUUID() }
+    val userId    = uuid("user_id").references(UsersTable.userId, onDelete = ReferenceOption.CASCADE)
+    val token     = varchar("token", 128).uniqueIndex()
+    val expiresAt = timestampWithTimeZone("expires_at")
+    val used      = bool("used").default(false)
+    val createdAt = timestampWithTimeZone("created_at")
+    override val primaryKey = PrimaryKey(tokenId)
+}
+
 object LogsTable : Table("logs") {
     val logId     = long("log_id").autoIncrement()
     val userId    = uuid("user_id").nullable()

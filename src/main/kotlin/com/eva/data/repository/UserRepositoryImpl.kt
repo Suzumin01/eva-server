@@ -101,6 +101,13 @@ class UserRepositoryImpl {
         } > 0
     }
 
+    fun updatePasswordHash(userId: UUID, hash: String): Boolean = transaction {
+        UsersTable.update({ UsersTable.userId eq userId }) {
+            it[passwordHash] = hash
+            it[updatedAt]    = OffsetDateTime.now()
+        } > 0
+    }
+
     fun updateAvatarUrl(userId: UUID, url: String): Boolean = transaction {
         UsersTable.update({ UsersTable.userId eq userId }) {
             it[avatarUrl]  = url

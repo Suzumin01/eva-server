@@ -27,12 +27,14 @@ fun Application.configureRouting() {
     val fcmTokenRepository        = FcmTokenRepositoryImpl()
     val logRepository             = LogRepositoryImpl()
     val documentRepository        = DocumentRepositoryImpl()
-    val refreshTokenRepository    = RefreshTokenRepositoryImpl()
+    val refreshTokenRepository       = RefreshTokenRepositoryImpl()
+    val passwordResetRepository      = PasswordResetTokenRepositoryImpl()
 
     val jwtConfig = environment.config.config("jwt")
     val authService = AuthService(
         userRepository         = userRepository,
         refreshTokenRepository = refreshTokenRepository,
+        passwordResetRepository = passwordResetRepository,
         secret                 = jwtConfig.property("secret").getString(),
         issuer                 = jwtConfig.property("issuer").getString(),
         audience               = jwtConfig.property("audience").getString(),

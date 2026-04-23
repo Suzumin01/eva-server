@@ -537,3 +537,44 @@ class RefreshTokenRepositoryImpl {
         }
     }
 }
+
+class PasswordResetTokenRepositoryImpl {
+
+    fun create(userId: UUID): String = transaction {
+        PasswordResetTokensTable.update({
+            (PasswordResetTokensTable.userId eq userId) and
+            (PasswordResetTokensTable.used   eq false)
+        }) { it[used] = true }
+
+        val raw = buildString {
+            val rng = java.security.SecureRandom()
+            val bytes = ByteArray(32)
+            rng.nextBytes(bytes)
+            bytes.forEach { append("%02x".format(it)) }
+        }
+        PasswordResetTokensTable.insert {
+            it[PasswordResetTokensTable.userId]    = userId
+            it[PasswordResetTokensTable.token]     = raw
+            it[PasswordResetTokensTable.expiresAt] = OffsetDateTime.now().plusHours(1)
+            it[PasswordResetTokensTable.createdAt] = OffsetDateTime.now()
+        }
+        raw
+    }
+
+    fun findValidUserId(raw: String): UUID? = transaction {
+        PasswordResetTokensTable
+            .select {
+                (PasswordResetTokensTable.token     eq raw) and
+                (PasswordResetTokensTable.used      eq false) and
+                (PasswordResetTokensTable.expiresAt greater OffsetDateTime.now())
+            }
+            .singleOrNull()
+            ?.get(PasswordResetTokensTable.userId)
+    }
+
+    fun markUsed(raw: String): Unit = transaction {
+        PasswordResetTokensTable.update({ PasswordResetTokensTable.token eq raw }) {
+            it[used] = true
+        }
+    }
+}

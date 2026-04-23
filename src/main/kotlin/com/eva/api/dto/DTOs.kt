@@ -249,3 +249,17 @@ data class HealthResponse(
     val version: String = "1.0.0",
     val service: String = "EVA Backend"
 )
+
+@Serializable
+data class ForgotPasswordRequest(val email: String)
+
+@Serializable
+data class ForgotPasswordResponse(
+    val message: String,
+    // В production этого поля нет — токен приходит на email.
+    // Для MVP/demo возвращаем токен напрямую.
+    val resetToken: String? = null
+)
+
+@Serializable
+data class ResetPasswordRequest(val token: String, val newPassword: String)
