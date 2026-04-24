@@ -23,6 +23,10 @@ import java.util.UUID
 
 private val routesLogger = LoggerFactory.getLogger("com.eva.api.routes.Routes")
 
+private const val DEFAULT_PAGE_SIZE = 20
+private const val MAX_PAGE_SIZE     = 50
+private const val MAX_REVIEW_LEN    = 5000
+
 fun Route.specializationRoutes(specializationRepository: SpecializationRepositoryImpl) {
     route("/specializations") {
         get {
@@ -40,7 +44,7 @@ fun Route.doctorRoutes(
             val specializationId = call.request.queryParameters["specializationId"]?.toShortOrNull()
             val clinicId         = call.request.queryParameters["clinicId"]?.toIntOrNull()
             val search           = call.request.queryParameters["search"]
-            val limit            = call.request.queryParameters["limit"]?.toIntOrNull()?.coerceIn(1, 50) ?: 20
+            val limit            = call.request.queryParameters["limit"]?.toIntOrNull()?.coerceIn(1, MAX_PAGE_SIZE) ?: DEFAULT_PAGE_SIZE
             val offset           = call.request.queryParameters["offset"]?.toLongOrNull() ?: 0L
 
             val doctors = doctorRepository.findAll(specializationId, clinicId, search, limit, offset)
@@ -85,6 +89,9 @@ fun Route.doctorRoutes(
                 if (req.rating !in 1..5)
                     return@post call.respond(HttpStatusCode.BadRequest,
                         mapOf("message" to "Оценка должна быть от 1 до 5"))
+                if (req.comment != null && req.comment.length > MAX_REVIEW_LEN)
+                    return@post call.respond(HttpStatusCode.BadRequest,
+                        mapOf("message" to "Текст отзыва не должен превышать $MAX_REVIEW_LEN символов"))
 
                 if (!doctorRepository.hasCompletedAppointment(doctorId, userId)) {
                     return@post call.respond(HttpStatusCode.Forbidden,
@@ -109,6 +116,9 @@ fun Route.doctorRoutes(
                 if (req.rating !in 1..5)
                     return@patch call.respond(HttpStatusCode.BadRequest,
                         mapOf("message" to "Оценка должна быть от 1 до 5"))
+                if (req.comment != null && req.comment.length > MAX_REVIEW_LEN)
+                    return@patch call.respond(HttpStatusCode.BadRequest,
+                        mapOf("message" to "Текст отзыва не должен превышать $MAX_REVIEW_LEN символов"))
 
                 val updated = doctorRepository.updateReview(reviewId, userId, req.rating.toShort(), req.comment)
                 if (!updated) return@patch call.respond(HttpStatusCode.NotFound,

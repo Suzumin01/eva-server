@@ -54,8 +54,10 @@ class AiService(config: ApplicationConfig) : java.io.Closeable {
 
     private val logger = LoggerFactory.getLogger(AiService::class.java)
 
-    private val apiKey = config.propertyOrNull("openai.apiKey")?.getString()
-    private val model  = config.propertyOrNull("openai.model")?.getString() ?: "gpt-4o-mini"
+    private val apiKey      = config.propertyOrNull("openai.apiKey")?.getString()
+    private val model       = config.propertyOrNull("openai.model")?.getString() ?: "gpt-4o-mini"
+    private val temperature = config.propertyOrNull("openai.temperature")?.getString()?.toDoubleOrNull() ?: 0.3
+    private val maxTokens   = config.propertyOrNull("openai.maxTokens")?.getString()?.toIntOrNull() ?: 600
 
     private val json = Json { ignoreUnknownKeys = true }
 
@@ -92,8 +94,8 @@ class AiService(config: ApplicationConfig) : java.io.Closeable {
                                 OpenAiMessage(role = "system", content = SYSTEM_PROMPT),
                                 OpenAiMessage(role = "user",   content = "Симптомы пациента:\n<symptoms>\n$symptomsText\n</symptoms>")
                             ),
-                            temperature     = 0.3,
-                            max_tokens      = 600,
+                            temperature     = temperature,
+                            max_tokens      = maxTokens,
                             response_format = ResponseFormat(type = "json_object")
                         )
                     )
