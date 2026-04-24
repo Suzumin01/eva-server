@@ -78,8 +78,8 @@ class AiService(config: ApplicationConfig) : java.io.Closeable {
         }
         logger.info("OpenAI запрос: ${symptomsText.take(60)}...")
 
-        var processingMs = 0L
         val rawJson: String
+        val processingMs: Long
 
         try {
             val response: OpenAiResponse
@@ -87,18 +87,7 @@ class AiService(config: ApplicationConfig) : java.io.Closeable {
                 response = httpClient.post("https://api.openai.com/v1/chat/completions") {
                     contentType(ContentType.Application.Json)
                     header("Authorization", "Bearer $apiKey")
-                    setBody(
-                        OpenAiRequest(
-                            model    = model,
-                            messages = listOf(
-                                OpenAiMessage(role = "system", content = SYSTEM_PROMPT),
-                                OpenAiMessage(role = "user",   content = "Симптомы пациента:\n<symptoms>\n$symptomsText\n</symptoms>")
-                            ),
-                            temperature     = temperature,
-                            max_tokens      = maxTokens,
-                            response_format = ResponseFormat(type = "json_object")
-                        )
-                    )
+                    setBody(buildRequestBody(symptomsText))
                 }.body()
             }
 
@@ -117,29 +106,42 @@ class AiService(config: ApplicationConfig) : java.io.Closeable {
         }
 
         return try {
-            val parsed = json.decodeFromString<AiJsonResponse>(rawJson)
-
-            val safeUrgency = parsed.urgency
-                .lowercase()
-                .takeIf { it in setOf("low", "normal", "urgent", "emergency") }
-                ?: "normal"
-
-            AiAnalysisResult(
-                diagnosis          = parsed.diagnosis.trim(),
-                recommendations    = parsed.recommendations.trim(),
-                urgency            = safeUrgency,
-                specializationName = parsed.specializationName.trim().ifBlank { null },
-                confidence         = BigDecimal(parsed.confidence.coerceIn(0.0, 1.0))
-                    .setScale(4, java.math.RoundingMode.HALF_UP),
-                modelVersion       = model,
-                processingMs       = processingMs.toInt(),
-                rawResponse        = rawJson,
-                isStub             = false
-            )
+            parseAiResponse(rawJson, processingMs)
         } catch (e: Exception) {
             logger.error("Не удалось распарсить JSON от OpenAI: $rawJson", e)
             fallbackResult(rawJson)
         }
+    }
+
+    private fun buildRequestBody(symptomsText: String) = OpenAiRequest(
+        model    = model,
+        messages = listOf(
+            OpenAiMessage(role = "system", content = SYSTEM_PROMPT),
+            OpenAiMessage(role = "user",   content = "Симптомы пациента:\n<symptoms>\n$symptomsText\n</symptoms>")
+        ),
+        temperature     = temperature,
+        max_tokens      = maxTokens,
+        response_format = ResponseFormat(type = "json_object")
+    )
+
+    private fun parseAiResponse(rawJson: String, processingMs: Long): AiAnalysisResult {
+        val parsed = json.decodeFromString<AiJsonResponse>(rawJson)
+        val safeUrgency = parsed.urgency
+            .lowercase()
+            .takeIf { it in setOf("low", "normal", "urgent", "emergency") }
+            ?: "normal"
+        return AiAnalysisResult(
+            diagnosis          = parsed.diagnosis.trim(),
+            recommendations    = parsed.recommendations.trim(),
+            urgency            = safeUrgency,
+            specializationName = parsed.specializationName.trim().ifBlank { null },
+            confidence         = BigDecimal(parsed.confidence.coerceIn(0.0, 1.0))
+                .setScale(4, java.math.RoundingMode.HALF_UP),
+            modelVersion       = model,
+            processingMs       = processingMs.toInt(),
+            rawResponse        = rawJson,
+            isStub             = false
+        )
     }
 
     private fun fallbackResult(raw: String? = null) = AiAnalysisResult(

@@ -39,249 +39,242 @@ fun Route.authRoutes(
     refreshTokenRepository: RefreshTokenRepositoryImpl
 ) {
     route("/auth") {
-
-        // POST /api/v1/auth/register
-        post("/register") {
-            val req = call.receive<RegisterRequest>()
-
-            require(req.fullName.trim().length >= 2) { "ФИО должно содержать минимум 2 символа" }
-            require(req.password.length >= 8)        { "Пароль должен содержать минимум 8 символов" }
-            require(req.email.contains("@"))         { "Некорректный email" }
-
-            val userId = authService.register(
-                fullName       = req.fullName.trim(),
-                email          = req.email.trim().lowercase(),
-                phone          = req.phone?.trim(),
-                password       = req.password,
-                consentMedical = req.consentMedical,
-                consentAi      = req.consentAi
-            )
-
-            logRepository.log(
-                userId    = userId,
-                action    = "USER_REGISTER",
-                ipAddress = call.request.origin.remoteHost,
-                meta      = buildJsonObject { put("email", req.email) }.toString()
-            )
-
-            call.respond(HttpStatusCode.Created, RegisterResponse(userId = userId.toString()))
-        }
-
-        // POST /api/v1/auth/login
-        post("/login") {
-            val req    = call.receive<LoginRequest>()
-            val result = authService.login(req.email.trim().lowercase(), req.password)
-
-            logRepository.log(
-                userId    = result.userId,
-                action    = "USER_LOGIN",
-                ipAddress = call.request.origin.remoteHost,
-                userAgent = call.request.headers["User-Agent"],
-                meta      = buildJsonObject { put("success", true) }.toString()
-            )
-
-            call.respond(AuthResponse(
-                token        = result.token,
-                refreshToken = result.refreshToken,
-                userId       = result.userId.toString(),
-                fullName     = result.fullName,
-                role         = result.roleName
-            ))
-        }
-
-        // POST /api/v1/auth/forgot-password — запросить сброс пароля
-        post("/forgot-password") {
-            val req   = call.receive<ForgotPasswordRequest>()
-            val email = req.email.trim().lowercase()
-
-            val token = authService.requestPasswordReset(email)
-
-            if (token == null) {
-                // Не раскрываем факт существования аккаунта
-                call.respond(ForgotPasswordResponse(
-                    message = "Если указанный email зарегистрирован, инструкция по сбросу пароля отправлена"
-                ))
-                return@post
-            }
-
-            // В production: отправить email с токеном; для MVP токен возвращается в ответе
-            call.respond(ForgotPasswordResponse(
-                message    = "Если указанный email зарегистрирован, инструкция по сбросу пароля отправлена",
-                resetToken = token
-            ))
-        }
-
-        // POST /api/v1/auth/reset-password — установить новый пароль
-        post("/reset-password") {
-            val req = call.receive<ResetPasswordRequest>()
-
-            require(req.newPassword.length >= 8) { "Пароль должен содержать минимум 8 символов" }
-
-            val ok = authService.resetPassword(req.token, req.newPassword)
-            if (!ok) {
-                call.respond(HttpStatusCode.BadRequest,
-                    mapOf("message" to "Токен недействителен или истёк"))
-                return@post
-            }
-            call.respond(mapOf("message" to "Пароль успешно изменён"))
-        }
-
-        // POST /api/v1/auth/refresh — обновить access-токен по refresh-токену
-        post("/refresh") {
-            val req    = call.receive<RefreshRequest>()
-            val result = authService.refresh(req.refreshToken)
-                ?: return@post call.respond(HttpStatusCode.Unauthorized,
-                    mapOf("message" to "Refresh token недействителен или истёк"))
-            call.respond(RefreshResponse(
-                token        = result.accessToken,
-                refreshToken = result.refreshToken
-            ))
-        }
-
-        // GET /api/v1/auth/photo/{userId} — отдать аватар (без авторизации)
-        get("/photo/{userId}") {
-            val rawId = call.parameters["userId"]
-                ?: return@get call.respond(HttpStatusCode.BadRequest)
-            val file = listOf("jpg", "png")
-                .map { File("$AVATAR_DIR/$rawId.$it") }
-                .firstOrNull { it.exists() }
-                ?: return@get call.respond(HttpStatusCode.NotFound)
-            val contentType = if (file.extension == "png") ContentType.Image.PNG else ContentType.Image.JPEG
-            call.respond(LocalFileContent(file, contentType))
-        }
+        registerRoutes(authService, logRepository)
+        loginRoutes(authService, logRepository)
+        passwordRoutes(authService)
+        refreshRoute(authService)
+        avatarPublicRoute()
 
         authenticate("jwt-auth") {
+            profileRoutes(userRepository)
+            avatarUploadRoute(userRepository)
+            fcmTokenRoutes(fcmTokenRepository)
+        }
+    }
+}
 
-            // GET /api/v1/auth/me
-            get("/me") {
-                val userId = UUID.fromString(call.getUserId())
-                val user   = userRepository.findById(userId)
-                    ?: return@get call.respond(HttpStatusCode.NotFound)
+private fun Route.registerRoutes(authService: AuthService, logRepository: LogRepositoryImpl) {
+    post("/register") {
+        val req = call.receive<RegisterRequest>()
 
-                call.respond(user.toProfileDto())
-            }
+        require(req.fullName.trim().length >= 2) { "ФИО должно содержать минимум 2 символа" }
+        require(req.password.length >= 8)        { "Пароль должен содержать минимум 8 символов" }
+        require(req.email.contains("@"))         { "Некорректный email" }
 
-            // PATCH /api/v1/auth/me
-            patch("/me") {
-                val userId = UUID.fromString(call.getUserId())
-                val req    = call.receive<UpdateProfileRequest>()
+        val userId = authService.register(
+            fullName       = req.fullName.trim(),
+            email          = req.email.trim().lowercase(),
+            phone          = req.phone?.trim(),
+            password       = req.password,
+            consentMedical = req.consentMedical,
+            consentAi      = req.consentAi
+        )
 
-                if (req.fullName != null) {
-                    require(req.fullName.trim().length >= 2) { "Имя должно содержать минимум 2 символа" }
-                }
+        logRepository.log(
+            userId    = userId,
+            action    = "USER_REGISTER",
+            ipAddress = call.request.origin.remoteHost,
+            meta      = buildJsonObject { put("email", req.email) }.toString()
+        )
 
-                val parsedDob = req.dateOfBirth?.let {
-                    if (it.isBlank()) null
-                    else runCatching { java.time.LocalDate.parse(it) }.getOrElse {
-                        return@patch call.respond(HttpStatusCode.BadRequest,
-                            mapOf("message" to "Некорректный формат даты рождения (ожидается YYYY-MM-DD)"))
-                    }
-                }
+        call.respond(HttpStatusCode.Created, RegisterResponse(userId = userId.toString()))
+    }
+}
 
-                val updated = userRepository.updateProfile(
-                    userId          = userId,
-                    fullName        = req.fullName,
-                    phone           = req.phone,
-                    dateOfBirth     = parsedDob,
-                    allergies       = req.allergies,
-                    chronicDiseases = req.chronicDiseases,
-                    insurancePolicy = req.insurancePolicy,
-                    clearDateOfBirth = req.dateOfBirth == "",
-                    clearAllergies   = req.allergies == "",
-                    clearChronic     = req.chronicDiseases == "",
-                    clearInsurance   = req.insurancePolicy == ""
-                )
+private fun Route.loginRoutes(authService: AuthService, logRepository: LogRepositoryImpl) {
+    post("/login") {
+        val req    = call.receive<LoginRequest>()
+        val result = authService.login(req.email.trim().lowercase(), req.password)
 
-                if (!updated) return@patch call.respond(HttpStatusCode.NotFound)
+        logRepository.log(
+            userId    = result.userId,
+            action    = "USER_LOGIN",
+            ipAddress = call.request.origin.remoteHost,
+            userAgent = call.request.headers["User-Agent"],
+            meta      = buildJsonObject { put("success", true) }.toString()
+        )
 
-                val user = userRepository.findById(userId)
-                    ?: return@patch call.respond(HttpStatusCode.InternalServerError)
-                call.respond(user.toProfileDto())
-            }
+        call.respond(AuthResponse(
+            token        = result.token,
+            refreshToken = result.refreshToken,
+            userId       = result.userId.toString(),
+            fullName     = result.fullName,
+            role         = result.roleName
+        ))
+    }
+}
 
-            // POST /api/v1/auth/photo — загрузить аватар (multipart/form-data, поле "photo")
-            post("/photo") {
-                val userId = UUID.fromString(call.getUserId())
-                val multipart = call.receiveMultipart()
+private fun Route.passwordRoutes(authService: AuthService) {
+    post("/forgot-password") {
+        val req   = call.receive<ForgotPasswordRequest>()
+        val email = req.email.trim().lowercase()
+        val token = authService.requestPasswordReset(email)
 
-                var ext       = ""
-                var savedFile: File? = null
-                var overLimit = false
+        // Не раскрываем факт существования аккаунта независимо от результата
+        // В production: отправить email с токеном; для MVP токен возвращается в ответе
+        call.respond(ForgotPasswordResponse(
+            message    = "Если указанный email зарегистрирован, инструкция по сбросу пароля отправлена",
+            resetToken = token
+        ))
+    }
 
-                multipart.forEachPart { part ->
-                    if (part is PartData.FileItem && part.name == "photo") {
-                        val origName = part.originalFileName ?: ""
-                        ext = when {
-                            origName.endsWith(".jpg",  ignoreCase = true) -> "jpg"
-                            origName.endsWith(".jpeg", ignoreCase = true) -> "jpg"
-                            origName.endsWith(".png",  ignoreCase = true) -> "png"
-                            else -> ""
-                        }
-                        if (ext.isNotEmpty()) {
-                            val file = File("$AVATAR_DIR/$userId.$ext")
-                            var written = 0L
-                            part.streamProvider().use { input ->
-                                file.outputStream().use { output ->
-                                    val buf = ByteArray(8192)
-                                    var read: Int
-                                    while (input.read(buf).also { read = it } != -1) {
-                                        written += read
-                                        if (written > AVATAR_MAX_BYTES) { overLimit = true; break }
-                                        output.write(buf, 0, read)
-                                    }
-                                }
-                            }
-                            if (overLimit) file.delete() else savedFile = file
-                        }
-                    }
-                    part.dispose()
-                }
+    post("/reset-password") {
+        val req = call.receive<ResetPasswordRequest>()
+        require(req.newPassword.length >= 8) { "Пароль должен содержать минимум 8 символов" }
 
-                when {
-                    overLimit     -> call.respond(HttpStatusCode.PayloadTooLarge,
-                        mapOf("message" to "Файл слишком большой (макс. 5 МБ)"))
-                    ext.isEmpty() -> call.respond(HttpStatusCode.BadRequest,
-                        mapOf("message" to "Поддерживаются только jpg/jpeg/png"))
-                    savedFile == null -> call.respond(HttpStatusCode.BadRequest,
-                        mapOf("message" to "Файл не получен (ожидается поле 'photo')"))
-                    else -> {
-                        // Удаляем старый аватар с другим расширением
-                        listOf("jpg", "png").filter { it != ext }.forEach {
-                            File("$AVATAR_DIR/$userId.$it").delete()
-                        }
-                        val avatarUrl = "/api/v1/auth/photo/$userId"
-                        userRepository.updateAvatarUrl(userId, avatarUrl)
-                        call.respond(mapOf("avatarUrl" to avatarUrl))
-                    }
-                }
-            }
+        val ok = authService.resetPassword(req.token, req.newPassword)
+        if (!ok) {
+            call.respond(HttpStatusCode.BadRequest, mapOf("message" to "Токен недействителен или истёк"))
+            return@post
+        }
+        call.respond(mapOf("message" to "Пароль успешно изменён"))
+    }
+}
 
-            // POST /api/v1/auth/fcm-token — сохранить FCM-токен устройства
-            post("/fcm-token") {
-                val userId = UUID.fromString(call.getUserId())
-                val req    = call.receive<RegisterFcmTokenRequest>()
+private fun Route.refreshRoute(authService: AuthService) {
+    post("/refresh") {
+        val req    = call.receive<RefreshRequest>()
+        val result = authService.refresh(req.refreshToken)
+            ?: return@post call.respond(HttpStatusCode.Unauthorized,
+                mapOf("message" to "Refresh token недействителен или истёк"))
+        call.respond(RefreshResponse(token = result.accessToken, refreshToken = result.refreshToken))
+    }
+}
 
-                if (req.token.isBlank())
-                    return@post call.respond(HttpStatusCode.BadRequest,
-                        mapOf("message" to "Токен не может быть пустым"))
+private fun Route.avatarPublicRoute() {
+    get("/photo/{userId}") {
+        val rawId = call.parameters["userId"]
+            ?: return@get call.respond(HttpStatusCode.BadRequest)
+        val file = listOf("jpg", "png")
+            .map { File("$AVATAR_DIR/$rawId.$it") }
+            .firstOrNull { it.exists() }
+            ?: return@get call.respond(HttpStatusCode.NotFound)
+        val contentType = if (file.extension == "png") ContentType.Image.PNG else ContentType.Image.JPEG
+        call.respond(LocalFileContent(file, contentType))
+    }
+}
 
-                fcmTokenRepository.saveToken(
-                    userId   = userId,
-                    token    = req.token,
-                    deviceId = req.deviceId
-                )
+private fun Route.profileRoutes(userRepository: UserRepositoryImpl) {
+    get("/me") {
+        val userId = UUID.fromString(call.getUserId())
+        val user   = userRepository.findById(userId)
+            ?: return@get call.respond(HttpStatusCode.NotFound)
+        call.respond(user.toProfileDto())
+    }
 
-                call.respond(mapOf("message" to "Токен сохранён"))
-            }
+    patch("/me") {
+        val userId = UUID.fromString(call.getUserId())
+        val req    = call.receive<UpdateProfileRequest>()
 
-            // DELETE /api/v1/auth/fcm-token — разлогин, деактивировать токен
-            delete("/fcm-token") {
-                val userId = UUID.fromString(call.getUserId())
-                val req    = call.receive<RegisterFcmTokenRequest>()
-                fcmTokenRepository.deactivateToken(req.token, userId)
-                call.respond(mapOf("message" to "Токен деактивирован"))
+        if (req.fullName != null) {
+            require(req.fullName.trim().length >= 2) { "Имя должно содержать минимум 2 символа" }
+        }
+
+        val parsedDob = req.dateOfBirth?.let {
+            if (it.isBlank()) null
+            else runCatching { java.time.LocalDate.parse(it) }.getOrElse {
+                return@patch call.respond(HttpStatusCode.BadRequest,
+                    mapOf("message" to "Некорректный формат даты рождения (ожидается YYYY-MM-DD)"))
             }
         }
+
+        val updated = userRepository.updateProfile(
+            userId          = userId,
+            fullName        = req.fullName,
+            phone           = req.phone,
+            dateOfBirth     = parsedDob,
+            allergies       = req.allergies,
+            chronicDiseases = req.chronicDiseases,
+            insurancePolicy = req.insurancePolicy,
+            clearDateOfBirth = req.dateOfBirth == "",
+            clearAllergies   = req.allergies == "",
+            clearChronic     = req.chronicDiseases == "",
+            clearInsurance   = req.insurancePolicy == ""
+        )
+
+        if (!updated) return@patch call.respond(HttpStatusCode.NotFound)
+
+        val user = userRepository.findById(userId)
+            ?: return@patch call.respond(HttpStatusCode.InternalServerError)
+        call.respond(user.toProfileDto())
+    }
+}
+
+private fun Route.avatarUploadRoute(userRepository: UserRepositoryImpl) {
+    post("/photo") {
+        val userId    = UUID.fromString(call.getUserId())
+        val multipart = call.receiveMultipart()
+
+        var ext       = ""
+        var savedFile: File? = null
+        var overLimit = false
+
+        multipart.forEachPart { part ->
+            if (part is PartData.FileItem && part.name == "photo") {
+                val origName = part.originalFileName ?: ""
+                ext = when {
+                    origName.endsWith(".jpg",  ignoreCase = true) -> "jpg"
+                    origName.endsWith(".jpeg", ignoreCase = true) -> "jpg"
+                    origName.endsWith(".png",  ignoreCase = true) -> "png"
+                    else -> ""
+                }
+                if (ext.isNotEmpty()) {
+                    val file = File("$AVATAR_DIR/$userId.$ext")
+                    var written = 0L
+                    part.streamProvider().use { input ->
+                        file.outputStream().use { output ->
+                            val buf = ByteArray(8192)
+                            var read: Int
+                            while (input.read(buf).also { read = it } != -1) {
+                                written += read
+                                if (written > AVATAR_MAX_BYTES) { overLimit = true; break }
+                                output.write(buf, 0, read)
+                            }
+                        }
+                    }
+                    if (overLimit) file.delete() else savedFile = file
+                }
+            }
+            part.dispose()
+        }
+
+        when {
+            overLimit     -> call.respond(HttpStatusCode.PayloadTooLarge,
+                mapOf("message" to "Файл слишком большой (макс. 5 МБ)"))
+            ext.isEmpty() -> call.respond(HttpStatusCode.BadRequest,
+                mapOf("message" to "Поддерживаются только jpg/jpeg/png"))
+            savedFile == null -> call.respond(HttpStatusCode.BadRequest,
+                mapOf("message" to "Файл не получен (ожидается поле 'photo')"))
+            else -> {
+                listOf("jpg", "png").filter { it != ext }.forEach {
+                    File("$AVATAR_DIR/$userId.$it").delete()
+                }
+                val avatarUrl = "/api/v1/auth/photo/$userId"
+                userRepository.updateAvatarUrl(userId, avatarUrl)
+                call.respond(mapOf("avatarUrl" to avatarUrl))
+            }
+        }
+    }
+}
+
+private fun Route.fcmTokenRoutes(fcmTokenRepository: FcmTokenRepositoryImpl) {
+    post("/fcm-token") {
+        val userId = UUID.fromString(call.getUserId())
+        val req    = call.receive<RegisterFcmTokenRequest>()
+
+        if (req.token.isBlank())
+            return@post call.respond(HttpStatusCode.BadRequest,
+                mapOf("message" to "Токен не может быть пустым"))
+
+        fcmTokenRepository.saveToken(userId = userId, token = req.token, deviceId = req.deviceId)
+        call.respond(mapOf("message" to "Токен сохранён"))
+    }
+
+    delete("/fcm-token") {
+        val userId = UUID.fromString(call.getUserId())
+        val req    = call.receive<RegisterFcmTokenRequest>()
+        fcmTokenRepository.deactivateToken(req.token, userId)
+        call.respond(mapOf("message" to "Токен деактивирован"))
     }
 }
 
