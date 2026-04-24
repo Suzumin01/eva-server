@@ -87,7 +87,13 @@ dependencies {
 
     // Testing
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:$kotlin_version")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
+    testImplementation("io.mockk:mockk:1.13.8")
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
 
 kotlin {

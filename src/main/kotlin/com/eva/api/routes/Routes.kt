@@ -3,6 +3,7 @@ package com.eva.api.routes
 import com.eva.api.dto.*
 import com.eva.data.repository.*
 import com.eva.plugins.getUserId
+import com.eva.util.canCancelAppointment
 import com.eva.plugins.getUserRole
 import io.ktor.server.plugins.ratelimit.*
 import kotlinx.serialization.json.buildJsonObject
@@ -321,9 +322,7 @@ fun Route.appointmentRoutes(
                 val slotDateTime = java.time.ZonedDateTime.of(
                     appointment.slotDate, appointment.slotTime, zoneId
                 )
-                val hoursUntil = java.time.Duration.between(
-                    java.time.ZonedDateTime.now(zoneId), slotDateTime).toHours()
-                if (hoursUntil < 24) {
+                if (!canCancelAppointment(slotDateTime, java.time.ZonedDateTime.now(zoneId))) {
                     return@delete call.respond(HttpStatusCode.UnprocessableEntity,
                         mapOf("message" to "Отмена невозможна менее чем за 24 часа до приёма"))
                 }
