@@ -104,9 +104,7 @@ fun Route.authRoutes(
                 return@post
             }
 
-            // В production: отправить email с токеном
-            // Для MVP/demo: логируем и возвращаем токен в ответе
-            authLogger.info("Password reset token for $email: $token")
+            // В production: отправить email с токеном; для MVP токен возвращается в ответе
             call.respond(ForgotPasswordResponse(
                 message    = "Если указанный email зарегистрирован, инструкция по сбросу пароля отправлена",
                 resetToken = token
