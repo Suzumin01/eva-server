@@ -4,6 +4,7 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.auth.*
+import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.callloging.*
 import io.ktor.server.plugins.ratelimit.*
 import io.ktor.server.plugins.statuspages.*
@@ -16,8 +17,19 @@ import kotlin.time.Duration.Companion.hours
 
 fun Application.configureHTTP() {
 
-    // CORS не нужен: API используется только мобильным клиентом (Android).
-    // Если потребуется веб-панель — добавить install(CORS) { allowHost("admin.example.com", ...) }
+    install(CORS) {
+        allowHost("localhost:5173")
+        allowHost("127.0.0.1:5173")
+        allowHost("localhost:3000")
+        allowHost("127.0.0.1:3000")
+        allowHeader(HttpHeaders.Authorization)
+        allowHeader(HttpHeaders.ContentType)
+        allowMethod(HttpMethod.Get)
+        allowMethod(HttpMethod.Post)
+        allowMethod(HttpMethod.Put)
+        allowMethod(HttpMethod.Patch)
+        allowMethod(HttpMethod.Delete)
+    }
 
     install(RateLimit) {
         // 10 запросов к AI-анализу в час на пользователя

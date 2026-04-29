@@ -60,6 +60,37 @@ class ScheduleRepositoryImpl(private val timezone: String = "Europe/Moscow") {
             .singleOrNull()?.toSchedule()
     }
 
+    fun create(doctorId: Int, slotDate: java.time.LocalDate, slotTime: java.time.LocalTime, durationMinutes: Short = 30): Long = transaction {
+        SchedulesTable.insert {
+            it[SchedulesTable.doctorId]        = doctorId
+            it[SchedulesTable.slotDate]        = slotDate
+            it[SchedulesTable.slotTime]        = slotTime
+            it[SchedulesTable.durationMinutes] = durationMinutes
+            it[SchedulesTable.isAvailable]     = true
+            it[SchedulesTable.createdAt]       = OffsetDateTime.now()
+            it[SchedulesTable.updatedAt]       = OffsetDateTime.now()
+        }[SchedulesTable.scheduleId]
+    }
+
+    fun delete(scheduleId: Long): Boolean = transaction {
+        SchedulesTable.deleteWhere {
+            (SchedulesTable.scheduleId eq scheduleId) and (SchedulesTable.isAvailable eq true)
+        } > 0
+    }
+
+    fun findAllByDoctor(
+        doctorId: Int,
+        dateFrom: java.time.LocalDate? = null,
+        dateTo: java.time.LocalDate? = null
+    ): List<Schedule> = transaction {
+        val query = (SchedulesTable innerJoin DoctorsTable)
+            .select { SchedulesTable.doctorId eq doctorId }
+        dateFrom?.let { query.andWhere { SchedulesTable.slotDate greaterEq it } }
+        dateTo?.let   { query.andWhere { SchedulesTable.slotDate lessEq it } }
+        query.orderBy(SchedulesTable.slotDate to SortOrder.ASC, SchedulesTable.slotTime to SortOrder.ASC)
+            .map { it.toSchedule() }
+    }
+
     fun isAvailable(scheduleId: Long): Boolean = transaction {
         SchedulesTable.select { SchedulesTable.scheduleId eq scheduleId }
             .singleOrNull()?.get(SchedulesTable.isAvailable) ?: false
@@ -237,6 +268,92 @@ class AppointmentRepositoryImpl(private val timezone: String = "Europe/Moscow") 
         } ?: emptyList()
     }
 
+    fun findAll(
+        status: String? = null,
+        doctorId: Int? = null,
+        dateFrom: LocalDate? = null,
+        dateTo: LocalDate? = null,
+        limit: Int = 20,
+        offset: Long = 0
+    ): List<Appointment> = transaction {
+        val query = AppointmentsTable
+            .innerJoin(DoctorsTable, { AppointmentsTable.doctorId }, { DoctorsTable.doctorId })
+            .innerJoin(ClinicsTable, { DoctorsTable.clinicId }, { ClinicsTable.clinicId })
+            .innerJoin(SpecializationsTable, { DoctorsTable.specializationId }, { SpecializationsTable.specializationId })
+            .innerJoin(SchedulesTable, { AppointmentsTable.scheduleId }, { SchedulesTable.scheduleId })
+            .innerJoin(UsersTable, { AppointmentsTable.userId }, { UsersTable.userId })
+            .selectAll()
+        status?.let   { query.andWhere { AppointmentsTable.status eq it } }
+        doctorId?.let { query.andWhere { AppointmentsTable.doctorId eq it } }
+        dateFrom?.let { query.andWhere { SchedulesTable.slotDate greaterEq it } }
+        dateTo?.let   { query.andWhere { SchedulesTable.slotDate lessEq it } }
+        query.orderBy(AppointmentsTable.createdAt to SortOrder.DESC)
+            .limit(limit, offset)
+            .map { it.toAppointmentWithPatient() }
+    }
+
+    fun countAll(
+        status: String? = null,
+        doctorId: Int? = null,
+        dateFrom: LocalDate? = null,
+        dateTo: LocalDate? = null
+    ): Long = transaction {
+        val query = AppointmentsTable
+            .innerJoin(SchedulesTable, { AppointmentsTable.scheduleId }, { SchedulesTable.scheduleId })
+            .slice(AppointmentsTable.appointmentId.count())
+            .selectAll()
+        status?.let   { query.andWhere { AppointmentsTable.status eq it } }
+        doctorId?.let { query.andWhere { AppointmentsTable.doctorId eq it } }
+        dateFrom?.let { query.andWhere { SchedulesTable.slotDate greaterEq it } }
+        dateTo?.let   { query.andWhere { SchedulesTable.slotDate lessEq it } }
+        query.single()[AppointmentsTable.appointmentId.count()]
+    }
+
+    fun findByDoctor(
+        doctorId: Int,
+        status: String? = null,
+        dateFrom: LocalDate? = null,
+        dateTo: LocalDate? = null
+    ): List<Appointment> = transaction {
+        val query = AppointmentsTable
+            .innerJoin(DoctorsTable, { AppointmentsTable.doctorId }, { DoctorsTable.doctorId })
+            .innerJoin(ClinicsTable, { DoctorsTable.clinicId }, { ClinicsTable.clinicId })
+            .innerJoin(SpecializationsTable, { DoctorsTable.specializationId }, { SpecializationsTable.specializationId })
+            .innerJoin(SchedulesTable, { AppointmentsTable.scheduleId }, { SchedulesTable.scheduleId })
+            .innerJoin(UsersTable, { AppointmentsTable.userId }, { UsersTable.userId })
+            .select { AppointmentsTable.doctorId eq doctorId }
+        status?.let   { query.andWhere { AppointmentsTable.status eq it } }
+        dateFrom?.let { query.andWhere { SchedulesTable.slotDate greaterEq it } }
+        dateTo?.let   { query.andWhere { SchedulesTable.slotDate lessEq it } }
+        query.orderBy(SchedulesTable.slotDate to SortOrder.DESC, SchedulesTable.slotTime to SortOrder.DESC)
+            .map { it.toAppointmentWithPatient() }
+    }
+
+    fun updateStatus(appointmentId: UUID, doctorId: Int, newStatus: String): Boolean = transaction {
+        AppointmentsTable.update({
+            (AppointmentsTable.appointmentId eq appointmentId) and
+            (AppointmentsTable.doctorId eq doctorId)
+        }) {
+            it[status]    = newStatus
+            it[updatedAt] = OffsetDateTime.now()
+        } > 0
+    }
+
+    fun setNotesAndConclusion(appointmentId: UUID, doctorId: Int, notes: String?, conclusion: String?): Boolean = transaction {
+        AppointmentsTable.update({
+            (AppointmentsTable.appointmentId eq appointmentId) and
+            (AppointmentsTable.doctorId eq doctorId)
+        }) { row ->
+            notes?.let { row[AppointmentsTable.notes] = it }
+            conclusion?.let { row[AppointmentsTable.doctorConclusion] = it }
+            row[updatedAt] = OffsetDateTime.now()
+        } > 0
+    }
+
+    private fun ResultRow.toAppointmentWithPatient() = toAppointment().copy(
+        patientName = this[UsersTable.fullName]
+    )
+
     fun complete(appointmentId: UUID): Boolean = transaction {
         AppointmentsTable.update({
             AppointmentsTable.appointmentId eq appointmentId and
@@ -266,6 +383,94 @@ class AppointmentRepositoryImpl(private val timezone: String = "Europe/Moscow") 
         createdAt          = this[AppointmentsTable.createdAt]
     )
 }
+
+class AdminStatsRepository {
+
+    fun getAppointmentsByDay(days: Int, future: Boolean): List<Pair<String, Int>> = transaction {
+        val today = LocalDate.now()
+        val (dateFrom, dateTo) = if (future)
+            today to today.plusDays(days.toLong() - 1)
+        else
+            today.minusDays(days.toLong() - 1) to today
+        AppointmentsTable
+            .innerJoin(SchedulesTable, { AppointmentsTable.scheduleId }, { SchedulesTable.scheduleId })
+            .slice(SchedulesTable.slotDate, AppointmentsTable.appointmentId.count())
+            .select { SchedulesTable.slotDate greaterEq dateFrom and (SchedulesTable.slotDate lessEq dateTo) }
+            .groupBy(SchedulesTable.slotDate)
+            .orderBy(SchedulesTable.slotDate to SortOrder.ASC)
+            .map { it[SchedulesTable.slotDate].toString() to it[AppointmentsTable.appointmentId.count()].toInt() }
+    }
+
+    fun getAppointmentStatuses(): List<Pair<String, Int>> = transaction {
+        AppointmentsTable
+            .slice(AppointmentsTable.status, AppointmentsTable.appointmentId.count())
+            .selectAll()
+            .groupBy(AppointmentsTable.status)
+            .map { it[AppointmentsTable.status] to it[AppointmentsTable.appointmentId.count()].toInt() }
+    }
+
+    fun getDoctorLoad(limit: Int = 5): List<Pair<String, Int>> = transaction {
+        AppointmentsTable
+            .innerJoin(DoctorsTable, { AppointmentsTable.doctorId }, { DoctorsTable.doctorId })
+            .slice(DoctorsTable.fullName, AppointmentsTable.appointmentId.count())
+            .selectAll()
+            .groupBy(DoctorsTable.fullName)
+            .orderBy(AppointmentsTable.appointmentId.count() to SortOrder.DESC)
+            .limit(limit)
+            .map { it[DoctorsTable.fullName] to it[AppointmentsTable.appointmentId.count()].toInt() }
+    }
+
+    fun getStats(): AdminStats = transaction {
+        val totalUsers   = UsersTable.selectAll().count()
+        val totalDoctors = DoctorsTable.select { DoctorsTable.isActive eq true }.count()
+        val today        = java.time.LocalDate.now()
+        val weekAgo      = today.minusDays(6)
+
+        val todayCount = AppointmentsTable
+            .innerJoin(SchedulesTable, { AppointmentsTable.scheduleId }, { SchedulesTable.scheduleId })
+            .select { SchedulesTable.slotDate eq today }
+            .count()
+
+        val weekCount = AppointmentsTable
+            .innerJoin(SchedulesTable, { AppointmentsTable.scheduleId }, { SchedulesTable.scheduleId })
+            .select { SchedulesTable.slotDate greaterEq weekAgo and (SchedulesTable.slotDate lessEq today) }
+            .count()
+
+        val topSpecs = AppointmentsTable
+            .innerJoin(DoctorsTable, { AppointmentsTable.doctorId }, { DoctorsTable.doctorId })
+            .innerJoin(SpecializationsTable, { DoctorsTable.specializationId }, { SpecializationsTable.specializationId })
+            .slice(SpecializationsTable.name, AppointmentsTable.appointmentId.count())
+            .selectAll()
+            .groupBy(SpecializationsTable.name)
+            .orderBy(AppointmentsTable.appointmentId.count() to SortOrder.DESC)
+            .limit(5)
+            .map { it[SpecializationsTable.name] to it[AppointmentsTable.appointmentId.count()].toInt() }
+
+        AdminStats(totalUsers, totalDoctors, todayCount, weekCount, topSpecs)
+    }
+
+    fun getAiStats(): Triple<Long, Long, List<Pair<String, Int>>> = transaction {
+        val total = SymptomsRequestsTable.selectAll().count()
+        val cutoff = OffsetDateTime.now().minusDays(30)
+        val last30 = SymptomsRequestsTable
+            .select { SymptomsRequestsTable.createdAt greaterEq cutoff }
+            .count()
+        val urgency = AiResponsesTable
+            .slice(AiResponsesTable.urgency, AiResponsesTable.responseId.count())
+            .selectAll()
+            .groupBy(AiResponsesTable.urgency)
+            .map { it[AiResponsesTable.urgency] to it[AiResponsesTable.responseId.count()].toInt() }
+        Triple(total, last30, urgency)
+    }
+}
+
+data class AdminStats(
+    val totalUsers: Long,
+    val totalDoctors: Long,
+    val appointmentsToday: Long,
+    val appointmentsWeek: Long,
+    val topSpecializations: List<Pair<String, Int>>
+)
 
 class SymptomsRepositoryImpl {
 

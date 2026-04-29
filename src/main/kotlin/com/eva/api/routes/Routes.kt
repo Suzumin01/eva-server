@@ -171,6 +171,7 @@ fun Route.doctorRoutes(
 
 private fun com.eva.domain.models.Doctor.toDto() = DoctorResponse(
     doctorId           = doctorId,
+    userId             = userId?.toString(),
     fullName           = fullName,
     clinicId           = clinicId,
     clinicName         = clinicName,

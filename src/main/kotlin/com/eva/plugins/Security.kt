@@ -46,3 +46,9 @@ fun ApplicationCall.getUserId(): String =
 fun ApplicationCall.getUserRole(): String =
     principal<JWTPrincipal>()?.payload?.getClaim("role")?.asString()
         ?: error("getUserRole() вызван вне authenticate-блока")
+
+fun ApplicationCall.getDoctorId(): Int? =
+    principal<JWTPrincipal>()?.payload?.getClaim("doctorId")?.asInt()
+
+fun ApplicationCall.requireRole(vararg roles: String): Boolean =
+    getUserRole() in roles

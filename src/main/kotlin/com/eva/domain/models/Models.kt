@@ -28,6 +28,7 @@ data class User(
 
 data class Doctor(
     val doctorId: Int,
+    val userId: UUID?,
     val fullName: String,
     val clinicId: Int,
     val clinicName: String,
@@ -67,6 +68,7 @@ data class Schedule(
 data class Appointment(
     val appointmentId: UUID,
     val userId: UUID,
+    val patientName: String? = null,
     val doctorId: Int,
     val doctorName: String,
     val specializationName: String,
@@ -117,9 +119,11 @@ data class Notification(
 data class DoctorReview(
     val reviewId: UUID,
     val doctorId: Int,
+    val doctorName: String,
     val userId: UUID,
     val userFullName: String,
     val rating: Short,
     val comment: String?,
+    val isHidden: Boolean = false,
     val createdAt: OffsetDateTime
 )

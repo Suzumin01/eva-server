@@ -84,6 +84,7 @@ object SpecializationsTable : Table("specializations") {
 
 object DoctorsTable : Table("doctors") {
     val doctorId        = integer("doctor_id").autoIncrement()
+    val userId          = uuid("user_id").references(UsersTable.userId).nullable()
     val fullName        = varchar("full_name", 255)
     val clinicId        = integer("clinic_id").references(ClinicsTable.clinicId)
     val specializationId = short("specialization_id").references(SpecializationsTable.specializationId)
@@ -104,6 +105,7 @@ object DoctorReviewsTable : Table("doctor_reviews") {
     val userId    = uuid("user_id").references(UsersTable.userId)
     val rating    = short("rating")
     val comment   = text("comment").nullable()
+    val isHidden  = bool("is_hidden").default(false)
     val createdAt = timestampWithTimeZone("created_at")
     val updatedAt = timestampWithTimeZone("updated_at")
     override val primaryKey = PrimaryKey(reviewId)

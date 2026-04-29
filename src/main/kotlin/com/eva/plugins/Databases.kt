@@ -6,6 +6,7 @@ import io.ktor.server.application.*
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.DatabaseConfig
+import java.sql.Connection
 
 fun Application.configureDatabases() {
     val config = environment.config.config("database")
@@ -28,18 +29,18 @@ fun Application.configureDatabases() {
         this.jdbcUrl      = jdbcUrl
         username          = user
         this.password     = password
-        maximumPoolSize   = config.property("maxPoolSize").getString().toInt()
-        isAutoCommit      = false
-        poolName          = "EVA-HikariPool"
-        connectionInitSql = "SET search_path TO public"
+        maximumPoolSize    = config.property("maxPoolSize").getString().toInt()
+        poolName           = "EVA-HikariPool"
+        connectionInitSql  = "SET search_path TO public"
         validate()
     }
 
     val dataSource = HikariDataSource(hikariConfig)
-    // Не устанавливаем defaultIsolationLevel: Exposed не будет вызывать setTransactionIsolation()
-    // на соединениях HikariCP (autoCommit=false), что вызывало PSQLException.
-    // PostgreSQL-дефолт READ COMMITTED достаточен для всех операций.
-    Database.connect(dataSource, databaseConfig = DatabaseConfig { })
+    // defaultIsolationLevel совпадает с transactionIsolation HikariCP (READ_COMMITTED),
+    // поэтому Exposed не меняет уровень изоляции в середине транзакции.
+    Database.connect(dataSource, databaseConfig = DatabaseConfig {
+        defaultIsolationLevel = Connection.TRANSACTION_READ_COMMITTED
+    })
 
     log.info("Database connected and migrations applied: $jdbcUrl")
 }

@@ -86,6 +86,7 @@ data class DocumentResponse(
 @Serializable
 data class DoctorResponse(
     val doctorId: Int,
+    val userId: String? = null,
     val fullName: String,
     val clinicId: Int,
     val clinicName: String,
@@ -241,7 +242,188 @@ data class RegisterFcmTokenRequest(
 )
 
 @Serializable
+data class AdminUserResponse(
+    val userId: String,
+    val fullName: String,
+    val email: String,
+    val phone: String?,
+    val role: String,
+    val isActive: Boolean,
+    val createdAt: String,
+    val lastLoginAt: String?
+)
+
+@Serializable
+data class AdminUserListResponse(val users: List<AdminUserResponse>, val total: Long)
+
+@Serializable
+data class UpdateRoleRequest(val role: String)
+
+@Serializable
+data class CreateDoctorRequest(
+    val fullName: String,
+    val clinicId: Int,
+    val specializationId: Int,
+    val bio: String? = null,
+    val photoUrl: String? = null,
+    val experienceYears: Int? = null
+)
+
+@Serializable
+data class UpdateDoctorRequest(
+    val fullName: String? = null,
+    val clinicId: Int? = null,
+    val specializationId: Int? = null,
+    val bio: String? = null,
+    val photoUrl: String? = null,
+    val experienceYears: Int? = null
+)
+
+@Serializable
+data class CreateDoctorAccountRequest(
+    val email: String,
+    val password: String,
+    val fullName: String? = null
+)
+
+@Serializable
+data class CreateClinicRequest(
+    val clinicName: String,
+    val address: String,
+    val phone: String? = null,
+    val website: String? = null
+)
+
+@Serializable
+data class UpdateClinicRequest(
+    val clinicName: String? = null,
+    val address: String? = null,
+    val phone: String? = null,
+    val website: String? = null
+)
+
+@Serializable
+data class AdminAppointmentResponse(
+    val appointmentId: String,
+    val patientName: String?,
+    val patientId: String,
+    val doctorName: String,
+    val doctorId: Int,
+    val specializationName: String,
+    val clinicName: String,
+    val slotDate: String,
+    val slotTime: String,
+    val status: String,
+    val notes: String?,
+    val doctorConclusion: String?,
+    val createdAt: String
+)
+
+@Serializable
+data class AdminAppointmentListResponse(
+    val appointments: List<AdminAppointmentResponse>,
+    val total: Long
+)
+
+@Serializable
+data class UpdateStatusRequest(val status: String)
+
+@Serializable
+data class AdminReviewResponse(
+    val reviewId: String,
+    val doctorId: Int,
+    val doctorName: String,
+    val userId: String,
+    val userFullName: String,
+    val rating: Int,
+    val comment: String?,
+    val isHidden: Boolean,
+    val createdAt: String
+)
+
+@Serializable
+data class SpecializationStatDto(val name: String, val count: Int)
+
+@Serializable
+data class NameCountDto(val name: String, val count: Int)
+
+@Serializable
+data class DayCountDto(val date: String, val count: Int)
+
+@Serializable
+data class StatsResponse(
+    val totalUsers: Long,
+    val totalDoctors: Long,
+    val appointmentsToday: Long,
+    val appointmentsWeek: Long,
+    val topSpecializations: List<SpecializationStatDto>
+)
+
+@Serializable
+data class AiStatsResponse(
+    val totalRequests: Long,
+    val requestsLast30Days: Long,
+    val urgencyDistribution: List<NameCountDto>
+)
+
+@Serializable
+data class DoctorAppointmentResponse(
+    val appointmentId: String,
+    val patientName: String?,
+    val patientId: String,
+    val slotDate: String,
+    val slotTime: String,
+    val durationMinutes: Int,
+    val status: String,
+    val notes: String?,
+    val doctorConclusion: String?,
+    val patientHealthInfo: String?,
+    val createdAt: String
+)
+
+@Serializable
+data class SetConclusionExtRequest(
+    val conclusion: String? = null,
+    val notes: String? = null
+)
+
+@Serializable
+data class CreateScheduleRequest(
+    val doctorId: Int? = null,
+    val slotDate: String,
+    val slotTime: String,
+    val durationMinutes: Int = 30
+)
+
+@Serializable
+data class BulkCreateScheduleRequest(
+    val doctorId: Int? = null,
+    val dateFrom: String,
+    val dateTo: String,
+    val times: List<String>,
+    val durationMinutes: Int = 30
+)
+
+@Serializable
+data class BulkCreateResponse(val created: Int, val skipped: Int)
+
+@Serializable
 data class MessageResponse(val message: String)
+
+@Serializable
+data class SetActiveRequest(val active: Boolean)
+
+@Serializable
+data class CreateSpecializationRequest(
+    val name: String,
+    val description: String? = null
+)
+
+@Serializable
+data class UpdateSpecializationRequest(
+    val name: String? = null,
+    val description: String? = null
+)
 
 @Serializable
 data class HealthResponse(

@@ -101,11 +101,43 @@ class UserRepositoryImpl {
         } > 0
     }
 
+    fun setActive(userId: UUID, active: Boolean): Boolean = transaction {
+        UsersTable.update({ UsersTable.userId eq userId }) {
+            it[isActive]  = active
+            it[updatedAt] = OffsetDateTime.now()
+        } > 0
+    }
+
     fun updatePasswordHash(userId: UUID, hash: String): Boolean = transaction {
         UsersTable.update({ UsersTable.userId eq userId }) {
             it[passwordHash] = hash
             it[updatedAt]    = OffsetDateTime.now()
         } > 0
+    }
+
+    fun findAll(search: String? = null, role: String? = null, limit: Int = 20, offset: Long = 0): List<User> = transaction {
+        val query = (UsersTable innerJoin RolesTable).selectAll()
+        search?.let { query.andWhere { UsersTable.fullName.lowerCase() like "%${it.lowercase()}%" or (UsersTable.email.lowerCase() like "%${it.lowercase()}%") } }
+        role?.let   { query.andWhere { RolesTable.roleName eq it } }
+        query.orderBy(UsersTable.createdAt to SortOrder.DESC).limit(limit, offset).map { it.toUser() }
+    }
+
+    fun countAll(search: String? = null, role: String? = null): Long = transaction {
+        val query = (UsersTable innerJoin RolesTable).slice(UsersTable.userId.count()).selectAll()
+        search?.let { query.andWhere { UsersTable.fullName.lowerCase() like "%${it.lowercase()}%" or (UsersTable.email.lowerCase() like "%${it.lowercase()}%") } }
+        role?.let   { query.andWhere { RolesTable.roleName eq it } }
+        query.single()[UsersTable.userId.count()]
+    }
+
+    fun updateRole(userId: UUID, roleId: Short): Boolean = transaction {
+        UsersTable.update({ UsersTable.userId eq userId }) {
+            it[UsersTable.roleId] = roleId
+            it[updatedAt]         = OffsetDateTime.now()
+        } > 0
+    }
+
+    fun findRoleIdByName(roleName: String): Short? = transaction {
+        RolesTable.select { RolesTable.roleName eq roleName }.singleOrNull()?.get(RolesTable.roleId)
     }
 
     fun updateAvatarUrl(userId: UUID, url: String): Boolean = transaction {

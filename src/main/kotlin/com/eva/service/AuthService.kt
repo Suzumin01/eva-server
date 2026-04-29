@@ -3,6 +3,7 @@ package com.eva.service
 import at.favre.lib.crypto.bcrypt.BCrypt
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
+import com.eva.data.repository.DoctorRepositoryImpl
 import com.eva.data.repository.PasswordResetTokenRepositoryImpl
 import com.eva.data.repository.RefreshTokenRepositoryImpl
 import com.eva.data.repository.UserRepositoryImpl
@@ -18,7 +19,8 @@ class AuthService(
     private val secret: String,
     private val issuer: String,
     private val audience: String,
-    private val expirationMs: Long
+    private val expirationMs: Long,
+    private val doctorRepository: DoctorRepositoryImpl? = null
 ) {
     fun register(
         fullName: String,
@@ -65,7 +67,8 @@ class AuthService(
             throw IllegalArgumentException("Неверный email или пароль")
 
         userRepository.updateLastLogin(user.userId)
-        val accessToken  = generateToken(user.userId, user.roleName)
+        val doctorId     = if (user.roleName == "doctor") doctorRepository?.findIdByUserId(user.userId) else null
+        val accessToken  = generateToken(user.userId, user.roleName, doctorId)
         val refreshToken = refreshTokenRepository.create(user.userId)
         return LoginResult(
             token        = accessToken,
@@ -80,7 +83,8 @@ class AuthService(
         val userId = refreshTokenRepository.findValidUserId(rawRefreshToken) ?: return null
         val user   = userRepository.findById(userId) ?: return null
         refreshTokenRepository.revoke(rawRefreshToken)
-        val newAccessToken  = generateToken(userId, user.roleName)
+        val doctorId        = if (user.roleName == "doctor") doctorRepository?.findIdByUserId(userId) else null
+        val newAccessToken  = generateToken(userId, user.roleName, doctorId)
         val newRefreshToken = refreshTokenRepository.create(userId)
         return RefreshResult(newAccessToken, newRefreshToken)
     }
@@ -119,12 +123,13 @@ class AuthService(
         return true
     }
 
-    fun generateToken(userId: UUID, role: String): String =
+    fun generateToken(userId: UUID, role: String, doctorId: Int? = null): String =
         JWT.create()
             .withAudience(audience)
             .withIssuer(issuer)
             .withClaim("userId", userId.toString())
             .withClaim("role", role)
+            .apply { doctorId?.let { withClaim("doctorId", it) } }
             .withExpiresAt(Date(System.currentTimeMillis() + expirationMs))
             .sign(Algorithm.HMAC256(secret))
 }

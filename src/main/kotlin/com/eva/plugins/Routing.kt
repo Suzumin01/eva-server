@@ -2,6 +2,7 @@ package com.eva.plugins
 
 import com.eva.api.routes.*
 import com.eva.data.repository.*
+import com.eva.data.repository.AdminStatsRepository
 import com.eva.service.*
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
@@ -29,6 +30,7 @@ fun Application.configureRouting() {
     val documentRepository        = DocumentRepositoryImpl()
     val refreshTokenRepository       = RefreshTokenRepositoryImpl()
     val passwordResetRepository      = PasswordResetTokenRepositoryImpl()
+    val statsRepository              = AdminStatsRepository()
 
     val jwtConfig = environment.config.config("jwt")
     val authService = AuthService(
@@ -38,7 +40,8 @@ fun Application.configureRouting() {
         secret                 = jwtConfig.property("secret").getString(),
         issuer                 = jwtConfig.property("issuer").getString(),
         audience               = jwtConfig.property("audience").getString(),
-        expirationMs           = jwtConfig.property("expirationMs").getString().toLong()
+        expirationMs           = jwtConfig.property("expirationMs").getString().toLong(),
+        doctorRepository       = doctorRepository
     )
 
     val fcmService = FcmService(fcmTokenRepository, fcmCredentialsPath)
@@ -54,6 +57,7 @@ fun Application.configureRouting() {
 
     // Напоминания о записях — проверка каждые 5 минут
     launch(Dispatchers.IO) {
+        delay(15_000L) // дать пулу соединений инициализироваться
         while (true) {
             try {
                 notificationService.sendPendingReminders()
@@ -74,6 +78,8 @@ fun Application.configureRouting() {
             symptomsRoutes(symptomsRepository, aiService)
             notificationRoutes(notificationRepository, fcmTokenRepository)
             documentRoutes(documentRepository)
+            adminRoutes(userRepository, doctorRepository, clinicRepository, appointmentRepository, scheduleRepository, statsRepository, specializationRepository)
+            doctorDashboardRoutes(appointmentRepository, scheduleRepository)
             healthRoute()
         }
     }
