@@ -39,6 +39,13 @@ fun Application.configureHTTP() {
                 call.principal<JWTPrincipal>()?.payload?.subject ?: "anonymous"
             }
         }
+        // 120 проверок квоты в час на пользователя (1 раз в ~30 сек)
+        register(RateLimitName("quota_check")) {
+            rateLimiter(limit = 120, refillPeriod = 1.hours)
+            requestKey { call ->
+                call.principal<JWTPrincipal>()?.payload?.subject ?: "anonymous"
+            }
+        }
     }
 
     install(CallLogging) {

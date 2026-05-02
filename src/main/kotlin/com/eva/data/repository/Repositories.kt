@@ -472,7 +472,7 @@ data class AdminStats(
     val topSpecializations: List<Pair<String, Int>>
 )
 
-class SymptomsRepositoryImpl {
+class SymptomsRepositoryImpl(private val timezone: String = "Europe/Moscow") {
 
     fun create(userId: UUID, symptomsText: String): UUID = transaction {
         val id = UUID.randomUUID()
@@ -499,6 +499,7 @@ class SymptomsRepositoryImpl {
 
     fun saveAiResponse(
         requestId: UUID,
+        title: String,
         diagnosis: String,
         recommendations: String,
         urgency: String,
@@ -511,6 +512,7 @@ class SymptomsRepositoryImpl {
         AiResponsesTable.insert {
             it[AiResponsesTable.responseId]      = id
             it[AiResponsesTable.requestId]       = requestId
+            it[AiResponsesTable.title]           = title
             it[AiResponsesTable.diagnosis]       = diagnosis
             it[AiResponsesTable.recommendations] = recommendations
             it[AiResponsesTable.urgency]         = urgency
@@ -532,6 +534,7 @@ class SymptomsRepositoryImpl {
                 AiResponse(
                     responseId      = it[AiResponsesTable.responseId],
                     requestId       = it[AiResponsesTable.requestId],
+                    title           = it[AiResponsesTable.title],
                     diagnosis       = it[AiResponsesTable.diagnosis],
                     recommendations = it[AiResponsesTable.recommendations],
                     urgency         = it[AiResponsesTable.urgency],
@@ -541,6 +544,18 @@ class SymptomsRepositoryImpl {
                     createdAt       = it[AiResponsesTable.createdAt]
                 )
             }
+    }
+
+    fun countTodayByUser(userId: UUID): Int = transaction {
+        val zoneId     = ZoneId.of(timezone)
+        val startOfDay = LocalDate.now(zoneId).atStartOfDay(zoneId).toOffsetDateTime()
+        SymptomsRequestsTable
+            .select {
+                (SymptomsRequestsTable.userId eq userId) and
+                (SymptomsRequestsTable.createdAt greaterEq startOfDay)
+            }
+            .count()
+            .toInt()
     }
 
     private fun ResultRow.toRequest() = SymptomsRequest(

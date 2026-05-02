@@ -30,11 +30,14 @@ private val SYSTEM_PROMPT = """
 4. Если описание слишком короткое или неинформативное — попроси уточнить симптомы
    через поле diagnosis, confidence поставь ниже 0.4.
 5. Отвечай исключительно на русском языке.
-6. specializationName — одно слово или короткая фраза, название специализации врача
-   в именительном падеже (например: "Терапевт", "Кардиолог", "Невролог").
+6. specializationName — название специализации врача СТРОГО из списка доступных специализаций,
+   который будет указан в сообщении пользователя. Используй точное написание из списка.
+7. title — краткий заголовок анализа (3-6 слов), описывающий основную жалобу или предварительный
+   вывод. Например: "Возможная ОРВИ с температурой" или "Боли в пояснице". Без точки в конце.
 
 Структура ответа (строго эта, без лишних полей):
 {
+  "title": "Краткий заголовок 3-6 слов",
   "diagnosis": "Предварительная оценка состояния в 1-3 предложениях",
   "recommendations": "Рекомендации через символ \n, например:\n1. Обратитесь к врачу\n2. Соблюдайте постельный режим",
   "urgency": "low",
@@ -71,7 +74,7 @@ class AiService(config: ApplicationConfig) : java.io.Closeable {
 
     override fun close() { httpClient.close() }
 
-    suspend fun analyze(symptomsText: String): AiAnalysisResult {
+    suspend fun analyze(symptomsText: String, availableSpecializations: List<String> = emptyList()): AiAnalysisResult {
         if (apiKey == null) {
             logger.warn("OPENAI_API_KEY не задан — возвращаю заглушку")
             return fallbackResult()
@@ -87,7 +90,7 @@ class AiService(config: ApplicationConfig) : java.io.Closeable {
                 response = httpClient.post("https://api.openai.com/v1/chat/completions") {
                     contentType(ContentType.Application.Json)
                     header("Authorization", "Bearer $apiKey")
-                    setBody(buildRequestBody(symptomsText))
+                    setBody(buildRequestBody(symptomsText, availableSpecializations))
                 }.body()
             }
 
@@ -113,16 +116,30 @@ class AiService(config: ApplicationConfig) : java.io.Closeable {
         }
     }
 
-    private fun buildRequestBody(symptomsText: String) = OpenAiRequest(
+    private fun buildRequestBody(symptomsText: String, availableSpecializations: List<String>) = OpenAiRequest(
         model    = model,
         messages = listOf(
             OpenAiMessage(role = "system", content = SYSTEM_PROMPT),
-            OpenAiMessage(role = "user",   content = "Симптомы пациента:\n<symptoms>\n$symptomsText\n</symptoms>")
+            OpenAiMessage(role = "user", content = buildUserMessage(symptomsText, availableSpecializations))
         ),
         temperature     = temperature,
         max_tokens      = maxTokens,
         response_format = ResponseFormat(type = "json_object")
     )
+
+    private fun buildUserMessage(symptomsText: String, availableSpecializations: List<String>): String {
+        val sb = StringBuilder()
+        if (availableSpecializations.isNotEmpty()) {
+            sb.appendLine("Доступные специализации врачей в системе (используй ТОЛЬКО одну из них в specializationName):")
+            sb.appendLine(availableSpecializations.joinToString(", "))
+            sb.appendLine()
+        }
+        sb.appendLine("Симптомы пациента:")
+        sb.appendLine("<symptoms>")
+        sb.appendLine(symptomsText)
+        sb.append("</symptoms>")
+        return sb.toString()
+    }
 
     private fun parseAiResponse(rawJson: String, processingMs: Long): AiAnalysisResult {
         val parsed = json.decodeFromString<AiJsonResponse>(rawJson)
@@ -131,6 +148,7 @@ class AiService(config: ApplicationConfig) : java.io.Closeable {
             .takeIf { it in setOf("low", "normal", "urgent", "emergency") }
             ?: "normal"
         return AiAnalysisResult(
+            title              = parsed.title.trim().ifBlank { "Анализ симптомов" },
             diagnosis          = parsed.diagnosis.trim(),
             recommendations    = parsed.recommendations.trim(),
             urgency            = safeUrgency,
@@ -145,13 +163,14 @@ class AiService(config: ApplicationConfig) : java.io.Closeable {
     }
 
     private fun fallbackResult(raw: String? = null) = AiAnalysisResult(
+        title              = "Анализ симптомов",
         diagnosis          = "Не удалось выполнить анализ симптомов. Пожалуйста, попробуйте позже или обратитесь к врачу напрямую.",
         recommendations    = "Запишитесь на приём к терапевту для первичного осмотра.",
         urgency            = "normal",
         specializationName = "Терапевт",
         confidence         = BigDecimal("0.0000"),
         modelVersion       = "fallback",
-        processingMs       = null,   // БД: CHECK (processing_ms IS NULL OR processing_ms > 0)
+        processingMs       = null,
         rawResponse        = raw,
         isStub             = true
     )
@@ -190,6 +209,7 @@ private data class OpenAiUsage(
 
 @Serializable
 private data class AiJsonResponse(
+    val title              : String = "",
     val diagnosis          : String,
     val recommendations    : String,
     val urgency            : String,
@@ -198,6 +218,7 @@ private data class AiJsonResponse(
 )
 
 data class AiAnalysisResult(
+    val title              : String,
     val diagnosis          : String,
     val recommendations    : String,
     val urgency            : String,

@@ -327,9 +327,17 @@ class ClinicRepositoryImpl {
         website      = this[ClinicsTable.website],
         latitude     = this[ClinicsTable.latitude],
         longitude    = this[ClinicsTable.longitude],
+        logoUrl      = this[ClinicsTable.logoUrl],
         rating       = avgRating,
         doctorsCount = doctorsCount
     )
+
+    fun updateLogoUrl(clinicId: Int, logoUrl: String): Boolean = transaction {
+        ClinicsTable.update({ ClinicsTable.clinicId eq clinicId }) {
+            it[ClinicsTable.logoUrl] = logoUrl
+            it[updatedAt]            = java.time.OffsetDateTime.now()
+        } > 0
+    }
 }
 
 class SpecializationRepositoryImpl {

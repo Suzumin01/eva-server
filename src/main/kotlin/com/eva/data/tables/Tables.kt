@@ -66,6 +66,7 @@ object ClinicsTable : Table("clinics") {
     val website    = varchar("website", 255).nullable()
     val latitude   = decimal("latitude", 10, 7).nullable()
     val longitude  = decimal("longitude", 10, 7).nullable()
+    val logoUrl    = varchar("logo_url", 500).nullable()
     val isActive   = bool("is_active").default(true)
     val createdAt  = timestampWithTimeZone("created_at")
     val updatedAt  = timestampWithTimeZone("updated_at")
@@ -157,6 +158,7 @@ object AiResponsesTable : Table("ai_responses") {
     val modelVersion    = varchar("model_version", 50)
     val confidence      = decimal("confidence", 5, 4)
     val processingMs    = integer("processing_ms").nullable()
+    val title           = text("title").default("")
     val rawResponse     = text("raw_response").nullable()   // JSONB хранится как text
     val createdAt       = timestampWithTimeZone("created_at")
     override val primaryKey = PrimaryKey(responseId)

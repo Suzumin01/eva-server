@@ -11,11 +11,14 @@ import kotlinx.serialization.json.put
 import com.eva.service.AiService
 import com.eva.service.NotificationService
 import io.ktor.http.*
+import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.http.content.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import java.io.File
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
@@ -153,21 +156,91 @@ fun Route.doctorRoutes(
 
     route("/clinics") {
         get {
-            call.respond(clinicRepository.findAll().map {
-                ClinicResponse(
-                    clinicId     = it.clinicId,
-                    clinicName   = it.clinicName,
-                    address      = it.address,
-                    phone        = it.phone,
-                    latitude     = it.latitude?.toString(),
-                    longitude    = it.longitude?.toString(),
-                    rating       = it.rating?.toString(),
-                    doctorsCount = it.doctorsCount
-                )
-            })
+            call.respond(clinicRepository.findAll().map { it.toDto() })
+        }
+        get("/{id}/logo") {
+            val id   = call.parameters["id"]?.toIntOrNull()
+                ?: return@get call.respond(HttpStatusCode.BadRequest)
+            val file = listOf("jpg", "png")
+                .map { File("${clinicLogoDir()}/$id.$it") }
+                .firstOrNull { it.exists() }
+                ?: return@get call.respond(HttpStatusCode.NotFound)
+            val ct = if (file.extension == "png") ContentType.Image.PNG else ContentType.Image.JPEG
+            call.respond(LocalFileContent(file, ct))
+        }
+    }
+
+    authenticate("jwt-auth") {
+        route("/clinics") {
+            post("/{id}/logo") {
+                val clinicId = call.parameters["id"]?.toIntOrNull()
+                    ?: return@post call.respond(HttpStatusCode.BadRequest)
+                val multipart = call.receiveMultipart()
+                var ext = ""; var savedFile: File? = null; var overLimit = false
+                multipart.forEachPart { part: PartData ->
+                    if (part is PartData.FileItem && part.name == "logo") {
+                        val orig = part.originalFileName ?: ""
+                        ext = when {
+                            orig.endsWith(".jpg",  ignoreCase = true) -> "jpg"
+                            orig.endsWith(".jpeg", ignoreCase = true) -> "jpg"
+                            orig.endsWith(".png",  ignoreCase = true) -> "png"
+                            else -> ""
+                        }
+                        if (ext.isNotEmpty()) {
+                            val file = File("${clinicLogoDir()}/$clinicId.$ext")
+                            var written = 0L
+                            part.streamProvider().use { inp ->
+                                file.outputStream().use { out ->
+                                    val buf = ByteArray(8192); var n = 0
+                                    while (inp.read(buf).also { n = it } != -1) {
+                                        written += n
+                                        if (written > 5 * 1024 * 1024) { overLimit = true; break }
+                                        out.write(buf, 0, n)
+                                    }
+                                }
+                            }
+                            if (overLimit) file.delete() else savedFile = file
+                        }
+                    }
+                    part.dispose()
+                }
+                when {
+                    overLimit     -> call.respond(HttpStatusCode.PayloadTooLarge,
+                        mapOf("message" to "Файл слишком большой (макс. 5 МБ)"))
+                    ext.isEmpty() -> call.respond(HttpStatusCode.BadRequest,
+                        mapOf("message" to "Поддерживаются только jpg/jpeg/png"))
+                    savedFile == null -> call.respond(HttpStatusCode.BadRequest,
+                        mapOf("message" to "Поле 'logo' не найдено"))
+                    else -> {
+                        listOf("jpg", "png").filter { it != ext }
+                            .forEach { File("${clinicLogoDir()}/$clinicId.$it").delete() }
+                        val logoUrl = "/api/v1/clinics/$clinicId/logo"
+                        clinicRepository.updateLogoUrl(clinicId, logoUrl)
+                        call.respond(mapOf("logoUrl" to logoUrl))
+                    }
+                }
+            }
         }
     }
 }
+
+private fun clinicLogoDir(): String {
+    val base = System.getenv("UPLOAD_DIR").takeIf { !it.isNullOrBlank() }
+        ?: File("uploads").absolutePath
+    return File("$base/clinic_logos").also { it.mkdirs() }.absolutePath
+}
+
+private fun com.eva.domain.models.Clinic.toDto() = ClinicResponse(
+    clinicId     = clinicId,
+    clinicName   = clinicName,
+    address      = address,
+    phone        = phone,
+    latitude     = latitude?.toString(),
+    longitude    = longitude?.toString(),
+    logoUrl      = logoUrl,
+    rating       = rating?.toString(),
+    doctorsCount = doctorsCount
+)
 
 private fun com.eva.domain.models.Doctor.toDto() = DoctorResponse(
     doctorId           = doctorId,
@@ -381,12 +454,27 @@ private fun com.eva.domain.models.Appointment.toDto() = AppointmentResponse(
     createdAt          = createdAt.toString()
 )
 
+private const val DAILY_AI_LIMIT = 10
+
 fun Route.symptomsRoutes(
     symptomsRepository: SymptomsRepositoryImpl,
+    specializationRepository: com.eva.data.repository.SpecializationRepositoryImpl,
     aiService: AiService
 ) {
     authenticate("jwt-auth") {
         route("/symptoms") {
+
+            rateLimit(RateLimitName("quota_check")) {
+                get("/quota") {
+                    val userId = UUID.fromString(call.getUserId())
+                    val used   = symptomsRepository.countTodayByUser(userId)
+                    call.respond(SymptomsQuotaResponse(
+                        used      = used,
+                        limit     = DAILY_AI_LIMIT,
+                        remaining = maxOf(0, DAILY_AI_LIMIT - used)
+                    ))
+                }
+            }
 
             rateLimit(RateLimitName("ai_analyze")) {
                 post("/analyze") {
@@ -400,11 +488,13 @@ fun Route.symptomsRoutes(
                         return@post call.respond(HttpStatusCode.BadRequest,
                             mapOf("message" to "Описание симптомов слишком длинное (максимум 5000 символов)"))
 
-                    val aiResult  = aiService.analyze(req.symptomsText)
-                    val requestId = symptomsRepository.create(userId, req.symptomsText)
+                    val specializations = specializationRepository.findAll().map { it.name }
+                    val aiResult        = aiService.analyze(req.symptomsText, specializations)
+                    val requestId       = symptomsRepository.create(userId, req.symptomsText)
 
                     symptomsRepository.saveAiResponse(
                         requestId       = requestId,
+                        title           = aiResult.title,
                         diagnosis       = aiResult.diagnosis,
                         recommendations = aiResult.recommendations,
                         urgency         = aiResult.urgency,
@@ -416,6 +506,7 @@ fun Route.symptomsRoutes(
 
                     call.respond(AnalyzeSymptomsResponse(
                         requestId          = requestId.toString(),
+                        title              = aiResult.title,
                         diagnosis          = aiResult.diagnosis,
                         recommendations    = aiResult.recommendations,
                         urgency            = aiResult.urgency,
@@ -440,6 +531,7 @@ fun Route.symptomsRoutes(
                         createdAt    = req.createdAt.toString(),
                         aiResponse   = aiResp?.let {
                             AiResponseDto(
+                                title           = it.title,
                                 diagnosis       = it.diagnosis,
                                 recommendations = it.recommendations,
                                 urgency         = it.urgency,

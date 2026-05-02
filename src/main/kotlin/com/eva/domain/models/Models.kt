@@ -51,6 +51,7 @@ data class Clinic(
     val website: String?,
     val latitude: BigDecimal?,
     val longitude: BigDecimal?,
+    val logoUrl: String? = null,
     val rating: BigDecimal? = null,
     val doctorsCount: Int = 0
 )
@@ -96,6 +97,7 @@ data class SymptomsRequest(
 data class AiResponse(
     val responseId: UUID,
     val requestId: UUID,
+    val title: String,
     val diagnosis: String,
     val recommendations: String,
     val urgency: String,
