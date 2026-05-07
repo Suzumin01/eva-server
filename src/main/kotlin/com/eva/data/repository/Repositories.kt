@@ -692,6 +692,16 @@ class DocumentRepositoryImpl {
         id
     }
 
+    fun update(documentId: UUID, userId: UUID, description: String?, category: String?): Boolean = transaction {
+        UserDocumentsTable.update({
+            (UserDocumentsTable.documentId eq documentId) and
+                    (UserDocumentsTable.userId eq userId)
+        }) { row ->
+            description?.let { row[UserDocumentsTable.description] = it.ifBlank { null } }
+            category?.let    { row[UserDocumentsTable.category]    = it }
+        } > 0
+    }
+
     fun delete(documentId: UUID, userId: UUID): String? = transaction {
         val row = UserDocumentsTable
             .select {

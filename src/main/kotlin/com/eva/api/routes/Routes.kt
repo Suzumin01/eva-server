@@ -72,12 +72,13 @@ fun Route.doctorRoutes(
             val reviews = doctorRepository.getReviews(doctorId)
             call.respond(reviews.map {
                 ReviewResponse(
-                    reviewId     = it.reviewId.toString(),
-                    userId       = it.userId.toString(),
-                    userFullName = it.userFullName,
-                    rating       = it.rating.toInt(),
-                    comment      = it.comment,
-                    createdAt    = it.createdAt.toString()
+                    reviewId      = it.reviewId.toString(),
+                    userId        = it.userId.toString(),
+                    userFullName  = it.userFullName,
+                    userAvatarUrl = it.userAvatarUrl,
+                    rating        = it.rating.toInt(),
+                    comment       = it.comment,
+                    createdAt     = it.createdAt.toString()
                 )
             })
         }
@@ -459,6 +460,7 @@ private const val DAILY_AI_LIMIT = 10
 fun Route.symptomsRoutes(
     symptomsRepository: SymptomsRepositoryImpl,
     specializationRepository: com.eva.data.repository.SpecializationRepositoryImpl,
+    userRepository: com.eva.data.repository.UserRepositoryImpl,
     aiService: AiService
 ) {
     authenticate("jwt-auth") {
@@ -489,7 +491,14 @@ fun Route.symptomsRoutes(
                             mapOf("message" to "Описание симптомов слишком длинное (максимум 5000 символов)"))
 
                     val specializations = specializationRepository.findAll().map { it.name }
-                    val aiResult        = aiService.analyze(req.symptomsText, specializations)
+                    val user            = userRepository.findById(userId)
+                    val aiResult        = aiService.analyze(
+                        symptomsText            = req.symptomsText,
+                        availableSpecializations = specializations,
+                        allergies               = user?.allergies,
+                        chronicDiseases         = user?.chronicDiseases,
+                        dateOfBirth             = user?.dateOfBirth?.toString()
+                    )
                     val requestId       = symptomsRepository.create(userId, req.symptomsText)
 
                     symptomsRepository.saveAiResponse(

@@ -75,7 +75,7 @@ fun Application.configureRouting() {
             doctorRoutes(doctorRepository, clinicRepository)
             scheduleRoutes(scheduleRepository)
             appointmentRoutes(appointmentRepository, notificationService, logRepository, appTimezone)
-            symptomsRoutes(symptomsRepository, specializationRepository, aiService)
+            symptomsRoutes(symptomsRepository, specializationRepository, userRepository, aiService)
             notificationRoutes(notificationRepository, fcmTokenRepository)
             documentRoutes(documentRepository)
             adminRoutes(userRepository, doctorRepository, clinicRepository, appointmentRepository, scheduleRepository, statsRepository, specializationRepository)

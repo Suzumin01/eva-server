@@ -28,7 +28,8 @@ class AuthService(
         phone: String?,
         password: String,
         consentMedical: Boolean,
-        consentAi: Boolean
+        consentAi: Boolean,
+        dateOfBirth: java.time.LocalDate? = null
     ): UUID {
         if (userRepository.existsByEmail(email))
             throw ConflictException("Пользователь с таким email уже существует")
@@ -43,7 +44,8 @@ class AuthService(
                 phone          = phone,
                 passwordHash   = hash,
                 consentMedical = consentMedical,
-                consentAi      = consentAi
+                consentAi      = consentAi,
+                dateOfBirth    = dateOfBirth
             )
         } catch (e: ExposedSQLException) {
             // sqlState 23505 = unique_violation (PostgreSQL)

@@ -32,7 +32,8 @@ class UserRepositoryImpl {
         passwordHash: String,
         roleId: Short = 2,   // patient по умолчанию
         consentMedical: Boolean = false,
-        consentAi: Boolean = false
+        consentAi: Boolean = false,
+        dateOfBirth: java.time.LocalDate? = null
     ): UUID = transaction {
         val newId = UUID.randomUUID()
         UsersTable.insert {
@@ -47,6 +48,7 @@ class UserRepositoryImpl {
             if (consentMedical || consentAi) {
                 it[UsersTable.consentAt] = OffsetDateTime.now()
             }
+            dateOfBirth?.let { dob -> it[UsersTable.dateOfBirth] = dob }
         }
         newId
     }
@@ -58,11 +60,9 @@ class UserRepositoryImpl {
         dateOfBirth: java.time.LocalDate? = null,
         allergies: String? = null,
         chronicDiseases: String? = null,
-        insurancePolicy: String? = null,
         clearDateOfBirth: Boolean = false,
         clearAllergies: Boolean = false,
-        clearChronic: Boolean = false,
-        clearInsurance: Boolean = false
+        clearChronic: Boolean = false
     ): Boolean = transaction {
         UsersTable.update({ UsersTable.userId eq userId }) { row ->
             fullName?.let { row[UsersTable.fullName] = it.trim() }
@@ -73,8 +73,6 @@ class UserRepositoryImpl {
             else allergies?.let { row[UsersTable.allergies] = it.trim().ifBlank { null } }
             if (clearChronic) row[UsersTable.chronicDiseases] = null
             else chronicDiseases?.let { row[UsersTable.chronicDiseases] = it.trim().ifBlank { null } }
-            if (clearInsurance) row[UsersTable.insurancePolicy] = null
-            else insurancePolicy?.let { row[UsersTable.insurancePolicy] = it.trim().ifBlank { null } }
             row[UsersTable.updatedAt] = OffsetDateTime.now()
         } > 0
     }
@@ -147,6 +145,13 @@ class UserRepositoryImpl {
         } > 0
     }
 
+    fun clearAvatarUrl(userId: UUID): Boolean = transaction {
+        UsersTable.update({ UsersTable.userId eq userId }) {
+            it[avatarUrl]  = null
+            it[updatedAt]  = OffsetDateTime.now()
+        } > 0
+    }
+
     private fun ResultRow.toUser() = User(
         userId       = this[UsersTable.userId],
         fullName     = this[UsersTable.fullName],
@@ -163,7 +168,6 @@ class UserRepositoryImpl {
         avatarUrl       = this[UsersTable.avatarUrl],
         allergies       = this[UsersTable.allergies],
         chronicDiseases = this[UsersTable.chronicDiseases],
-        insurancePolicy = this[UsersTable.insurancePolicy],
         dateOfBirth     = this[UsersTable.dateOfBirth]
     )
 }

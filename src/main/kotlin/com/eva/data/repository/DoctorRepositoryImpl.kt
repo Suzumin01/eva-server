@@ -151,15 +151,16 @@ class DoctorRepositoryImpl {
     }
 
     private fun ResultRow.toReview() = DoctorReview(
-        reviewId     = this[DoctorReviewsTable.reviewId],
-        doctorId     = this[DoctorReviewsTable.doctorId],
-        doctorName   = this[DoctorsTable.fullName],
-        userId       = this[DoctorReviewsTable.userId],
-        userFullName = this[UsersTable.fullName],
-        rating       = this[DoctorReviewsTable.rating],
-        comment      = this[DoctorReviewsTable.comment],
-        isHidden     = this[DoctorReviewsTable.isHidden],
-        createdAt    = this[DoctorReviewsTable.createdAt]
+        reviewId      = this[DoctorReviewsTable.reviewId],
+        doctorId      = this[DoctorReviewsTable.doctorId],
+        doctorName    = this[DoctorsTable.fullName],
+        userId        = this[DoctorReviewsTable.userId],
+        userFullName  = this[UsersTable.fullName],
+        userAvatarUrl = this[UsersTable.avatarUrl],
+        rating        = this[DoctorReviewsTable.rating],
+        comment       = this[DoctorReviewsTable.comment],
+        isHidden      = this[DoctorReviewsTable.isHidden],
+        createdAt     = this[DoctorReviewsTable.createdAt]
     )
 
     /** Проверяет, есть ли у пользователя завершённый приём с этим врачом */

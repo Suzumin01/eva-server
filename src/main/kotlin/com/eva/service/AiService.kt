@@ -74,7 +74,13 @@ class AiService(config: ApplicationConfig) : java.io.Closeable {
 
     override fun close() { httpClient.close() }
 
-    suspend fun analyze(symptomsText: String, availableSpecializations: List<String> = emptyList()): AiAnalysisResult {
+    suspend fun analyze(
+        symptomsText: String,
+        availableSpecializations: List<String> = emptyList(),
+        allergies: String? = null,
+        chronicDiseases: String? = null,
+        dateOfBirth: String? = null
+    ): AiAnalysisResult {
         if (apiKey == null) {
             logger.warn("OPENAI_API_KEY не задан — возвращаю заглушку")
             return fallbackResult()
@@ -90,7 +96,7 @@ class AiService(config: ApplicationConfig) : java.io.Closeable {
                 response = httpClient.post("https://api.openai.com/v1/chat/completions") {
                     contentType(ContentType.Application.Json)
                     header("Authorization", "Bearer $apiKey")
-                    setBody(buildRequestBody(symptomsText, availableSpecializations))
+                    setBody(buildRequestBody(symptomsText, availableSpecializations, allergies, chronicDiseases, dateOfBirth))
                 }.body()
             }
 
@@ -116,22 +122,42 @@ class AiService(config: ApplicationConfig) : java.io.Closeable {
         }
     }
 
-    private fun buildRequestBody(symptomsText: String, availableSpecializations: List<String>) = OpenAiRequest(
+    private fun buildRequestBody(
+        symptomsText: String,
+        availableSpecializations: List<String>,
+        allergies: String?,
+        chronicDiseases: String?,
+        dateOfBirth: String?
+    ) = OpenAiRequest(
         model    = model,
         messages = listOf(
             OpenAiMessage(role = "system", content = SYSTEM_PROMPT),
-            OpenAiMessage(role = "user", content = buildUserMessage(symptomsText, availableSpecializations))
+            OpenAiMessage(role = "user", content = buildUserMessage(symptomsText, availableSpecializations, allergies, chronicDiseases, dateOfBirth))
         ),
         temperature     = temperature,
         max_tokens      = maxTokens,
         response_format = ResponseFormat(type = "json_object")
     )
 
-    private fun buildUserMessage(symptomsText: String, availableSpecializations: List<String>): String {
+    private fun buildUserMessage(
+        symptomsText: String,
+        availableSpecializations: List<String>,
+        allergies: String?,
+        chronicDiseases: String?,
+        dateOfBirth: String?
+    ): String {
         val sb = StringBuilder()
         if (availableSpecializations.isNotEmpty()) {
             sb.appendLine("Доступные специализации врачей в системе (используй ТОЛЬКО одну из них в specializationName):")
             sb.appendLine(availableSpecializations.joinToString(", "))
+            sb.appendLine()
+        }
+        val hasHealthData = !allergies.isNullOrBlank() || !chronicDiseases.isNullOrBlank() || !dateOfBirth.isNullOrBlank()
+        if (hasHealthData) {
+            sb.appendLine("Данные профиля пациента:")
+            dateOfBirth?.takeIf { it.isNotBlank() }?.let { sb.appendLine("  Дата рождения: $it") }
+            allergies?.takeIf { it.isNotBlank() }?.let { sb.appendLine("  Аллергии: $it") }
+            chronicDiseases?.takeIf { it.isNotBlank() }?.let { sb.appendLine("  Хронические заболевания: $it") }
             sb.appendLine()
         }
         sb.appendLine("Симптомы пациента:")

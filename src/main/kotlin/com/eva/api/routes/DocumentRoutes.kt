@@ -145,6 +145,17 @@ fun Route.documentRoutes(documentRepository: DocumentRepositoryImpl) {
                 call.respondFile(file)
             }
 
+            patch("/{id}") {
+                val userId = UUID.fromString(call.getUserId())
+                val docId  = call.parameters["id"]?.let { runCatching { UUID.fromString(it) }.getOrNull() }
+                    ?: return@patch call.respond(HttpStatusCode.BadRequest)
+                val req = runCatching { call.receive<com.eva.api.dto.UpdateDocumentRequest>() }.getOrNull()
+                    ?: return@patch call.respond(HttpStatusCode.BadRequest, mapOf("message" to "Некорректный запрос"))
+                val updated = documentRepository.update(docId, userId, req.description, req.category)
+                if (updated) call.respond(mapOf("message" to "Обновлено"))
+                else call.respond(HttpStatusCode.NotFound, mapOf("message" to "Документ не найден"))
+            }
+
             delete("/{id}") {
                 val userId = UUID.fromString(call.getUserId())
                 val docId  = call.parameters["id"]?.let { runCatching { UUID.fromString(it) }.getOrNull() }

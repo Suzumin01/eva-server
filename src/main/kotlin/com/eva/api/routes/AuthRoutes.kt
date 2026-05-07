@@ -19,8 +19,11 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
+import java.awt.RenderingHints
+import java.awt.image.BufferedImage
 import java.io.File
 import java.util.UUID
+import javax.imageio.ImageIO
 
 private val authLogger = LoggerFactory.getLogger("com.eva.routes.Auth")
 
@@ -48,6 +51,7 @@ fun Route.authRoutes(
         authenticate("jwt-auth") {
             profileRoutes(userRepository)
             avatarUploadRoute(userRepository)
+            avatarDeleteRoute(userRepository)
             fcmTokenRoutes(fcmTokenRepository)
         }
     }
@@ -61,13 +65,17 @@ private fun Route.registerRoutes(authService: AuthService, logRepository: LogRep
         require(req.password.length >= 8)        { "Пароль должен содержать минимум 8 символов" }
         require(req.email.contains("@"))         { "Некорректный email" }
 
+        val parsedDob = req.dateOfBirth?.takeIf { it.isNotBlank() }?.let {
+            runCatching { java.time.LocalDate.parse(it) }.getOrNull()
+        }
         val userId = authService.register(
             fullName       = req.fullName.trim(),
             email          = req.email.trim().lowercase(),
             phone          = req.phone?.trim(),
             password       = req.password,
             consentMedical = req.consentMedical,
-            consentAi      = req.consentAi
+            consentAi      = req.consentAi,
+            dateOfBirth    = parsedDob
         )
 
         logRepository.log(
@@ -185,11 +193,9 @@ private fun Route.profileRoutes(userRepository: UserRepositoryImpl) {
             dateOfBirth     = parsedDob,
             allergies       = req.allergies,
             chronicDiseases = req.chronicDiseases,
-            insurancePolicy = req.insurancePolicy,
             clearDateOfBirth = req.dateOfBirth == "",
             clearAllergies   = req.allergies == "",
-            clearChronic     = req.chronicDiseases == "",
-            clearInsurance   = req.insurancePolicy == ""
+            clearChronic     = req.chronicDiseases == ""
         )
 
         if (!updated) return@patch call.respond(HttpStatusCode.NotFound)
@@ -249,11 +255,23 @@ private fun Route.avatarUploadRoute(userRepository: UserRepositoryImpl) {
                 listOf("jpg", "png").filter { it != ext }.forEach {
                     File("$AVATAR_DIR/$userId.$it").delete()
                 }
+                resizeAvatar(savedFile!!, 512)
                 val avatarUrl = "/api/v1/auth/photo/$userId"
                 userRepository.updateAvatarUrl(userId, avatarUrl)
                 call.respond(mapOf("avatarUrl" to avatarUrl))
             }
         }
+    }
+}
+
+private fun Route.avatarDeleteRoute(userRepository: UserRepositoryImpl) {
+    delete("/photo") {
+        val userId = UUID.fromString(call.getUserId())
+        listOf("jpg", "png").forEach { ext ->
+            File("$AVATAR_DIR/$userId.$ext").delete()
+        }
+        userRepository.clearAvatarUrl(userId)
+        call.respond(mapOf("message" to "Аватар удалён"))
     }
 }
 
@@ -278,6 +296,22 @@ private fun Route.fcmTokenRoutes(fcmTokenRepository: FcmTokenRepositoryImpl) {
     }
 }
 
+private fun resizeAvatar(file: File, maxPx: Int) = runCatching {
+    System.setProperty("java.awt.headless", "true")
+    val src = ImageIO.read(file) ?: return@runCatching
+    if (src.width <= maxPx && src.height <= maxPx) return@runCatching
+    val scale = minOf(maxPx.toDouble() / src.width, maxPx.toDouble() / src.height)
+    val w = (src.width  * scale).toInt()
+    val h = (src.height * scale).toInt()
+    val dst = BufferedImage(w, h, BufferedImage.TYPE_INT_RGB)
+    val g   = dst.createGraphics()
+    g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR)
+    g.drawImage(src, 0, 0, w, h, null)
+    g.dispose()
+    val format = if (file.extension.equals("png", ignoreCase = true)) "PNG" else "JPEG"
+    ImageIO.write(dst, format, file)
+}
+
 private fun com.eva.domain.models.User.toProfileDto() = UserProfileDto(
     userId          = userId.toString(),
     fullName        = fullName,
@@ -290,6 +324,5 @@ private fun com.eva.domain.models.User.toProfileDto() = UserProfileDto(
     avatarUrl       = avatarUrl,
     dateOfBirth     = dateOfBirth?.toString(),
     allergies       = allergies,
-    chronicDiseases = chronicDiseases,
-    insurancePolicy = insurancePolicy
+    chronicDiseases = chronicDiseases
 )
