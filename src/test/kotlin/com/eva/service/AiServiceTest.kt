@@ -85,4 +85,40 @@ class AiServiceTest {
         assertEquals("normal", result.urgency)
         assertNotNull(result.diagnosis)
     }
+
+    @Test
+    fun `fallback result has non-blank title`() {
+        val service = AiService(configWithKey(null))
+
+        val result = kotlinx.coroutines.runBlocking {
+            service.analyze("Болит живот")
+        }
+        service.close()
+
+        assertTrue(result.title.isNotBlank(), "title не должен быть пустым")
+    }
+
+    @Test
+    fun `fallback result has non-null recommendations`() {
+        val service = AiService(configWithKey(null))
+
+        val result = kotlinx.coroutines.runBlocking {
+            service.analyze("Кашель, насморк")
+        }
+        service.close()
+
+        assertTrue(result.recommendations.isNotBlank())
+    }
+
+    @Test
+    fun `fallback result confidence is exactly zero`() {
+        val service = AiService(configWithKey(null))
+
+        val result = kotlinx.coroutines.runBlocking {
+            service.analyze("Головная боль")
+        }
+        service.close()
+
+        assertEquals(java.math.BigDecimal("0.0000"), result.confidence)
+    }
 }
