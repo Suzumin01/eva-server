@@ -22,7 +22,6 @@ data class User(
     val avatarUrl: String?,
     val allergies: String?,
     val chronicDiseases: String?,
-    val insurancePolicy: String?,
     val dateOfBirth: LocalDate?
 )
 
@@ -124,6 +123,7 @@ data class DoctorReview(
     val doctorName: String,
     val userId: UUID,
     val userFullName: String,
+    val userAvatarUrl: String?,
     val rating: Short,
     val comment: String?,
     val isHidden: Boolean = false,

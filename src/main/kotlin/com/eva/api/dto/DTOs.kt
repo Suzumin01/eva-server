@@ -9,7 +9,8 @@ data class RegisterRequest(
     val phone: String? = null,
     val password: String,
     val consentMedical: Boolean = false,
-    val consentAi: Boolean = false
+    val consentAi: Boolean = false,
+    val dateOfBirth: String? = null
 )
 
 @Serializable
@@ -57,8 +58,7 @@ data class UserProfileDto(
     val avatarUrl: String? = null,
     val dateOfBirth: String? = null,
     val allergies: String? = null,
-    val chronicDiseases: String? = null,
-    val insurancePolicy: String? = null
+    val chronicDiseases: String? = null
 )
 
 @Serializable
@@ -67,8 +67,7 @@ data class UpdateProfileRequest(
     val phone: String? = null,
     val dateOfBirth: String? = null,
     val allergies: String? = null,
-    val chronicDiseases: String? = null,
-    val insurancePolicy: String? = null
+    val chronicDiseases: String? = null
 )
 
 @Serializable
@@ -81,6 +80,12 @@ data class DocumentResponse(
     val description: String? = null,
     val createdAt:   String,
     val downloadUrl: String
+)
+
+@Serializable
+data class UpdateDocumentRequest(
+    val description: String? = null,
+    val category:    String? = null
 )
 
 @Serializable
@@ -111,6 +116,7 @@ data class ReviewResponse(
     val reviewId: String,
     val userId: String,
     val userFullName: String,
+    val userAvatarUrl: String?,
     val rating: Int,
     val comment: String?,
     val createdAt: String
