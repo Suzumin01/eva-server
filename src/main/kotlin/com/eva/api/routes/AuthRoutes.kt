@@ -61,9 +61,12 @@ private fun Route.registerRoutes(authService: AuthService, logRepository: LogRep
     post("/register") {
         val req = call.receive<RegisterRequest>()
 
-        require(req.fullName.trim().length >= 2) { "ФИО должно содержать минимум 2 символа" }
-        require(req.password.length >= 8)        { "Пароль должен содержать минимум 8 символов" }
-        require(req.email.contains("@"))         { "Некорректный email" }
+        require(req.fullName.trim().length >= 2)  { "ФИО должно содержать минимум 2 символа" }
+        require(req.fullName.trim().length <= 200) { "ФИО слишком длинное" }
+        require(req.password.length >= 8)         { "Пароль должен содержать минимум 8 символов" }
+        require(req.password.length <= 128)       { "Пароль слишком длинный" }
+        require(req.email.contains("@"))          { "Некорректный email" }
+        require(req.email.length <= 255)          { "Email слишком длинный" }
 
         val parsedDob = req.dateOfBirth?.takeIf { it.isNotBlank() }?.let {
             runCatching { java.time.LocalDate.parse(it) }.getOrNull()
@@ -280,9 +283,9 @@ private fun Route.fcmTokenRoutes(fcmTokenRepository: FcmTokenRepositoryImpl) {
         val userId = UUID.fromString(call.getUserId())
         val req    = call.receive<RegisterFcmTokenRequest>()
 
-        if (req.token.isBlank())
+        if (req.token.isBlank() || req.token.length > 500)
             return@post call.respond(HttpStatusCode.BadRequest,
-                mapOf("message" to "Токен не может быть пустым"))
+                mapOf("message" to "Некорректный FCM-токен"))
 
         fcmTokenRepository.saveToken(userId = userId, token = req.token, deviceId = req.deviceId)
         call.respond(mapOf("message" to "Токен сохранён"))

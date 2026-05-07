@@ -132,7 +132,8 @@ fun Route.adminRoutes(
                 if (!call.requireRole("admin"))
                     return@post call.respond(HttpStatusCode.Forbidden)
                 val req = call.receive<CreateDoctorRequest>()
-                require(req.fullName.trim().length >= 2) { "ФИО должно быть минимум 2 символа" }
+                require(req.fullName.trim().length >= 2)   { "ФИО должно быть минимум 2 символа" }
+                require(req.fullName.trim().length <= 200) { "ФИО слишком длинное" }
                 val doctorId = doctorRepository.createDoctor(
                     fullName         = req.fullName.trim(),
                     clinicId         = req.clinicId,
@@ -179,8 +180,10 @@ fun Route.adminRoutes(
                 val doctorId = call.parameters["doctorId"]?.toIntOrNull()
                     ?: return@post call.respond(HttpStatusCode.BadRequest, MessageResponse("Некорректный doctorId"))
                 val req = call.receive<CreateDoctorAccountRequest>()
-                require(req.email.contains("@")) { "Некорректный email" }
-                require(req.password.length >= 8) { "Пароль минимум 8 символов" }
+                require(req.email.contains("@"))    { "Некорректный email" }
+                require(req.email.length <= 255)    { "Email слишком длинный" }
+                require(req.password.length >= 8)   { "Пароль минимум 8 символов" }
+                require(req.password.length <= 128) { "Пароль слишком длинный" }
 
                 val doctor = doctorRepository.findById(doctorId)
                     ?: return@post call.respond(HttpStatusCode.NotFound, MessageResponse("Врач не найден"))
@@ -204,8 +207,10 @@ fun Route.adminRoutes(
                 if (!call.requireRole("admin"))
                     return@post call.respond(HttpStatusCode.Forbidden)
                 val req = call.receive<CreateClinicRequest>()
-                require(req.clinicName.isNotBlank()) { "Название клиники обязательно" }
-                require(req.address.isNotBlank()) { "Адрес обязателен" }
+                require(req.clinicName.isNotBlank())          { "Название клиники обязательно" }
+                require(req.clinicName.trim().length <= 300) { "Название клиники слишком длинное" }
+                require(req.address.isNotBlank())             { "Адрес обязателен" }
+                require(req.address.trim().length <= 500)    { "Адрес слишком длинный" }
                 val clinicId = clinicRepository.create(req.clinicName.trim(), req.address.trim(), req.phone, req.website)
                 call.respond(HttpStatusCode.Created, mapOf("clinicId" to clinicId, "message" to "Клиника создана"))
             }

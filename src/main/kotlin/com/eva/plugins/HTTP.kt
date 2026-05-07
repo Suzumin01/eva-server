@@ -4,6 +4,7 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.auth.*
+import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.callloging.*
 import io.ktor.server.plugins.ratelimit.*
@@ -74,6 +75,11 @@ fun Application.configureHTTP() {
 
         exception<ConflictException> { call, e ->
             call.respond(HttpStatusCode.Conflict, ApiError("CONFLICT", e.message ?: "Конфликт данных"))
+        }
+
+        // 400 — malformed JSON / ошибка десериализации тела запроса
+        exception<BadRequestException> { call, e ->
+            call.respond(HttpStatusCode.BadRequest, ApiError("BAD_REQUEST", e.message ?: "Некорректный запрос"))
         }
 
         exception<IllegalArgumentException> { call, e ->

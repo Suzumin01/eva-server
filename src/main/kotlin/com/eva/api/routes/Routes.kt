@@ -315,6 +315,7 @@ fun Route.appointmentRoutes(
                 val userId = UUID.fromString(call.getUserId())
                 val req    = call.receive<CreateAppointmentRequest>()
 
+                require(req.notes == null || req.notes.length <= 1000) { "Примечание не должно превышать 1000 символов" }
                 val appointmentId = appointmentRepository.create(
                     userId     = userId,
                     scheduleId = req.scheduleId,
