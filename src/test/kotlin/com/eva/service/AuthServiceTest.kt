@@ -240,7 +240,6 @@ class AuthServiceTest {
         avatarUrl       = null,
         allergies       = null,
         chronicDiseases = null,
-        insurancePolicy = null,
         dateOfBirth     = null
     )
 }
