@@ -27,12 +27,12 @@ import javax.imageio.ImageIO
 
 private val authLogger = LoggerFactory.getLogger("com.eva.routes.Auth")
 
-private val AVATAR_DIR: String = run {
+internal val AVATAR_DIR: String = run {
     val fromEnv = System.getenv("UPLOAD_DIR")
     val base = if (!fromEnv.isNullOrBlank()) fromEnv else File("uploads").absolutePath
     File("$base/avatars").also { it.mkdirs() }.absolutePath
 }
-private const val AVATAR_MAX_BYTES = 5 * 1024 * 1024L // 5 MB
+internal const val AVATAR_MAX_BYTES = 5 * 1024 * 1024L // 5 MB
 
 fun Route.authRoutes(
     authService: AuthService,
@@ -299,7 +299,7 @@ private fun Route.fcmTokenRoutes(fcmTokenRepository: FcmTokenRepositoryImpl) {
     }
 }
 
-private fun resizeAvatar(file: File, maxPx: Int) = runCatching {
+internal fun resizeAvatar(file: File, maxPx: Int) = runCatching {
     System.setProperty("java.awt.headless", "true")
     val src = ImageIO.read(file) ?: return@runCatching
     if (src.width <= maxPx && src.height <= maxPx) return@runCatching

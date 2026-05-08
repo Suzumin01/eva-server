@@ -265,6 +265,10 @@ data class AdminUserResponse(
     val phone: String?,
     val role: String,
     val isActive: Boolean,
+    val avatarUrl: String?,
+    val dateOfBirth: String?,
+    val allergies: String?,
+    val chronicDiseases: String?,
     val createdAt: String,
     val lastLoginAt: String?
 )
@@ -274,6 +278,16 @@ data class AdminUserListResponse(val users: List<AdminUserResponse>, val total: 
 
 @Serializable
 data class UpdateRoleRequest(val role: String)
+
+@Serializable
+data class UpdateAdminUserRequest(
+    val fullName: String?,
+    val email: String?,
+    val phone: String?,
+    val dateOfBirth: String?,
+    val allergies: String?,
+    val chronicDiseases: String?
+)
 
 @Serializable
 data class CreateDoctorRequest(
@@ -394,6 +408,10 @@ data class DoctorAppointmentResponse(
     val notes: String?,
     val doctorConclusion: String?,
     val patientHealthInfo: String?,
+    val patientDateOfBirth: String?,
+    val patientAllergies: String?,
+    val patientChronicDiseases: String?,
+    val patientAvatarUrl: String?,
     val createdAt: String
 )
 

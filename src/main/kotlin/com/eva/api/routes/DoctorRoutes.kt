@@ -2,6 +2,7 @@ package com.eva.api.routes
 
 import com.eva.api.dto.*
 import com.eva.data.repository.AppointmentRepositoryImpl
+import com.eva.data.repository.DocumentRepositoryImpl
 import com.eva.data.repository.ScheduleRepositoryImpl
 import com.eva.plugins.getDoctorId
 import com.eva.plugins.requireRole
@@ -11,13 +12,15 @@ import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import java.io.File
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.UUID
 
 fun Route.doctorDashboardRoutes(
     appointmentRepository: AppointmentRepositoryImpl,
-    scheduleRepository: ScheduleRepositoryImpl
+    scheduleRepository: ScheduleRepositoryImpl,
+    documentRepository: DocumentRepositoryImpl
 ) {
     authenticate("jwt-auth") {
         route("/doctor") {
@@ -42,10 +45,44 @@ fun Route.doctorDashboardRoutes(
                 val appointmentId = runCatching { UUID.fromString(call.parameters["id"]) }.getOrElse {
                     return@get call.respond(HttpStatusCode.BadRequest, MessageResponse("Некорректный id"))
                 }
-                val appt = appointmentRepository.findById(appointmentId)
-                if (appt == null || appt.doctorId != doctorId)
-                    return@get call.respond(HttpStatusCode.NotFound)
+                val appt = appointmentRepository.findByIdForDoctor(appointmentId, doctorId)
+                    ?: return@get call.respond(HttpStatusCode.NotFound)
                 call.respond(appt.toDoctorDto())
+            }
+
+            get("/appointments/{id}/documents") {
+                if (!call.requireRole("doctor"))
+                    return@get call.respond(HttpStatusCode.Forbidden)
+                val doctorId = call.getDoctorId()
+                    ?: return@get call.respond(HttpStatusCode.Unauthorized, MessageResponse("doctorId не найден в токене"))
+                val appointmentId = runCatching { UUID.fromString(call.parameters["id"]) }.getOrElse {
+                    return@get call.respond(HttpStatusCode.BadRequest, MessageResponse("Некорректный id"))
+                }
+                val appt = appointmentRepository.findByIdForDoctor(appointmentId, doctorId)
+                    ?: return@get call.respond(HttpStatusCode.NotFound, MessageResponse("Запись не найдена или доступ запрещён"))
+                val docs = documentRepository.findByUser(appt.userId)
+                call.respond(docs.map { it.toDocumentResponse() })
+            }
+
+            get("/documents/{documentId}/download") {
+                if (!call.requireRole("doctor"))
+                    return@get call.respond(HttpStatusCode.Forbidden)
+                val doctorId = call.getDoctorId()
+                    ?: return@get call.respond(HttpStatusCode.Unauthorized, MessageResponse("doctorId не найден в токене"))
+                val docId = runCatching { UUID.fromString(call.parameters["documentId"]) }.getOrElse {
+                    return@get call.respond(HttpStatusCode.BadRequest, MessageResponse("Некорректный documentId"))
+                }
+                val doc = documentRepository.findByIdAny(docId)
+                    ?: return@get call.respond(HttpStatusCode.NotFound, MessageResponse("Документ не найден"))
+                val hasAccess = appointmentRepository.doctorHasPatient(doctorId, doc.userId)
+                if (!hasAccess)
+                    return@get call.respond(HttpStatusCode.Forbidden, MessageResponse("Нет доступа к документам этого пациента"))
+                val file = File(doc.filePath)
+                if (!file.exists())
+                    return@get call.respond(HttpStatusCode.NotFound, MessageResponse("Файл не найден"))
+                val safeFileName = doc.fileName.replace(Regex("[^a-zA-Z0-9._\\-а-яА-ЯёЁ ]"), "_").take(200)
+                call.response.header(HttpHeaders.ContentDisposition, "attachment; filename=\"$safeFileName\"")
+                call.respondFile(file)
             }
 
             patch("/appointments/{id}/status") {
@@ -164,15 +201,30 @@ fun Route.doctorDashboardRoutes(
 }
 
 private fun com.eva.domain.models.Appointment.toDoctorDto() = DoctorAppointmentResponse(
-    appointmentId     = appointmentId.toString(),
-    patientName       = patientName,
-    patientId         = userId.toString(),
-    slotDate          = slotDate.toString(),
-    slotTime          = slotTime.toString(),
-    durationMinutes   = durationMinutes.toInt(),
-    status            = status,
-    notes             = notes,
-    doctorConclusion  = doctorConclusion,
-    patientHealthInfo = patientHealthInfo,
-    createdAt         = createdAt.toString()
+    appointmentId          = appointmentId.toString(),
+    patientName            = patientName,
+    patientId              = userId.toString(),
+    slotDate               = slotDate.toString(),
+    slotTime               = slotTime.toString(),
+    durationMinutes        = durationMinutes.toInt(),
+    status                 = status,
+    notes                  = notes,
+    doctorConclusion       = doctorConclusion,
+    patientHealthInfo      = patientHealthInfo,
+    patientDateOfBirth     = patientDateOfBirth?.toString(),
+    patientAllergies       = patientAllergies,
+    patientChronicDiseases = patientChronicDiseases,
+    patientAvatarUrl       = patientAvatarUrl,
+    createdAt              = createdAt.toString()
+)
+
+private fun DocumentRepositoryImpl.Document.toDocumentResponse() = DocumentResponse(
+    documentId  = documentId.toString(),
+    fileName    = fileName,
+    fileType    = fileType,
+    fileSize    = fileSize,
+    category    = category,
+    description = description,
+    createdAt   = createdAt.toString(),
+    downloadUrl = "/doctor/documents/$documentId/download"
 )

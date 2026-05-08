@@ -82,6 +82,10 @@ data class Appointment(
     val notes: String?,
     val doctorConclusion: String?,
     val patientHealthInfo: String?,
+    val patientDateOfBirth: java.time.LocalDate? = null,
+    val patientAllergies: String? = null,
+    val patientChronicDiseases: String? = null,
+    val patientAvatarUrl: String? = null,
     val createdAt: OffsetDateTime
 )
 

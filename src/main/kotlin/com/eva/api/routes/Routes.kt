@@ -66,6 +66,17 @@ fun Route.doctorRoutes(
             call.respond(doctor.toDto())
         }
 
+        get("/{id}/photo") {
+            val doctorId = call.parameters["id"]?.toIntOrNull()
+                ?: return@get call.respond(HttpStatusCode.BadRequest)
+            val file = listOf("jpg", "png")
+                .map { File("${doctorPhotoDir()}/$doctorId.$it") }
+                .firstOrNull { it.exists() }
+                ?: return@get call.respond(HttpStatusCode.NotFound)
+            val ct = if (file.extension == "png") ContentType.Image.PNG else ContentType.Image.JPEG
+            call.respond(LocalFileContent(file, ct))
+        }
+
         get("/{id}/reviews") {
             val doctorId = call.parameters["id"]?.toIntOrNull()
                 ?: return@get call.respond(HttpStatusCode.BadRequest)
@@ -225,10 +236,16 @@ fun Route.doctorRoutes(
     }
 }
 
-private fun clinicLogoDir(): String {
+internal fun clinicLogoDir(): String {
     val base = System.getenv("UPLOAD_DIR").takeIf { !it.isNullOrBlank() }
         ?: File("uploads").absolutePath
     return File("$base/clinic_logos").also { it.mkdirs() }.absolutePath
+}
+
+internal fun doctorPhotoDir(): String {
+    val base = System.getenv("UPLOAD_DIR").takeIf { !it.isNullOrBlank() }
+        ?: File("uploads").absolutePath
+    return File("$base/doctor_photos").also { it.mkdirs() }.absolutePath
 }
 
 private fun com.eva.domain.models.Clinic.toDto() = ClinicResponse(

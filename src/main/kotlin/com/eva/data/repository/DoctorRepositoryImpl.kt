@@ -110,6 +110,13 @@ class DoctorRepositoryImpl {
         } > 0
     }
 
+    fun clearDoctorPhotoUrl(doctorId: Int): Boolean = transaction {
+        DoctorsTable.update({ DoctorsTable.doctorId eq doctorId }) {
+            it[DoctorsTable.photoUrl] = null
+            it[updatedAt]             = OffsetDateTime.now()
+        } > 0
+    }
+
     fun deactivateDoctor(doctorId: Int): Boolean = transaction {
         DoctorsTable.update({ DoctorsTable.doctorId eq doctorId }) {
             it[isActive]  = false
@@ -336,6 +343,13 @@ class ClinicRepositoryImpl {
     fun updateLogoUrl(clinicId: Int, logoUrl: String): Boolean = transaction {
         ClinicsTable.update({ ClinicsTable.clinicId eq clinicId }) {
             it[ClinicsTable.logoUrl] = logoUrl
+            it[updatedAt]            = java.time.OffsetDateTime.now()
+        } > 0
+    }
+
+    fun clearLogoUrl(clinicId: Int): Boolean = transaction {
+        ClinicsTable.update({ ClinicsTable.clinicId eq clinicId }) {
+            it[ClinicsTable.logoUrl] = null
             it[updatedAt]            = java.time.OffsetDateTime.now()
         } > 0
     }

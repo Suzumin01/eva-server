@@ -145,6 +145,21 @@ class UserRepositoryImpl {
         } > 0
     }
 
+    fun adminUpdateProfile(userId: UUID, fullName: String?, email: String?, phone: String?): Boolean = transaction {
+        UsersTable.update({ UsersTable.userId eq userId }) { row ->
+            fullName?.let { row[UsersTable.fullName] = it }
+            email?.let    { row[UsersTable.email]    = it.lowercase() }
+            phone?.let    { row[UsersTable.phone]    = it.ifBlank { null } }
+            row[UsersTable.updatedAt] = OffsetDateTime.now()
+        } > 0
+    }
+
+    fun existsByEmailExcluding(email: String, excludeUserId: UUID): Boolean = transaction {
+        UsersTable.select {
+            (UsersTable.email.lowerCase() eq email.lowercase()) and (UsersTable.userId neq excludeUserId)
+        }.count() > 0
+    }
+
     fun clearAvatarUrl(userId: UUID): Boolean = transaction {
         UsersTable.update({ UsersTable.userId eq userId }) {
             it[avatarUrl]  = null

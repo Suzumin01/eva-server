@@ -5,11 +5,13 @@ import com.eva.api.dto.*
 import com.eva.data.repository.*
 import com.eva.plugins.requireRole
 import io.ktor.http.*
+import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import java.io.File
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -24,7 +26,8 @@ fun Route.adminRoutes(
     appointmentRepository: AppointmentRepositoryImpl,
     scheduleRepository: ScheduleRepositoryImpl,
     statsRepository: AdminStatsRepository,
-    specializationRepository: SpecializationRepositoryImpl
+    specializationRepository: SpecializationRepositoryImpl,
+    documentRepository: DocumentRepositoryImpl
 ) {
     authenticate("jwt-auth") {
         route("/admin") {
@@ -88,14 +91,18 @@ fun Route.adminRoutes(
                 call.respond(AdminUserListResponse(
                     users = users.map { u ->
                         AdminUserResponse(
-                            userId      = u.userId.toString(),
-                            fullName    = u.fullName,
-                            email       = u.email,
-                            phone       = u.phone,
-                            role        = u.roleName,
-                            isActive    = u.isActive,
-                            createdAt   = u.createdAt.toString(),
-                            lastLoginAt = u.lastLoginAt?.toString()
+                            userId          = u.userId.toString(),
+                            fullName        = u.fullName,
+                            email           = u.email,
+                            phone           = u.phone,
+                            role            = u.roleName,
+                            isActive        = u.isActive,
+                            avatarUrl       = u.avatarUrl,
+                            dateOfBirth     = u.dateOfBirth?.toString(),
+                            allergies       = u.allergies,
+                            chronicDiseases = u.chronicDiseases,
+                            createdAt       = u.createdAt.toString(),
+                            lastLoginAt     = u.lastLoginAt?.toString()
                         )
                     },
                     total = total
@@ -126,6 +133,47 @@ fun Route.adminRoutes(
                 val updated = userRepository.updateRole(userId, roleId)
                 if (!updated) return@patch call.respond(HttpStatusCode.NotFound, MessageResponse("Пользователь не найден"))
                 call.respond(MessageResponse("Роль обновлена"))
+            }
+
+            patch("/users/{userId}") {
+                if (!call.requireRole("admin"))
+                    return@patch call.respond(HttpStatusCode.Forbidden)
+                val userId = runCatching { UUID.fromString(call.parameters["userId"]) }.getOrElse {
+                    return@patch call.respond(HttpStatusCode.BadRequest, MessageResponse("Некорректный userId"))
+                }
+                val req = call.receive<UpdateAdminUserRequest>()
+                if (req.fullName != null) {
+                    if (req.fullName.trim().length < 2)
+                        return@patch call.respond(HttpStatusCode.BadRequest, MessageResponse("ФИО должно быть минимум 2 символа"))
+                    if (req.fullName.trim().length > 200)
+                        return@patch call.respond(HttpStatusCode.BadRequest, MessageResponse("ФИО слишком длинное"))
+                }
+                if (req.email != null) {
+                    if (!req.email.contains("@") || req.email.length > 255)
+                        return@patch call.respond(HttpStatusCode.BadRequest, MessageResponse("Некорректный email"))
+                    if (userRepository.existsByEmailExcluding(req.email.trim(), userId))
+                        return@patch call.respond(HttpStatusCode.Conflict, MessageResponse("Email уже занят"))
+                }
+                val parsedDob = req.dateOfBirth?.takeIf { it.isNotBlank() }?.let {
+                    runCatching { java.time.LocalDate.parse(it) }.getOrElse {
+                        return@patch call.respond(HttpStatusCode.BadRequest, MessageResponse("Некорректный формат даты (ожидается YYYY-MM-DD)"))
+                    }
+                }
+                val updated = userRepository.updateProfile(
+                    userId          = userId,
+                    fullName        = req.fullName?.trim(),
+                    phone           = req.phone?.trim(),
+                    dateOfBirth     = parsedDob,
+                    allergies       = req.allergies?.trim(),
+                    chronicDiseases = req.chronicDiseases?.trim(),
+                    clearDateOfBirth = req.dateOfBirth == "",
+                    clearAllergies   = req.allergies == "",
+                    clearChronic     = req.chronicDiseases == ""
+                ).also {
+                    if (req.email != null) userRepository.adminUpdateProfile(userId, null, req.email.trim(), null)
+                }
+                if (!updated) return@patch call.respond(HttpStatusCode.NotFound, MessageResponse("Пользователь не найден"))
+                call.respond(MessageResponse("Пользователь обновлён"))
             }
 
             post("/doctors") {
@@ -401,8 +449,151 @@ fun Route.adminRoutes(
                 if (!deleted) return@delete call.respond(HttpStatusCode.NotFound, MessageResponse("Специализация не найдена"))
                 call.respond(MessageResponse("Специализация удалена"))
             }
+
+            post("/users/{userId}/photo") {
+                if (!call.requireRole("admin")) return@post call.respond(HttpStatusCode.Forbidden)
+                val userId = runCatching { UUID.fromString(call.parameters["userId"]) }.getOrElse {
+                    return@post call.respond(HttpStatusCode.BadRequest, MessageResponse("Некорректный userId"))
+                }
+                val (ext, savedFile, overLimit) = receivePhotoUpload(
+                    call.receiveMultipart(), AVATAR_DIR, userId.toString()
+                )
+                when {
+                    overLimit    -> call.respond(HttpStatusCode.PayloadTooLarge, MessageResponse("Файл слишком большой (макс. 5 МБ)"))
+                    ext.isEmpty() -> call.respond(HttpStatusCode.BadRequest,  MessageResponse("Поддерживаются только jpg/jpeg/png"))
+                    savedFile == null -> call.respond(HttpStatusCode.BadRequest, MessageResponse("Файл не получен"))
+                    else -> {
+                        listOf("jpg", "png").filter { it != ext }.forEach { File("$AVATAR_DIR/$userId.$it").delete() }
+                        resizeAvatar(savedFile, 512)
+                        val url = "/api/v1/auth/photo/$userId"
+                        userRepository.updateAvatarUrl(userId, url)
+                        call.respond(mapOf("avatarUrl" to url))
+                    }
+                }
+            }
+
+            delete("/users/{userId}/photo") {
+                if (!call.requireRole("admin")) return@delete call.respond(HttpStatusCode.Forbidden)
+                val userId = runCatching { UUID.fromString(call.parameters["userId"]) }.getOrElse {
+                    return@delete call.respond(HttpStatusCode.BadRequest, MessageResponse("Некорректный userId"))
+                }
+                listOf("jpg", "png").forEach { File("$AVATAR_DIR/$userId.$it").delete() }
+                userRepository.clearAvatarUrl(userId)
+                call.respond(MessageResponse("Аватар удалён"))
+            }
+
+            get("/documents/{documentId}/download") {
+                if (!call.requireRole("admin")) return@get call.respond(HttpStatusCode.Forbidden)
+                val docId = runCatching { UUID.fromString(call.parameters["documentId"]) }.getOrElse {
+                    return@get call.respond(HttpStatusCode.BadRequest, MessageResponse("Некорректный documentId"))
+                }
+                val doc = documentRepository.findByIdAny(docId)
+                    ?: return@get call.respond(HttpStatusCode.NotFound, MessageResponse("Документ не найден"))
+                val file = File(doc.filePath)
+                if (!file.exists()) return@get call.respond(HttpStatusCode.NotFound, MessageResponse("Файл не найден"))
+                val safeFileName = doc.fileName.replace(Regex("[^a-zA-Z0-9._\\-а-яА-ЯёЁ ]"), "_").take(200)
+                call.response.header(HttpHeaders.ContentDisposition, "attachment; filename=\"$safeFileName\"")
+                call.respondFile(file)
+            }
+
+            get("/users/{userId}/documents") {
+                if (!call.requireRole("admin")) return@get call.respond(HttpStatusCode.Forbidden)
+                val userId = runCatching { UUID.fromString(call.parameters["userId"]) }.getOrElse {
+                    return@get call.respond(HttpStatusCode.BadRequest, MessageResponse("Некорректный userId"))
+                }
+                val docs = documentRepository.findByUser(userId)
+                call.respond(docs.map { doc ->
+                    DocumentResponse(
+                        documentId  = doc.documentId.toString(),
+                        fileName    = doc.fileName,
+                        fileType    = doc.fileType,
+                        fileSize    = doc.fileSize,
+                        category    = doc.category,
+                        description = doc.description,
+                        createdAt   = doc.createdAt.toString(),
+                        downloadUrl = "/admin/documents/${doc.documentId}/download"
+                    )
+                })
+            }
+
+            post("/doctors/{doctorId}/photo") {
+                if (!call.requireRole("admin")) return@post call.respond(HttpStatusCode.Forbidden)
+                val doctorId = call.parameters["doctorId"]?.toIntOrNull()
+                    ?: return@post call.respond(HttpStatusCode.BadRequest, MessageResponse("Некорректный doctorId"))
+                val (ext, savedFile, overLimit) = receivePhotoUpload(
+                    call.receiveMultipart(), doctorPhotoDir(), doctorId.toString()
+                )
+                when {
+                    overLimit     -> call.respond(HttpStatusCode.PayloadTooLarge, MessageResponse("Файл слишком большой (макс. 5 МБ)"))
+                    ext.isEmpty() -> call.respond(HttpStatusCode.BadRequest,  MessageResponse("Поддерживаются только jpg/jpeg/png"))
+                    savedFile == null -> call.respond(HttpStatusCode.BadRequest, MessageResponse("Файл не получен"))
+                    else -> {
+                        listOf("jpg", "png").filter { it != ext }.forEach { File("${doctorPhotoDir()}/$doctorId.$it").delete() }
+                        resizeAvatar(savedFile, 512)
+                        val url = "/api/v1/doctors/$doctorId/photo"
+                        doctorRepository.updateDoctor(doctorId, null, null, null, null, url, null)
+                        call.respond(mapOf("photoUrl" to url))
+                    }
+                }
+            }
+
+            delete("/doctors/{doctorId}/photo") {
+                if (!call.requireRole("admin")) return@delete call.respond(HttpStatusCode.Forbidden)
+                val doctorId = call.parameters["doctorId"]?.toIntOrNull()
+                    ?: return@delete call.respond(HttpStatusCode.BadRequest, MessageResponse("Некорректный doctorId"))
+                listOf("jpg", "png").forEach { File("${doctorPhotoDir()}/$doctorId.$it").delete() }
+                doctorRepository.clearDoctorPhotoUrl(doctorId)
+                call.respond(MessageResponse("Фото удалено"))
+            }
+
+            delete("/clinics/{clinicId}/logo") {
+                if (!call.requireRole("admin")) return@delete call.respond(HttpStatusCode.Forbidden)
+                val clinicId = call.parameters["clinicId"]?.toIntOrNull()
+                    ?: return@delete call.respond(HttpStatusCode.BadRequest, MessageResponse("Некорректный clinicId"))
+                listOf("jpg", "png").forEach { File("${clinicLogoDir()}/$clinicId.$it").delete() }
+                clinicRepository.clearLogoUrl(clinicId)
+                call.respond(MessageResponse("Логотип удалён"))
+            }
         }
     }
+}
+
+private data class UploadResult(val ext: String, val file: File?, val overLimit: Boolean)
+
+private suspend fun receivePhotoUpload(
+    multipart: MultiPartData,
+    dir: String,
+    id: String
+): UploadResult {
+    var ext = ""; var savedFile: File? = null; var overLimit = false
+    multipart.forEachPart { part ->
+        if (part is PartData.FileItem && part.name == "photo") {
+            val orig = part.originalFileName ?: ""
+            ext = when {
+                orig.endsWith(".jpg",  ignoreCase = true) -> "jpg"
+                orig.endsWith(".jpeg", ignoreCase = true) -> "jpg"
+                orig.endsWith(".png",  ignoreCase = true) -> "png"
+                else -> ""
+            }
+            if (ext.isNotEmpty()) {
+                val file = File("$dir/$id.$ext")
+                var written = 0L
+                part.streamProvider().use { inp ->
+                    file.outputStream().use { out ->
+                        val buf = ByteArray(8192); var n: Int
+                        while (inp.read(buf).also { n = it } != -1) {
+                            written += n
+                            if (written > AVATAR_MAX_BYTES) { overLimit = true; break }
+                            out.write(buf, 0, n)
+                        }
+                    }
+                }
+                if (overLimit) file.delete() else savedFile = file
+            }
+        }
+        part.dispose()
+    }
+    return UploadResult(ext, savedFile, overLimit)
 }
 
 private fun com.eva.domain.models.Appointment.toAdminDto() = AdminAppointmentResponse(

@@ -339,6 +339,12 @@ class AppointmentRepositoryImpl(private val timezone: String = "Europe/Moscow") 
         } > 0
     }
 
+    fun doctorHasPatient(doctorId: Int, patientUserId: UUID): Boolean = transaction {
+        AppointmentsTable
+            .select { (AppointmentsTable.doctorId eq doctorId) and (AppointmentsTable.userId eq patientUserId) }
+            .count() > 0
+    }
+
     fun setNotesAndConclusion(appointmentId: UUID, doctorId: Int, notes: String?, conclusion: String?): Boolean = transaction {
         AppointmentsTable.update({
             (AppointmentsTable.appointmentId eq appointmentId) and
@@ -351,8 +357,23 @@ class AppointmentRepositoryImpl(private val timezone: String = "Europe/Moscow") 
     }
 
     private fun ResultRow.toAppointmentWithPatient() = toAppointment().copy(
-        patientName = this[UsersTable.fullName]
+        patientName            = this[UsersTable.fullName],
+        patientDateOfBirth     = this[UsersTable.dateOfBirth],
+        patientAllergies       = this[UsersTable.allergies],
+        patientChronicDiseases = this[UsersTable.chronicDiseases],
+        patientAvatarUrl       = this[UsersTable.avatarUrl]
     )
+
+    fun findByIdForDoctor(appointmentId: UUID, doctorId: Int): Appointment? = transaction {
+        AppointmentsTable
+            .innerJoin(DoctorsTable, { AppointmentsTable.doctorId }, { DoctorsTable.doctorId })
+            .innerJoin(ClinicsTable, { DoctorsTable.clinicId }, { ClinicsTable.clinicId })
+            .innerJoin(SpecializationsTable, { DoctorsTable.specializationId }, { SpecializationsTable.specializationId })
+            .innerJoin(SchedulesTable, { AppointmentsTable.scheduleId }, { SchedulesTable.scheduleId })
+            .innerJoin(UsersTable, { AppointmentsTable.userId }, { UsersTable.userId })
+            .select { (AppointmentsTable.appointmentId eq appointmentId) and (AppointmentsTable.doctorId eq doctorId) }
+            .singleOrNull()?.toAppointmentWithPatient()
+    }
 
     fun complete(appointmentId: UUID): Boolean = transaction {
         AppointmentsTable.update({
@@ -669,6 +690,13 @@ class DocumentRepositoryImpl {
                 (UserDocumentsTable.documentId eq documentId) and
                         (UserDocumentsTable.userId eq userId)
             }
+            .singleOrNull()
+            ?.toDocument()
+    }
+
+    fun findByIdAny(documentId: UUID): Document? = transaction {
+        UserDocumentsTable
+            .select { UserDocumentsTable.documentId eq documentId }
             .singleOrNull()
             ?.toDocument()
     }
