@@ -15,52 +15,13 @@ import org.slf4j.LoggerFactory
 import java.math.BigDecimal
 import kotlin.system.measureTimeMillis
 
-// Системный промпт — вся «медицинская логика» живёт здесь
-private val SYSTEM_PROMPT = """
-Ты — медицинский ассистент мобильного приложения EVA. Твоя задача — проанализировать
-симптомы пользователя и вернуть структурированный JSON-ответ.
-
-СТРОГИЕ ПРАВИЛА:
-1. Отвечай ТОЛЬКО валидным JSON. Никаких markdown-блоков, пояснений или текста вне JSON.
-2. Никогда не ставь окончательный диагноз — только предварительную оценку.
-3. При угрозе жизни (боль в груди, затруднённое дыхание, потеря сознания,
-   признаки инсульта — асимметрия лица, онемение конечностей, спутанность речи)
-   устанавливай urgency = "emergency" и рекомендуй немедленно вызвать скорую помощь (103/112).
-   При серьёзных, но не экстренных симптомах устанавливай urgency = "urgent".
-4. Если описание слишком короткое или неинформативное — попроси уточнить симптомы
-   через поле diagnosis, confidence поставь ниже 0.4.
-5. Отвечай исключительно на русском языке.
-6. specializationName — название специализации врача СТРОГО из списка доступных специализаций,
-   который будет указан в сообщении пользователя. Используй точное написание из списка.
-7. title — краткий заголовок анализа (3-6 слов), описывающий основную жалобу или предварительный
-   вывод. Например: "Возможная ОРВИ с температурой" или "Боли в пояснице". Без точки в конце.
-
-Структура ответа (строго эта, без лишних полей):
-{
-  "title": "Краткий заголовок 3-6 слов",
-  "diagnosis": "Предварительная оценка состояния в 1-3 предложениях",
-  "recommendations": "Рекомендации через символ \n, например:\n1. Обратитесь к врачу\n2. Соблюдайте постельный режим",
-  "urgency": "low",
-  "specializationName": "Терапевт",
-  "confidence": 0.75
-}
-
-Допустимые значения urgency:
-- "low"       — несрочно, плановая запись
-- "normal"    — стоит обратиться в течение 1-3 дней
-- "urgent"    — срочно, обратитесь к врачу сегодня
-- "emergency" — экстренно, немедленно вызовите скорую помощь
-""".trimIndent()
-
-// AiService
 class AiService(config: ApplicationConfig) : java.io.Closeable {
 
     private val logger = LoggerFactory.getLogger(AiService::class.java)
 
-    private val apiKey      = config.propertyOrNull("openai.apiKey")?.getString()
-    private val model       = config.propertyOrNull("openai.model")?.getString() ?: "gpt-4o-mini"
-    private val temperature = config.propertyOrNull("openai.temperature")?.getString()?.toDoubleOrNull() ?: 0.3
-    private val maxTokens   = config.propertyOrNull("openai.maxTokens")?.getString()?.toIntOrNull() ?: 600
+    private val apiKey   = config.propertyOrNull("yandex.apiKey")?.getString()
+    private val folderId = config.propertyOrNull("yandex.folderId")?.getString() ?: ""
+    private val promptId = config.propertyOrNull("yandex.promptId")?.getString() ?: ""
 
     private val json = Json { ignoreUnknownKeys = true }
 
@@ -82,62 +43,57 @@ class AiService(config: ApplicationConfig) : java.io.Closeable {
         dateOfBirth: String? = null
     ): AiAnalysisResult {
         if (apiKey == null) {
-            logger.warn("OPENAI_API_KEY не задан — возвращаю заглушку")
+            logger.warn("YANDEX_API_KEY не задан — возвращаю заглушку")
             return fallbackResult()
         }
-        logger.info("OpenAI запрос: ${symptomsText.take(60)}...")
+        logger.info("Yandex AI запрос: ${symptomsText.take(60)}...")
 
         val rawJson: String
         val processingMs: Long
 
         try {
-            val response: OpenAiResponse
+            val response: YandexResponse
             processingMs = measureTimeMillis {
-                response = httpClient.post("https://api.openai.com/v1/chat/completions") {
+                response = httpClient.post("https://ai.api.cloud.yandex.net/v1/responses") {
                     contentType(ContentType.Application.Json)
                     header("Authorization", "Bearer $apiKey")
-                    setBody(buildRequestBody(symptomsText, availableSpecializations, allergies, chronicDiseases, dateOfBirth))
+                    header("OpenAI-Organization", folderId)
+                    setBody(
+                        YandexRequest(
+                            prompt = YandexPrompt(id = promptId),
+                            input  = buildUserMessage(symptomsText, availableSpecializations, allergies, chronicDiseases, dateOfBirth)
+                        )
+                    )
                 }.body()
             }
 
             val usage = response.usage
-            logger.info(
-                "OpenAI ответил за ${processingMs}мс | " +
-                        "токены: prompt=${usage.prompt_tokens} completion=${usage.completion_tokens} total=${usage.total_tokens}"
-            )
+            if (usage != null) {
+                logger.info(
+                    "Yandex AI ответил за ${processingMs}мс | " +
+                    "токены: input=${usage.input_tokens} output=${usage.output_tokens} total=${usage.total_tokens}"
+                )
+            }
 
-            rawJson = response.choices.firstOrNull()?.message?.content
-                ?: throw IllegalStateException("OpenAI вернул пустой список choices")
+            rawJson = response.output
+                .firstOrNull { it.type == "message" }
+                ?.content
+                ?.firstOrNull { it.type == "output_text" }
+                ?.text
+                ?: throw IllegalStateException("Yandex AI вернул пустой output")
 
         } catch (e: Exception) {
-            logger.error("Ошибка обращения к OpenAI: ${e.message}")
+            logger.error("Ошибка обращения к Yandex AI: ${e.message}")
             return fallbackResult()
         }
 
         return try {
             parseAiResponse(rawJson, processingMs)
         } catch (e: Exception) {
-            logger.error("Не удалось распарсить JSON от OpenAI: $rawJson", e)
+            logger.error("Не удалось распарсить JSON от Yandex AI: $rawJson", e)
             fallbackResult(rawJson)
         }
     }
-
-    private fun buildRequestBody(
-        symptomsText: String,
-        availableSpecializations: List<String>,
-        allergies: String?,
-        chronicDiseases: String?,
-        dateOfBirth: String?
-    ) = OpenAiRequest(
-        model    = model,
-        messages = listOf(
-            OpenAiMessage(role = "system", content = SYSTEM_PROMPT),
-            OpenAiMessage(role = "user", content = buildUserMessage(symptomsText, availableSpecializations, allergies, chronicDiseases, dateOfBirth))
-        ),
-        temperature     = temperature,
-        max_tokens      = maxTokens,
-        response_format = ResponseFormat(type = "json_object")
-    )
 
     private fun buildUserMessage(
         symptomsText: String,
@@ -148,7 +104,7 @@ class AiService(config: ApplicationConfig) : java.io.Closeable {
     ): String {
         val sb = StringBuilder()
         if (availableSpecializations.isNotEmpty()) {
-            sb.appendLine("Доступные специализации врачей в системе (используй ТОЛЬКО одну из них в specializationName):")
+            sb.appendLine("Доступные специализации врачей (используй ТОЛЬКО одну из них в specializationName):")
             sb.appendLine(availableSpecializations.joinToString(", "))
             sb.appendLine()
         }
@@ -178,10 +134,11 @@ class AiService(config: ApplicationConfig) : java.io.Closeable {
             diagnosis          = parsed.diagnosis.trim(),
             recommendations    = parsed.recommendations.trim(),
             urgency            = safeUrgency,
-            specializationName = parsed.specializationName.trim().ifBlank { null },
+            specializationName = parsed.specializationName.trim().ifBlank { null }
+                ?.replaceFirstChar { it.uppercase() },
             confidence         = BigDecimal(parsed.confidence.coerceIn(0.0, 1.0))
                 .setScale(4, java.math.RoundingMode.HALF_UP),
-            modelVersion       = model,
+            modelVersion       = "alice-ai-llm",
             processingMs       = processingMs.toInt(),
             rawResponse        = rawJson,
             isStub             = false
@@ -203,34 +160,37 @@ class AiService(config: ApplicationConfig) : java.io.Closeable {
 }
 
 @Serializable
-private data class OpenAiRequest(
-    val model           : String,
-    val messages        : List<OpenAiMessage>,
-    val temperature     : Double,
-    val max_tokens      : Int,
-    val response_format : ResponseFormat
+private data class YandexRequest(
+    val prompt: YandexPrompt,
+    val input: String
 )
 
 @Serializable
-private data class OpenAiMessage(val role: String, val content: String)
+private data class YandexPrompt(val id: String)
 
 @Serializable
-private data class ResponseFormat(val type: String)
-
-@Serializable
-private data class OpenAiResponse(
-    val choices : List<OpenAiChoice>,
-    val usage   : OpenAiUsage
+private data class YandexResponse(
+    val output: List<YandexOutputItem>,
+    val usage: YandexUsage? = null
 )
 
 @Serializable
-private data class OpenAiChoice(val message: OpenAiMessage)
+private data class YandexOutputItem(
+    val type: String,
+    val content: List<YandexContent>? = null
+)
 
 @Serializable
-private data class OpenAiUsage(
-    val prompt_tokens     : Int,
-    val completion_tokens : Int,
-    val total_tokens      : Int
+private data class YandexContent(
+    val type: String,
+    val text: String? = null
+)
+
+@Serializable
+private data class YandexUsage(
+    val input_tokens: Int = 0,
+    val output_tokens: Int = 0,
+    val total_tokens: Int = 0
 )
 
 @Serializable
