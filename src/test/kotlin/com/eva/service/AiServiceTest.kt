@@ -12,23 +12,26 @@ class AiServiceTest {
 
     // Минимальная заглушка ApplicationConfig для тестов
     private fun configWithKey(apiKey: String?) = MapApplicationConfig(
-        "openai.apiKey" to (apiKey ?: ""),
-        "openai.model"  to "gpt-4o-mini"
+        "yandex.folderId" to "test-folder-id",
+        "yandex.promptId" to "test-prompt-id"
     ).let { map ->
-        // Если apiKey пустой — имитируем отсутствие ключа через null-возврат в propertyOrNull
         if (apiKey == null) {
             object : ApplicationConfig {
                 override fun property(path: String): ApplicationConfigValue =
                     map.property(path)
                 override fun propertyOrNull(path: String): ApplicationConfigValue? =
-                    if (path == "openai.apiKey") null else map.propertyOrNull(path)
+                    if (path == "yandex.apiKey") null else map.propertyOrNull(path)
                 override fun keys(): Set<String> = map.keys()
                 override fun config(path: String): ApplicationConfig = map.config(path)
                 override fun configList(path: String): List<ApplicationConfig> = map.configList(path)
                 override fun toMap(): Map<String, Any?> = map.toMap()
             }
         } else {
-            map
+            MapApplicationConfig(
+                "yandex.apiKey"   to apiKey,
+                "yandex.folderId" to "test-folder-id",
+                "yandex.promptId" to "test-prompt-id"
+            )
         }
     }
 
