@@ -467,6 +467,11 @@ fun Route.adminRoutes(
                         resizeAvatar(savedFile, 512)
                         val url = "/api/v1/auth/photo/$userId"
                         userRepository.updateAvatarUrl(userId, url)
+                        doctorRepository.findIdByUserId(userId)?.let { doctorId ->
+                            listOf("jpg", "png").filter { it != ext }.forEach { File("${doctorPhotoDir()}/$doctorId.$it").delete() }
+                            savedFile.copyTo(File("${doctorPhotoDir()}/$doctorId.$ext"), overwrite = true)
+                            doctorRepository.updateDoctor(doctorId, null, null, null, null, "/api/v1/doctors/$doctorId/photo", null)
+                        }
                         call.respond(mapOf("avatarUrl" to url))
                     }
                 }
@@ -479,6 +484,10 @@ fun Route.adminRoutes(
                 }
                 listOf("jpg", "png").forEach { File("$AVATAR_DIR/$userId.$it").delete() }
                 userRepository.clearAvatarUrl(userId)
+                doctorRepository.findIdByUserId(userId)?.let { doctorId ->
+                    listOf("jpg", "png").forEach { File("${doctorPhotoDir()}/$doctorId.$it").delete() }
+                    doctorRepository.clearDoctorPhotoUrl(doctorId)
+                }
                 call.respond(MessageResponse("Аватар удалён"))
             }
 
@@ -532,6 +541,11 @@ fun Route.adminRoutes(
                         resizeAvatar(savedFile, 512)
                         val url = "/api/v1/doctors/$doctorId/photo"
                         doctorRepository.updateDoctor(doctorId, null, null, null, null, url, null)
+                        doctorRepository.findById(doctorId)?.userId?.let { linkedUserId ->
+                            listOf("jpg", "png").filter { it != ext }.forEach { File("$AVATAR_DIR/$linkedUserId.$it").delete() }
+                            savedFile.copyTo(File("$AVATAR_DIR/$linkedUserId.$ext"), overwrite = true)
+                            userRepository.updateAvatarUrl(linkedUserId, "/api/v1/auth/photo/$linkedUserId")
+                        }
                         call.respond(mapOf("photoUrl" to url))
                     }
                 }
@@ -543,6 +557,10 @@ fun Route.adminRoutes(
                     ?: return@delete call.respond(HttpStatusCode.BadRequest, MessageResponse("Некорректный doctorId"))
                 listOf("jpg", "png").forEach { File("${doctorPhotoDir()}/$doctorId.$it").delete() }
                 doctorRepository.clearDoctorPhotoUrl(doctorId)
+                doctorRepository.findById(doctorId)?.userId?.let { linkedUserId ->
+                    listOf("jpg", "png").forEach { File("$AVATAR_DIR/$linkedUserId.$it").delete() }
+                    userRepository.clearAvatarUrl(linkedUserId)
+                }
                 call.respond(MessageResponse("Фото удалено"))
             }
 
